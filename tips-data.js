@@ -2593,33 +2593,59 @@ window.__TIPS__ = {
       "synonyms": [
         {
           "word": "increase",
-          "meaning": "增加",
-          "example": "The population has increased dramatically over the past decade."
+          "meaning": "增加"
         },
         {
           "word": "escalate",
-          "meaning": "逐步升级",
-          "example": "The conflict could escalate into a full-scale war."
+          "meaning": "逐步升级"
         },
         {
           "word": "surge",
-          "meaning": "急剧上升",
-          "example": "Demand for electric vehicles has surged in recent years."
+          "meaning": "急剧上升"
         },
         {
           "word": "soar",
-          "meaning": "猛增",
-          "example": "Property prices have soared in many major cities."
+          "meaning": "猛增"
         },
         {
           "word": "multiply",
-          "meaning": "成倍增加",
-          "example": "Online learning platforms have multiplied since the pandemic."
+          "meaning": "成倍增加"
         },
         {
           "word": "accelerate",
-          "meaning": "加速增长",
-          "example": "The pace of technological innovation continues to accelerate."
+          "meaning": "加速增长"
+        }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "The number of tourists visiting the city has increased a lot in recent years.",
+          "advanced": "The number of tourists visiting the city has surged in recent years.",
+          "highlights": [
+            {
+              "old": "increased a lot",
+              "new": "surged",
+              "old_zh": "增加了很多",
+              "new_zh": "激增"
+            }
+          ],
+          "basic_zh": "近年来，访问该城市的游客数量增加了很多。",
+          "advanced_zh": "近年来，访问该城市的游客数量激增。"
+        },
+        {
+          "type": "写作",
+          "basic": "The government's efforts have increased the pace of economic reform.",
+          "advanced": "The government's efforts have accelerated the pace of economic reform.",
+          "highlights": [
+            {
+              "old": "increased",
+              "new": "accelerated",
+              "old_zh": "增加",
+              "new_zh": "加速"
+            }
+          ],
+          "basic_zh": "政府的努力增加了经济改革的步伐。",
+          "advanced_zh": "政府的努力加速了经济改革的步伐。"
         }
       ]
     },
@@ -2628,33 +2654,59 @@ window.__TIPS__ = {
       "synonyms": [
         {
           "word": "decrease",
-          "meaning": "减少",
-          "example": "Carbon emissions have decreased significantly in some regions."
+          "meaning": "减少"
         },
         {
           "word": "decline",
-          "meaning": "下降",
-          "example": "The population of rural areas has been declining steadily."
+          "meaning": "下降"
         },
         {
           "word": "plummet",
-          "meaning": "暴跌",
-          "example": "Stock prices plummeted following the unexpected announcement."
+          "meaning": "暴跌"
         },
         {
           "word": "diminish",
-          "meaning": "减少，削弱",
-          "example": "The impact of the policy has diminished over time."
+          "meaning": "减少，削弱"
         },
         {
           "word": "dwindle",
-          "meaning": "逐渐减少",
-          "example": "Natural resources are dwindling at an alarming rate."
+          "meaning": "逐渐减少"
         },
         {
           "word": "subside",
-          "meaning": "平息，减退",
-          "example": "After the storm, the flood waters gradually subsided."
+          "meaning": "平息，减退"
+        }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "The number of visitors decreased last year.",
+          "advanced": "The number of visitors plummeted last year.",
+          "highlights": [
+            {
+              "old": "decreased",
+              "new": "plummeted",
+              "old_zh": "减少",
+              "new_zh": "暴跌"
+            }
+          ],
+          "basic_zh": "去年游客数量减少了。",
+          "advanced_zh": "去年游客数量暴跌。"
+        },
+        {
+          "type": "写作",
+          "basic": "The support for the policy declined over time.",
+          "advanced": "The support for the policy dwindled over time.",
+          "highlights": [
+            {
+              "old": "declined",
+              "new": "dwindled",
+              "old_zh": "下降",
+              "new_zh": "逐渐减少"
+            }
+          ],
+          "basic_zh": "对该政策的支持随时间下降。",
+          "advanced_zh": "对该政策的支持随时间逐渐减少。"
         }
       ]
     },
@@ -2663,33 +2715,71 @@ window.__TIPS__ = {
       "synonyms": [
         {
           "word": "argue",
-          "meaning": "论证，主张",
-          "example": "Many experts argue that early intervention is key."
+          "meaning": "论证，主张"
         },
         {
           "word": "contend",
-          "meaning": "主张，争辩",
-          "example": "Some scholars contend that the evidence is inconclusive."
+          "meaning": "主张，争辩"
         },
         {
           "word": "assert",
-          "meaning": "断言，坚称",
-          "example": "The author asserts that technology is reshaping society."
+          "meaning": "断言，坚称"
         },
         {
           "word": "maintain",
-          "meaning": "坚持认为",
-          "example": "The company maintains that its products are safe."
+          "meaning": "坚持认为"
         },
         {
           "word": "advocate",
-          "meaning": "提倡，拥护",
-          "example": "Environmental groups advocate stricter regulations."
+          "meaning": "提倡，拥护"
         },
         {
           "word": "postulate",
-          "meaning": "假定，假设",
-          "example": "Einstein postulated that the speed of light is constant."
+          "meaning": "假定，假设"
+        }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "I argue that technology improves education.",
+          "advanced": "I contend that technology revolutionizes education.",
+          "highlights": [
+            {
+              "old": "argue",
+              "new": "contend",
+              "old_zh": "认为/主张",
+              "new_zh": "主张/断言"
+            },
+            {
+              "old": "improves",
+              "new": "revolutionizes",
+              "old_zh": "改善",
+              "new_zh": "彻底改变"
+            }
+          ],
+          "basic_zh": "我认为技术改善了教育。",
+          "advanced_zh": "我主张技术彻底改变了教育。"
+        },
+        {
+          "type": "写作",
+          "basic": "Many scientists maintain that climate change is primarily human-caused.",
+          "advanced": "Many scientists postulate that climate change is primarily anthropogenic.",
+          "highlights": [
+            {
+              "old": "maintain",
+              "new": "postulate",
+              "old_zh": "坚持认为",
+              "new_zh": "假设/假定"
+            },
+            {
+              "old": "human-caused",
+              "new": "anthropogenic",
+              "old_zh": "人类引起的",
+              "new_zh": "人为的"
+            }
+          ],
+          "basic_zh": "许多科学家坚持认为气候变化主要是由人类引起的。",
+          "advanced_zh": "许多科学家假设气候变化主要是人为的。"
         }
       ]
     },
@@ -2698,33 +2788,77 @@ window.__TIPS__ = {
       "synonyms": [
         {
           "word": "indicate",
-          "meaning": "表明",
-          "example": "Research indicates a strong link between diet and health."
+          "meaning": "表明"
         },
         {
           "word": "demonstrate",
-          "meaning": "证明，展示",
-          "example": "The experiment demonstrates the effectiveness of the vaccine."
+          "meaning": "证明，展示"
         },
         {
           "word": "reveal",
-          "meaning": "揭示",
-          "example": "The survey reveals widespread dissatisfaction among workers."
+          "meaning": "揭示"
         },
         {
           "word": "illustrate",
-          "meaning": "说明，阐明",
-          "example": "This case illustrates the complexity of the legal system."
+          "meaning": "说明，阐明"
         },
         {
           "word": "manifest",
-          "meaning": "显现，表明",
-          "example": "The symptoms manifest themselves within 48 hours."
+          "meaning": "显现，表明"
         },
         {
           "word": "signify",
-          "meaning": "意味着，表示",
-          "example": "A fall in GDP signifies a contracting economy."
+          "meaning": "意味着，表示"
+        }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "The survey shows that people are worried about the environment.",
+          "advanced": "The survey reveals that people are deeply concerned about the environment.",
+          "highlights": [
+            {
+              "old": "shows",
+              "new": "reveals",
+              "old_zh": "显示",
+              "new_zh": "揭示"
+            },
+            {
+              "old": "worried",
+              "new": "deeply concerned",
+              "old_zh": "担心",
+              "new_zh": "深切关注"
+            }
+          ],
+          "basic_zh": "调查显示，人们对环境感到担忧。",
+          "advanced_zh": "调查揭示，人们对环境深感忧虑。"
+        },
+        {
+          "type": "写作",
+          "basic": "The data shows a clear link between poverty and crime.",
+          "advanced": "The data manifests a strong correlation between poverty and crime.",
+          "highlights": [
+            {
+              "old": "shows",
+              "new": "manifests",
+              "old_zh": "显示",
+              "new_zh": "体现"
+            },
+            {
+              "old": "clear",
+              "new": "strong",
+              "old_zh": "清晰的",
+              "new_zh": "强烈的"
+            },
+            {
+              "old": "link",
+              "new": "correlation",
+              "old_zh": "联系",
+              "new_zh": "相关性"
+            }
+          ],
+          "basic_zh": "数据显示贫困与犯罪之间存在清晰的联系。",
+          "advanced_zh": "数据体现贫困与犯罪之间存在强烈的相关性。"
         }
       ]
     },
@@ -2733,28 +2867,73 @@ window.__TIPS__ = {
       "synonyms": [
         {
           "word": "emphasize",
-          "meaning": "强调",
-          "example": "The report emphasizes the need for urgent action."
+          "meaning": "强调"
         },
         {
           "word": "highlight",
-          "meaning": "突出，强调",
-          "example": "The study highlights the importance of early childhood education."
+          "meaning": "突出，强调"
         },
         {
           "word": "underscore",
-          "meaning": "强调，突出",
-          "example": "This incident underscores the importance of cybersecurity."
+          "meaning": "强调，突出"
         },
         {
           "word": "stress",
-          "meaning": "强调",
-          "example": "Health officials stress the importance of vaccination."
+          "meaning": "强调"
         },
         {
           "word": "accentuate",
-          "meaning": "强调，使突出",
-          "example": "The lighting accentuates the architectural details of the building."
+          "meaning": "强调，使突出"
+        }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "The teacher stressed that we need to practice more.",
+          "advanced": "The instructor underscored the necessity of consistent practice.",
+          "highlights": [
+            {
+              "old": "stressed",
+              "new": "underscored",
+              "old_zh": "强调",
+              "new_zh": "强调"
+            },
+            {
+              "old": "teacher",
+              "new": "instructor",
+              "old_zh": "老师",
+              "new_zh": "导师"
+            },
+            {
+              "old": "need to practice more",
+              "new": "necessity of consistent practice",
+              "old_zh": "需要多练习",
+              "new_zh": "持续练习的必要性"
+            }
+          ],
+          "basic_zh": "老师强调我们需要多练习。",
+          "advanced_zh": "导师强调了持续练习的必要性。"
+        },
+        {
+          "type": "写作",
+          "basic": "The report emphasizes the importance of education.",
+          "advanced": "The report accentuates the pivotal role of education.",
+          "highlights": [
+            {
+              "old": "emphasizes",
+              "new": "accentuates",
+              "old_zh": "强调",
+              "new_zh": "突出强调"
+            },
+            {
+              "old": "importance",
+              "new": "pivotal role",
+              "old_zh": "重要性",
+              "new_zh": "关键作用"
+            }
+          ],
+          "basic_zh": "该报告强调了教育的重要性。",
+          "advanced_zh": "该报告突出强调了教育的关键作用。"
         }
       ]
     }
