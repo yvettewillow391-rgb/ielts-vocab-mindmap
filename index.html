@@ -15,6 +15,24 @@
     html, body { scroll-behavior: smooth; }
     #rootList { scroll-behavior: smooth; }
     #detailInner { scroll-behavior: smooth; }
+    /* Collapsible sidebar */
+    #sidebar { transition: width 0.3s ease; }
+    #sidebar.collapsed { width: 48px !important; }
+    #sidebar .sidebar-content { transition: opacity 0.2s ease; }
+    #sidebar.collapsed .sidebar-content { opacity: 0; pointer-events: none; }
+    #sidebar.collapsed .sidebar-always-visible { opacity: 1; pointer-events: auto; }
+    #collapseBtn { transition: transform 0.3s ease; }
+    #sidebar.collapsed #collapseBtn { transform: rotate(180deg); }
+    /* Icon bar (shown when collapsed) */
+    #iconBar { display: none; }
+    #sidebar.collapsed #iconBar { display: flex; flex-direction: column; align-items: center; gap: 10px; padding-top: 8px; }
+    #sidebar.collapsed #sidebarInner { display: none; }
+    #sidebar.collapsed #iconBar { display: flex; }
+    #sidebar:not(.collapsed) #iconBar { display: none; }
+    /* Tips responsive grid */
+    @media (min-width: 600px) {
+      .tips-card-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
     .speaker-btn {
       transition: transform 0.15s ease, color 0.15s ease;
     }
@@ -121,15 +139,29 @@
       <input id="pwInput" type="password" placeholder="请输入密码" style="width:100%;padding:0.8rem 1rem;border:2px solid #e2e8f0;border-radius:0.75rem;font-size:1rem;text-align:center;outline:none;box-sizing:border-box" autofocus>
       <p id="pwError" style="color:#ef4444;font-size:0.75rem;margin-top:0.5rem;display:none">密码错误，请重试</p>
       <button id="pwSubmit" style="width:100%;margin-top:1rem;padding:0.8rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:0.75rem;font-size:0.95rem;font-weight:600;cursor:pointer;transition:opacity 0.2s">进入应用</button>
-      <p style="font-size:0.7rem;color:#cbd5e1;margin-top:1.25rem">提示：编辑密码 <b>01021130</b> · 查看密码 <b>123456</b></p>
+      <p style="font-size:0.7rem;color:#cbd5e1;margin-top:1.25rem">请输入密码以继续</p>
     </div>
   </div>
 
   <!-- ===== LEFT SIDEBAR ===== -->
-  <aside class="w-80 flex-shrink-0 bg-white shadow-lg z-20 flex flex-col">
-    <div class="px-5 py-4 border-b border-gray-200">
-      <h1 class="text-lg font-bold text-indigo-700 tracking-tight">IELTS 词根记忆脑图</h1>
-      <p class="text-xs text-gray-400 mt-0.5">Root Word Mind Map</p>
+  <aside id="sidebar" class="w-80 flex-shrink-0 bg-white shadow-lg z-20 flex flex-col" style="overflow:hidden">
+    <!-- Icon bar (shown only when collapsed) -->
+    <div id="iconBar">
+      <button id="expandFromIcon" title="展开侧栏" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:#f3f4f6;border-radius:8px;cursor:pointer;color:#6b7280;font-size:14px">▶</button>
+      <button id="iconSearch" title="搜索" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;border-radius:8px;cursor:pointer;color:#9ca3af;font-size:14px">🔍</button>
+      <button id="iconDict" title="默写" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;border-radius:8px;cursor:pointer;color:#9ca3af;font-size:14px">✏️</button>
+      <button id="iconTips" title="技巧" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;border-radius:8px;cursor:pointer;color:#9ca3af;font-size:14px">💡</button>
+      <button id="iconFav" title="收藏" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;border-radius:8px;cursor:pointer;color:#9ca3af;font-size:14px">⭐</button>
+    </div>
+
+    <!-- Main sidebar content -->
+    <div id="sidebarInner">
+    <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+      <div>
+        <h1 class="text-lg font-bold text-indigo-700 tracking-tight">IELTS 词根记忆脑图</h1>
+        <p class="text-xs text-gray-400 mt-0.5">Root Word Mind Map</p>
+      </div>
+      <button id="collapseBtn" title="收起侧栏" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:none;background:#f3f4f6;border-radius:6px;cursor:pointer;color:#9ca3af;font-size:12px;flex-shrink:0">◀</button>
     </div>
 
     <!-- Search -->
@@ -197,6 +229,7 @@
     <div class="px-2 pb-3">
       <button id="addRootBtn" class="w-full py-1.5 text-xs font-medium rounded-lg border border-dashed border-gray-300 text-gray-400 hover:border-indigo-400 hover:text-indigo-500 transition-colors">+ 新增词根</button>
     </div>
+    </div><!-- #sidebarInner -->
   </aside>
 
   <!-- ===== MAIN CONTENT ===== -->
@@ -401,7 +434,7 @@
 
   <!-- Tips panel overlay -->
   <div id="tipsOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 hidden flex items-center justify-center p-4">
-    <div id="tipsPanel" class="bg-white rounded-2xl shadow-2xl w-[820px] max-h-[88vh] flex flex-col overflow-hidden ring-1 ring-gray-900/5 transition-all duration-300">
+    <div id="tipsPanel" class="bg-white rounded-2xl shadow-2xl w-[95vw] max-w-[820px] max-h-[88vh] flex flex-col overflow-hidden ring-1 ring-gray-900/5 transition-all duration-300">
       <div class="sticky top-0 bg-white z-10 px-6 py-4 flex items-center justify-between border-b border-gray-100">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-lg">📖</div>
@@ -626,7 +659,17 @@
       }
       const u = new SpeechSynthesisUtterance(text);
       u.lang = accent;
-      u.rate = 0.85;
+      u.rate = 0.82;
+      u.pitch = 1.0;
+      // Select best available voice
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        // Prefer natural/online voices over default
+        const preferred = voices.find(v => v.lang.startsWith('en-US') && (v.name.includes('Natural') || v.name.includes('Online'))) ||
+                          voices.find(v => v.lang.startsWith('en-US') && v.name.includes('Microsoft')) ||
+                          voices.find(v => v.lang.startsWith('en-US'));
+        if (preferred) u.voice = preferred;
+      }
       u.onend = () => {
         isSpeaking = false;
         if (item.callback) item.callback();
@@ -1568,6 +1611,14 @@
         const u = new SpeechSynthesisUtterance(text);
         u.lang = accent;
         u.rate = speed;
+        u.pitch = 1.0;
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length > 0) {
+          const preferred = voices.find(v => v.lang.startsWith('en-US') && (v.name.includes('Natural') || v.name.includes('Online'))) ||
+                            voices.find(v => v.lang.startsWith('en-US') && v.name.includes('Microsoft')) ||
+                            voices.find(v => v.lang.startsWith('en-US'));
+          if (preferred) u.voice = preferred;
+        }
         u.onend = () => speakOne(remaining - 1);
         window.speechSynthesis.speak(u);
       }
@@ -2232,6 +2283,24 @@
     pasteOverlay.addEventListener('click', e => { if (e.target === pasteOverlay) pasteOverlay.classList.add('hidden'); });
     parseBtn.addEventListener('click', parsePastedText);
 
+    // Sidebar collapse/expand
+    $('collapseBtn').addEventListener('click', collapseSidebar);
+    $('expandFromIcon').addEventListener('click', expandSidebar);
+    // Icon bar buttons (when collapsed)
+    $('iconSearch').addEventListener('click', () => { expandSidebar(); searchInput.focus(); });
+    $('iconDict').addEventListener('click', () => { expandSidebar(); $('openDictBtn').click(); });
+    $('iconTips').addEventListener('click', () => { expandSidebar(); openTips(); });
+    $('iconFav').addEventListener('click', () => { expandSidebar(); toggleFavFilter(); });
+
+    function collapseSidebar() {
+      document.getElementById('sidebar').classList.add('collapsed');
+      setTimeout(() => { if (chart && !chart.isDisposed()) chart.resize(); }, 350);
+    }
+    function expandSidebar() {
+      document.getElementById('sidebar').classList.remove('collapsed');
+      setTimeout(() => { if (chart && !chart.isDisposed()) chart.resize(); }, 350);
+    }
+
     // Chart pan controls
     $('panLeft').addEventListener('click', () => doPanChart(5, 0));
     $('panRight').addEventListener('click', () => doPanChart(-5, 0));
@@ -2318,7 +2387,7 @@
         '<input id="pwInput" type="password" placeholder="请输入密码" style="width:100%;padding:0.8rem 1rem;border:2px solid #e2e8f0;border-radius:0.75rem;font-size:1rem;text-align:center;outline:none;box-sizing:border-box" autofocus>' +
         '<p id="pwError" style="color:#ef4444;font-size:0.75rem;margin-top:0.5rem;display:none">密码错误，请重试</p>' +
         '<button id="pwSubmit" style="width:100%;margin-top:1rem;padding:0.8rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:0.75rem;font-size:0.95rem;font-weight:600;cursor:pointer;transition:opacity 0.2s">进入应用</button>' +
-        '<p style="font-size:0.7rem;color:#cbd5e1;margin-top:1.25rem">提示：编辑密码 <b>01021130</b> · 查看密码 <b>123456</b></p>' +
+        '<p style="font-size:0.7rem;color:#cbd5e1;margin-top:1.25rem">请输入密码以继续</p>' +
         '</div></div>\n' +
         '<script>document.getElementById("pwSubmit").onclick=function(){var p=document.getElementById("pwInput").value;if(p==="01021130"){window._standaloneRole="edit";document.getElementById("pwGate").remove()}else if(p==="123456"){window._standaloneRole="view";document.getElementById("pwGate").remove()}else{document.getElementById("pwError").style.display="block"}};document.getElementById("pwInput").onkeydown=function(e){if(e.key==="Enter")document.getElementById("pwSubmit").click()};<\/script>';
 
@@ -2664,7 +2733,7 @@
       if (!window.__TIPS__) { alert('技巧数据未加载'); return; }
       const tips = window.__TIPS__;
 
-      let html = '<div class="grid grid-cols-2 gap-4">';
+      let html = '<div style="display:grid;grid-template-columns:1fr;gap:1rem" class="tips-card-grid">';
 
       tipsCards.forEach(card => {
         const content = tips[card.key];
@@ -2847,7 +2916,7 @@
         $('fullscreenTipsBtn').title = '退出全屏';
         tipsBody.style.maxHeight = '82vh';
       } else {
-        tipsPanel.style.width = '820px';
+        tipsPanel.style.width = '';
         tipsPanel.style.maxHeight = '88vh';
         tipsPanel.style.borderRadius = '1rem';
         $('fullscreenTipsBtn').innerHTML = '<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>';
