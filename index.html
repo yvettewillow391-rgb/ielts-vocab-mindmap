@@ -1908,7 +1908,8 @@
       // Dictionary lookup — prominent button with input
       html += '<div class="flex gap-1.5 mb-4"><input id="detailDictInput" type="text" value="' + escapeHTML(wordData.word) + '" class="flex-1 py-2 px-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" placeholder="输入单词查词典...">';
       html += '<button id="detailDictBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap">📖 查词</button>';
-      html += '<button id="detailSpeakBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors">🔊</button></div>';
+      html += '<button id="detailSpeakBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors">🔊</button>';
+      html += '<button id="detailSmartImportBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 hover:from-indigo-100 hover:to-purple-100 border border-indigo-200 transition-colors whitespace-nowrap" title="导入相关词">📋 导入</button></div>';
 
       // Etymology / root breakdown — show FIRST
       if (wordData.etymology) {
@@ -2042,6 +2043,13 @@
           speakBtnEl.addEventListener('click', function(e) {
             e.stopPropagation();
             window.speakWord(wordData.word);
+          });
+        }
+        var smartImportBtnEl = document.getElementById('detailSmartImportBtn');
+        if (smartImportBtnEl) {
+          smartImportBtnEl.addEventListener('click', function(e) {
+            e.stopPropagation();
+            openSmartImport();
           });
         }
       }, 50);
