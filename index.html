@@ -62,6 +62,12 @@
       /* Detail panel full-width on mobile */
       #detailPanel { position: fixed; right: 0; top: 0; bottom: 0; z-index: 40; }
       #detailInner { width: 100vw !important; }
+      #detailMobileOverlay { display: none; }
+      #detailMobileOverlay.show { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 39; }
+      /* Larger touch targets on mobile */
+      #closeDetailBtn { width: 40px !important; height: 40px !important; background: #fef2f2 !important; color: #ef4444 !important; border-radius: 12px !important; }
+      #closeDetailBtn svg { width: 22px !important; height: 22px !important; }
+      #detailPanel .sticky { padding-top: 8px !important; padding-bottom: 8px !important; }
     }
     .speaker-btn {
       transition: transform 0.15s ease, color 0.15s ease;
@@ -424,6 +430,9 @@
       <div id="detailBody" class="px-5 py-4 space-y-5"></div>
     </div>
   </aside>
+
+  <!-- Mobile detail overlay (tap to close) -->
+  <div id="detailMobileOverlay"></div>
 
   <!-- ===== DICTATION PANEL ===== -->
   <div id="dictationOverlay" class="fixed inset-0 bg-gray-900/60 z-30 hidden flex items-center justify-center">
@@ -1995,6 +2004,10 @@
       detailPanel.style.overflow = 'visible';
       detailPanel.style.overflowX = 'hidden';
       detailInner.style.padding = '0';
+      // Show mobile overlay for tap-to-close
+      if (window.innerWidth <= 767) {
+        document.getElementById('detailMobileOverlay').classList.add('show');
+      }
     }
 
     function startAutoRead(wordData) {
@@ -2015,6 +2028,8 @@
       detailPanel.style.overflow = 'hidden';
       detailInner.style.padding = '0';
       stopAllSpeech();
+      // Hide mobile overlay
+      document.getElementById('detailMobileOverlay').classList.remove('show');
       if (currentRootIndex >= 0) {
         renderMindMap(allData[currentRootIndex], -1);
       }
@@ -4176,6 +4191,7 @@
 
     // Close detail panel
     closeDetailBtn.addEventListener('click', hideDetailPanel);
+    document.getElementById('detailMobileOverlay').addEventListener('click', hideDetailPanel);
 
     // Edit toggle
     editToggleBtn.addEventListener('click', toggleEditMode);
@@ -5180,6 +5196,15 @@
        INIT
        ================================================================ */
     async function init() {
+      // Auto-configure Supabase if not yet set
+      if (!localStorage.getItem(SUPABASE_URL_KEY)) {
+        localStorage.setItem(SUPABASE_URL_KEY, 'https://ybskqieznsfitgcwlsox.supabase.co');
+      }
+      if (!localStorage.getItem(SUPABASE_KEY_KEY)) {
+        localStorage.setItem(SUPABASE_KEY_KEY, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhnd2FxcHdydGd1cHhoZ2dmZXZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODEwMDksImV4cCI6MjA5NTA1NzAwOX0.GF_SnHGWD3sBwNtmP-_Lw2I0lQj9Snyh3CzivPnnXNU');
+      }
+      initSupabase();
+
       await loadData();
       loadFavorites();
       loadImportHistory();
