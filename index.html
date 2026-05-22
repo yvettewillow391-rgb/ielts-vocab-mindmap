@@ -3119,7 +3119,7 @@
             if (posMatch) { posFromMeaning = posMatch[1]; meaningOnly = posMatch[2]; }
             var wObj = {
               word: entry.word,
-              phonetic: '',
+              phonetic: entry.phonetic || '',
               meaning: meaning,
               inflections: entry.inflections || [],
               synonyms: entry.synonyms || [],
@@ -3340,7 +3340,7 @@
             var meaning = (entry.pos ? entry.pos + ' ' : '') + (entry.meaning && entry.meaning !== p.meaning ? entry.meaning : p.meaning);
             wObj = {
               word: entry.word,
-              phonetic: '',
+              phonetic: entry.phonetic || '',
               meaning: meaning,
               inflections: entry.inflections || [],
               synonyms: entry.synonyms || [],
@@ -3655,7 +3655,7 @@
       if (pos) wordInfo = word + ' ' + pos;
       if (meaning) wordInfo = wordInfo + ' ' + meaning;
 
-      var prompt = 'You are an IELTS vocabulary expert. For the word "' + wordInfo + '", generate ALL of the following in valid JSON format. EVERY field is REQUIRED — do not skip any:\n\n{\n  "etymology": "词根拆解: Break down prefix+root+suffix in Chinese, explain how parts combine to form meaning. Example: sub(在...之下) + mit(送) → 从下面送上去 → 提交，服从",\n  "mnemonic": "一句话记忆: A vivid Chinese memory sentence using root parts, with 🔑 emoji, max 40 Chinese characters",\n  "inflections": [{"word": "derivative", "pos": "n.", "meaning": "Chinese meaning"}],\n  "synonyms": [{"word": "synonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "antonyms": [{"word": "antonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "phrases": [{"en": "English collocation", "zh": "Chinese translation"}],\n  "sentences": [{"en": "IELTS-level example sentence", "zh": "Chinese translation"}]\n}\n\nCRITICAL REQUIREMENTS:\n- etymology: MUST be provided. Analyze the actual word\'s prefix/root/suffix.\n- mnemonic: MUST be provided. Use creative imagery.\n- inflections: MUST provide 2-4 derivative forms (noun/adj/adv forms) with POS and Chinese meaning.\n- synonyms: MUST provide 3-5 IELTS-level synonyms with POS and Chinese meaning.\n- antonyms: MUST provide 2-3 antonyms with POS and Chinese meaning.\n- phrases: MUST provide 3-5 common IELTS collocations with Chinese translations.\n- sentences: MUST provide 1-2 IELTS-style sentences with Chinese translations.\n\nReturn ONLY the JSON object, no markdown, no code fences, no extra text.';
+      var prompt = 'You are an IELTS vocabulary expert. For the word "' + wordInfo + '", generate ALL of the following in valid JSON format. EVERY field is REQUIRED — do not skip any:\n\n{\n  "phonetic": "IPA pronunciation, e.g. /əbˈzɔːrb/",\n  "etymology": "词根拆解: Break down prefix+root+suffix in Chinese, explain how parts combine to form meaning. Example: sub(在...之下) + mit(送) → 从下面送上去 → 提交，服从",\n  "mnemonic": "一句话记忆: A vivid Chinese memory sentence using root parts, with 🔑 emoji, max 40 Chinese characters",\n  "inflections": [{"word": "derivative", "pos": "n.", "meaning": "Chinese meaning"}],\n  "synonyms": [{"word": "synonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "antonyms": [{"word": "antonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "phrases": [{"en": "English collocation", "zh": "Chinese translation"}],\n  "sentences": [{"en": "IELTS-level example sentence", "zh": "Chinese translation"}]\n}\n\nCRITICAL REQUIREMENTS:\n- phonetic: MUST be provided. Use standard IPA notation with slashes, e.g. /əˈvɜːrt/.\n- etymology: MUST be provided. Analyze the actual word\'s prefix/root/suffix.\n- mnemonic: MUST be provided. Use creative imagery.\n- inflections: MUST provide 2-4 derivative forms (noun/adj/adv forms) with POS and Chinese meaning.\n- synonyms: MUST provide 3-5 IELTS-level synonyms with POS and Chinese meaning.\n- antonyms: MUST provide 2-3 antonyms with POS and Chinese meaning.\n- phrases: MUST provide 3-5 common IELTS collocations with Chinese translations.\n- sentences: MUST provide 1-2 IELTS-style sentences with Chinese translations.\n\nReturn ONLY the JSON object, no markdown, no code fences, no extra text.';
 
       var text;
 
@@ -3725,6 +3725,7 @@
         word: word,
         meaning: meaning || '',
         pos: pos || '',
+        phonetic: enriched.phonetic || '',
         etymology: enriched.etymology || '',
         mnemonic: enriched.mnemonic || '',
         inflections: enriched.inflections || [],
@@ -3769,6 +3770,7 @@
           var entryHtml = '<div class="bg-white rounded-lg p-2 border border-green-200 text-[10px]">';
           entryHtml += '<div class="flex items-center gap-2 mb-1">';
           entryHtml += '<span class="font-bold text-green-700">✅ ' + escapeHTML(entry.word) + '</span>';
+          if (entry.phonetic) entryHtml += '<span class="text-gray-400 text-[9px]">/' + escapeHTML(entry.phonetic) + '/</span>';
           entryHtml += '<span class="text-gray-500">' + escapeHTML(entry.meaning) + '</span>';
           if (rootIdx !== null) {
             entryHtml += '<span class="text-indigo-500 text-[9px]">→ ' + escapeHTML(allData[rootIdx].root) + '</span>';
