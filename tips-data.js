@@ -1769,6 +1769,27 @@ window.__TIPS__ = {
           "meaning": "不可或缺的",
           "example": "The Internet has become an indispensable part of daily life."
         }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "I think this is very important for our health.",
+          "advanced": "I believe this is absolutely essential for our well-being.",
+          "highlights": [
+            {"old": "think", "new": "believe"},
+            {"old": "very important", "new": "absolutely essential"},
+            {"old": "health", "new": "well-being"}
+          ]
+        },
+        {
+          "type": "写作",
+          "basic": "Education is very important for a country's development.",
+          "advanced": "Education is fundamentally crucial to a nation's socioeconomic development.",
+          "highlights": [
+            {"old": "very important", "new": "fundamentally crucial"},
+            {"old": "a country's development", "new": "a nation's socioeconomic development"}
+          ]
+        }
       ]
     },
     {
@@ -1804,6 +1825,27 @@ window.__TIPS__ = {
           "meaning": "持...观点",
           "example": "I hold the view that education should be free."
         }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "I think that technology is making our lives better.",
+          "advanced": "I strongly believe that technology has significantly enhanced our quality of life.",
+          "highlights": [
+            {"old": "think", "new": "strongly believe"},
+            {"old": "making our lives better", "new": "significantly enhanced our quality of life"}
+          ]
+        },
+        {
+          "type": "写作",
+          "basic": "Many people think social media is harmful to young people.",
+          "advanced": "A growing number of scholars contend that social media exerts a detrimental influence on adolescents.",
+          "highlights": [
+            {"old": "Many people think", "new": "A growing number of scholars contend"},
+            {"old": "is harmful to", "new": "exerts a detrimental influence on"},
+            {"old": "young people", "new": "adolescents"}
+          ]
+        }
       ]
     },
     {
@@ -1833,6 +1875,29 @@ window.__TIPS__ = {
           "word": "contribute to",
           "meaning": "促成",
           "example": "Lack of exercise contributes to obesity."
+        }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "Too much screen time can cause eye problems.",
+          "advanced": "Excessive screen exposure may lead to significant vision deterioration.",
+          "highlights": [
+            {"old": "Too much", "new": "Excessive"},
+            {"old": "can cause", "new": "may lead to"},
+            {"old": "eye problems", "new": "significant vision deterioration"}
+          ]
+        },
+        {
+          "type": "写作",
+          "basic": "Pollution causes many health problems in cities.",
+          "advanced": "Environmental pollution gives rise to a wide range of adverse health issues in urban areas.",
+          "highlights": [
+            {"old": "Pollution", "new": "Environmental pollution"},
+            {"old": "causes", "new": "gives rise to"},
+            {"old": "many health problems", "new": "a wide range of adverse health issues"},
+            {"old": "in cities", "new": "in urban areas"}
+          ]
         }
       ]
     },
@@ -1864,6 +1929,28 @@ window.__TIPS__ = {
           "meaning": "处理",
           "example": "The article deals with environmental issues."
         }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "We need to fix this problem as soon as possible.",
+          "advanced": "It is imperative that we address this issue at the earliest opportunity.",
+          "highlights": [
+            {"old": "need to fix", "new": "It is imperative that we address"},
+            {"old": "this problem", "new": "this issue"},
+            {"old": "as soon as possible", "new": "at the earliest opportunity"}
+          ]
+        },
+        {
+          "type": "写作",
+          "basic": "The government should solve the housing problem quickly.",
+          "advanced": "The government must take immediate measures to tackle the housing crisis.",
+          "highlights": [
+            {"old": "should solve", "new": "must take immediate measures to tackle"},
+            {"old": "quickly", "new": "immediate"},
+            {"old": "the housing problem", "new": "the housing crisis"}
+          ]
+        }
       ]
     },
     {
@@ -1893,6 +1980,29 @@ window.__TIPS__ = {
           "word": "considerable",
           "meaning": "相当多的",
           "example": "There is considerable evidence for climate change."
+        }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "There are many reasons why people choose to study abroad.",
+          "advanced": "There are numerous compelling reasons why individuals opt to pursue education overseas.",
+          "highlights": [
+            {"old": "many", "new": "numerous compelling"},
+            {"old": "reasons", "new": "reasons"},
+            {"old": "people", "new": "individuals"},
+            {"old": "choose", "new": "opt to"},
+            {"old": "study abroad", "new": "pursue education overseas"}
+          ]
+        },
+        {
+          "type": "写作",
+          "basic": "There are many factors that affect economic growth.",
+          "advanced": "A multitude of interconnected factors exert a considerable influence on economic growth.",
+          "highlights": [
+            {"old": "There are many factors", "new": "A multitude of interconnected factors"},
+            {"old": "affect", "new": "exert a considerable influence on"}
+          ]
         }
       ]
     },
@@ -1924,6 +2034,27 @@ window.__TIPS__ = {
           "meaning": "可取的",
           "example": "A desirable solution benefits all parties."
         }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "Exercise is good for both your body and mind.",
+          "advanced": "Regular physical activity is highly beneficial for both physical and mental well-being.",
+          "highlights": [
+            {"old": "Exercise", "new": "Regular physical activity"},
+            {"old": "is good for", "new": "is highly beneficial for"},
+            {"old": "your body and mind", "new": "physical and mental well-being"}
+          ]
+        },
+        {
+          "type": "写作",
+          "basic": "This change is good for the economy.",
+          "advanced": "This reform has produced favorable outcomes for the national economy.",
+          "highlights": [
+            {"old": "This change is good for", "new": "This reform has produced favorable outcomes for"},
+            {"old": "the economy", "new": "the national economy"}
+          ]
+        }
       ]
     },
     {
@@ -1953,6 +2084,26 @@ window.__TIPS__ = {
           "word": "undesirable",
           "meaning": "不合意的",
           "example": "Pollution has undesirable consequences."
+        }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "Eating too much junk food is really bad for you.",
+          "advanced": "Excessive consumption of processed foods is highly detrimental to one's overall health.",
+          "highlights": [
+            {"old": "Eating too much junk food", "new": "Excessive consumption of processed foods"},
+            {"old": "is really bad for you", "new": "is highly detrimental to one's overall health"}
+          ]
+        },
+        {
+          "type": "写作",
+          "basic": "These policies had bad effects on small businesses.",
+          "advanced": "These policies exerted adverse consequences on small and medium-sized enterprises.",
+          "highlights": [
+            {"old": "had bad effects on", "new": "exerted adverse consequences on"},
+            {"old": "small businesses", "new": "small and medium-sized enterprises"}
+          ]
         }
       ]
     },
@@ -1984,6 +2135,28 @@ window.__TIPS__ = {
           "meaning": "激增",
           "example": "Fast food outlets have proliferated in cities."
         }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "House prices have gone up a lot in recent years.",
+          "advanced": "Property values have soared dramatically over the past several years.",
+          "highlights": [
+            {"old": "House prices", "new": "Property values"},
+            {"old": "have gone up a lot", "new": "have soared dramatically"},
+            {"old": "in recent years", "new": "over the past several years"}
+          ]
+        },
+        {
+          "type": "写作",
+          "basic": "Internet use has increased very fast in developing countries.",
+          "advanced": "Internet penetration has surged exponentially across developing nations.",
+          "highlights": [
+            {"old": "Internet use", "new": "Internet penetration"},
+            {"old": "has increased very fast", "new": "has surged exponentially"},
+            {"old": "in developing countries", "new": "across developing nations"}
+          ]
+        }
       ]
     },
     {
@@ -2014,6 +2187,27 @@ window.__TIPS__ = {
           "meaning": "缩小",
           "example": "The economy is expected to shrink this year."
         }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "The number of people watching TV has gone down a lot.",
+          "advanced": "Television viewership has plummeted substantially over the past decade.",
+          "highlights": [
+            {"old": "The number of people watching TV", "new": "Television viewership"},
+            {"old": "has gone down a lot", "new": "has plummeted substantially"}
+          ]
+        },
+        {
+          "type": "写作",
+          "basic": "The forest area is becoming smaller every year.",
+          "advanced": "The total forest coverage is dwindling at an alarming annual rate.",
+          "highlights": [
+            {"old": "The forest area", "new": "The total forest coverage"},
+            {"old": "is becoming smaller", "new": "is dwindling"},
+            {"old": "every year", "new": "at an alarming annual rate"}
+          ]
+        }
       ]
     },
     {
@@ -2043,6 +2237,29 @@ window.__TIPS__ = {
           "word": "suggest",
           "meaning": "暗示",
           "example": "The results suggest that the method is effective."
+        }
+      ],
+      "sentence_upgrades": [
+        {
+          "type": "口语",
+          "basic": "The graph shows that sales went up last year.",
+          "advanced": "The data clearly demonstrates that sales figures experienced a marked increase during the previous year.",
+          "highlights": [
+            {"old": "The graph shows", "new": "The data clearly demonstrates"},
+            {"old": "sales went up", "new": "sales figures experienced a marked increase"},
+            {"old": "last year", "new": "during the previous year"}
+          ]
+        },
+        {
+          "type": "写作",
+          "basic": "This research shows that exercise helps mental health.",
+          "advanced": "This study reveals that regular physical activity significantly enhances psychological well-being.",
+          "highlights": [
+            {"old": "This research shows", "new": "This study reveals"},
+            {"old": "exercise", "new": "regular physical activity"},
+            {"old": "helps", "new": "significantly enhances"},
+            {"old": "mental health", "new": "psychological well-being"}
+          ]
         }
       ]
     },

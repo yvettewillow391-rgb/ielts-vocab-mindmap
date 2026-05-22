@@ -540,7 +540,7 @@
   </div>
 
   <!-- Favorites Overlay -->
-  <div id="favOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-35 hidden flex items-center justify-center p-4">
+  <div id="favOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div id="favPanel" class="bg-white rounded-2xl shadow-2xl w-[95vw] max-w-[820px] max-h-[88vh] flex flex-col overflow-hidden ring-1 ring-gray-900/5">
       <div class="flex-shrink-0 px-6 py-4 flex items-center justify-between border-b border-gray-100">
         <div class="flex items-center gap-3">
@@ -1116,8 +1116,11 @@
       }
       const u = new SpeechSynthesisUtterance(text);
       u.lang = accent;
-      u.rate = 0.82;
-      u.pitch = 1.0;
+      // Use more natural parameters for sentences vs single words
+      var isSentence = text.length > 25 && text.includes(' ');
+      u.rate = isSentence ? 0.90 : 0.85;
+      u.pitch = isSentence ? 1.02 : 1.0;
+      u.volume = 0.95;
       var bestVoice = getBestVoice();
       if (bestVoice) u.voice = bestVoice;
       u.onend = () => {
@@ -2607,6 +2610,7 @@
         }]
       };
       allData.push(rootObj);
+      autoEnrichWord(rootObj.words[0], allData.length - 1);
       saveDataToStorage();
       renderRootList(searchInput.value.trim());
       selectRoot(allData.length - 1);
@@ -2631,6 +2635,7 @@
         etymology: '',
         mnemonic: ''
       };
+      autoEnrichWord(newWord, rootIndex);
       root.words.push(newWord);
       saveDataToStorage();
       renderRootList(searchInput.value.trim());
@@ -2654,12 +2659,78 @@
         etymology: '',
         mnemonic: ''
       };
+      autoEnrichWord(newWord, currentRootIndex);
       root.words.push(newWord);
       saveDataToStorage();
       renderRootList(searchInput.value.trim());
       selectWord(root.words.length - 1, newWord);
       if (!editMode) toggleEditMode();
     };
+
+    // Auto-generate etymology and mnemonic for new words
+    function autoEnrichWord(wordObj, rootIndex) {
+      if (rootIndex < 0 || rootIndex >= allData.length) return;
+      var root = allData[rootIndex];
+      var rootName = (root.root || '').toLowerCase();
+      var rootMeaning = root.root_meaning || '';
+      var rootBase = (root.root || '').split('/')[0].trim();
+
+      // Common prefixes with Chinese meanings
+      var prefixMap = {
+        'sub': '在...之下', 'trans': '跨越', 'pre': '在...之前', 're': '再次/往回',
+        'in': '向内', 'im': '向内', 'ex': '向外', 'e': '向外', 'con': '共同',
+        'com': '共同', 'de': '向下/去除', 'dis': '分开/否定', 'pro': '向前',
+        'per': '贯穿', 'ob': '反对', 'ad': '朝向', 'ab': '离开', 'di': '分开',
+        'se': '分离', 'inter': '在...之间', 'super': '在...之上', 'circum': '环绕',
+        'contra': '反对', 'mis': '错误', 'un': '否定', 'over': '过度',
+        'under': '在...之下', 'out': '超出', 'up': '向上'
+      };
+
+      var wordLower = wordObj.word.toLowerCase();
+      var detectedPrefix = '', prefixMeaning = '';
+      Object.keys(prefixMap).forEach(function(pref) {
+        if (wordLower.indexOf(pref) === 0 && wordLower.length > pref.length + 2) {
+          if (pref.length > detectedPrefix.length) {
+            detectedPrefix = pref;
+            prefixMeaning = prefixMap[pref];
+          }
+        }
+      });
+
+      // Also check root variants as substrings in the word
+      var rootVariants = (root.root || '').toLowerCase().split('/');
+      var matchedRootVariant = '';
+      rootVariants.forEach(function(v) {
+        v = v.trim();
+        if (v && wordLower.indexOf(v) >= 0 && v.length > matchedRootVariant.length) {
+          matchedRootVariant = v;
+        }
+      });
+
+      // Build etymology (only if empty)
+      if (!wordObj.etymology || wordObj.etymology === '') {
+        var parts = [];
+        if (detectedPrefix) parts.push(detectedPrefix + '(' + prefixMeaning + ')');
+        if (matchedRootVariant) {
+          var rmShort = rootMeaning.replace(/\s*\(.*$/, '').trim();
+          parts.push(matchedRootVariant + '(' + rmShort + ')');
+        } else if (rootBase) {
+          parts.push(rootBase + '(词根)');
+        }
+        wordObj.etymology = parts.length > 1
+          ? parts.join(' + ') + ' → ' + wordObj.meaning
+          : '词根: ' + root.root + ' — ' + rootMeaning;
+      }
+
+      // Build mnemonic (only if empty)
+      if (!wordObj.mnemonic || wordObj.mnemonic === '') {
+        if (detectedPrefix && matchedRootVariant) {
+          wordObj.mnemonic = '“' + detectedPrefix + '(' + prefixMeaning + ') + ' + matchedRootVariant + '(词根) → ' + wordObj.meaning + '”';
+        } else {
+          wordObj.mnemonic = '联想记忆：来自词根 ' + root.root + '，含义为 ' + rootMeaning;
+        }
+      }
+    }
 
     // Global favorites helpers for inline onclick
     window._favs = favorites;
@@ -2772,14 +2843,16 @@
           processed++;
           var exists = root.words.some(function(w) { return w.word.toLowerCase() === p.word.toLowerCase(); });
           if (!exists) {
-            root.words.push({
+            var wObj = {
               word: p.word,
               phonetic: '',
               meaning: (p.pos ? p.pos + ' ' : '') + p.meaning,
               inflections: [], synonyms: [], antonyms: [],
               ielts_phrases: [], ielts_sentences: [],
               etymology: '', mnemonic: ''
-            });
+            };
+            autoEnrichWord(wObj, parseInt(idx));
+            root.words.push(wObj);
             batchWords.push(p.word);
             totalAdded++;
           } else {
@@ -2957,14 +3030,16 @@
       parsed.forEach(function(p, i) {
         var exists = root.words.some(function(w) { return w.word.toLowerCase() === p.word.toLowerCase(); });
         if (!exists) {
-          root.words.push({
+          var wObj = {
             word: p.word,
             phonetic: '',
             meaning: (p.pos ? p.pos + ' ' : '') + p.meaning,
             inflections: [], synonyms: [], antonyms: [],
             ielts_phrases: [], ielts_sentences: [],
             etymology: '', mnemonic: ''
-          });
+          };
+          autoEnrichWord(wObj, rootIdx);
+          root.words.push(wObj);
           addedWords.push(p.word);
           added++;
         } else {
@@ -3908,6 +3983,25 @@
           showSingleTip(key, window.__TIPS__[key], color, cardDef);
         });
       });
+
+      // Synonym upgrade card click → expand/collapse
+      tipsBody.querySelectorAll('.syn-upgrade-card').forEach(function(card) {
+        card.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var detail = this.querySelector('.syn-detail');
+          var preview = this.querySelector('.syn-preview');
+          var icon = this.querySelector('.syn-expand-icon');
+          if (detail.classList.contains('hidden')) {
+            detail.classList.remove('hidden');
+            preview.classList.add('hidden');
+            icon.textContent = '▼';
+          } else {
+            detail.classList.add('hidden');
+            preview.classList.remove('hidden');
+            icon.textContent = '▶';
+          }
+        });
+      });
     }
 
     function showSingleTip(key, content, color, cardDef) {
@@ -3931,6 +4025,24 @@
 
       tipsBody.innerHTML = html;
       document.getElementById('tipsBackBtn').addEventListener('click', (e) => { e.stopPropagation(); openTips(); });
+      // Synonym upgrade cards in detail view
+      tipsBody.querySelectorAll('.syn-upgrade-card').forEach(function(card) {
+        card.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var detail = this.querySelector('.syn-detail');
+          var preview = this.querySelector('.syn-preview');
+          var icon = this.querySelector('.syn-expand-icon');
+          if (detail.classList.contains('hidden')) {
+            detail.classList.remove('hidden');
+            preview.classList.add('hidden');
+            icon.textContent = '▼';
+          } else {
+            detail.classList.add('hidden');
+            preview.classList.remove('hidden');
+            icon.textContent = '▶';
+          }
+        });
+      });
     }
 
     function renderTipsCard(key, content, color) {
@@ -4023,13 +4135,46 @@
           break;
 
         case 'synonym_groups':
-          content.forEach(group => {
+          content.forEach(function(group, gi) {
             html += '<div class="mb-2.5 last:mb-0"><span class="font-semibold text-sm" style="color:' + color + '">' + escapeHTML(group.topic || group.category || '') + '</span>';
             html += '<div class="flex flex-wrap gap-1.5 mt-1">';
-            (group.synonyms || group.words || []).forEach(s => {
+            (group.synonyms || group.words || []).forEach(function(s) {
               html += '<span class="text-xs bg-green-50 text-green-800 rounded-md px-2 py-0.5"><span class="font-medium">' + escapeHTML(s.word || s) + '</span><span class="text-green-600 ml-1">' + escapeHTML(s.meaning || '') + '</span></span>';
             });
-            html += '</div></div>';
+            html += '</div>';
+            // Sentence upgrades (click to expand)
+            if (group.sentence_upgrades && group.sentence_upgrades.length > 0) {
+              html += '<div class="mt-2 space-y-1.5 sentence-upgrades-container" data-group-idx="' + gi + '">';
+              group.sentence_upgrades.forEach(function(up, ui) {
+                var typeIcon = up.type === '口语' ? '🗣' : '✏️';
+                var typeColor = up.type === '口语' ? '#6366f1' : '#f59e0b';
+                // Build highlighted sentences
+                var basicHtml = escapeHTML(up.basic);
+                var advHtml = escapeHTML(up.advanced);
+                if (up.highlights && up.highlights.length > 0) {
+                  up.highlights.forEach(function(h) {
+                    basicHtml = basicHtml.replace(escapeHTML(h.old), '<mark class="highlight-old" style="background:#fecaca;color:#991b1b;border-radius:2px;padding:0 1px">' + escapeHTML(h.old) + '</mark>');
+                    advHtml = advHtml.replace(escapeHTML(h.new), '<mark class="highlight-new" style="background:#bbf7d0;color:#166534;border-radius:2px;padding:0 1px">' + escapeHTML(h.new) + '</mark>');
+                  });
+                }
+                html += '<div class="syn-upgrade-card bg-white border border-gray-200 rounded-lg p-2 cursor-pointer hover:border-green-300 hover:shadow-sm transition-all text-xs" data-group-idx="' + gi + '" data-upgrade-idx="' + ui + '" style="border-left:3px solid ' + typeColor + '">';
+                html += '<div class="flex items-center gap-1.5 mb-1.5"><span class="text-xs">' + typeIcon + '</span><span class="font-medium text-gray-600">' + escapeHTML(up.type) + '升级</span><span class="text-gray-300 ml-auto syn-expand-icon">▶</span></div>';
+                // Collapsed preview — just show basic sentence
+                html += '<div class="syn-preview text-gray-500 leading-relaxed line-clamp-1">' + basicHtml + '</div>';
+                // Expanded detail (hidden by default)
+                html += '<div class="syn-detail hidden mt-2 space-y-1.5">';
+                html += '<div class="flex items-start gap-1.5"><span class="text-[10px] text-red-400 font-medium flex-shrink-0 mt-0.5">初级</span><span class="text-gray-700 leading-relaxed">' + basicHtml + '</span></div>';
+                html += '<div class="text-center text-gray-300 text-[10px]">⬇ 替换升级</div>';
+                html += '<div class="flex items-start gap-1.5"><span class="text-[10px] text-green-500 font-medium flex-shrink-0 mt-0.5">高级</span><span class="text-gray-800 leading-relaxed font-medium">' + advHtml + '</span></div>';
+                html += '<div class="flex flex-wrap gap-1 mt-1.5 pt-1.5 border-t border-gray-100">';
+                (up.highlights || []).forEach(function(h) {
+                  html += '<span class="text-[10px] inline-flex items-center gap-1"><span class="bg-red-100 text-red-700 rounded px-1">' + escapeHTML(h.old) + '</span><span class="text-gray-300">→</span><span class="bg-green-100 text-green-700 rounded px-1">' + escapeHTML(h.new) + '</span></span>';
+                });
+                html += '</div></div></div>';
+              });
+              html += '</div>';
+            }
+            html += '</div>';
           });
           break;
 
