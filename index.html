@@ -3486,6 +3486,8 @@
             renderRootList('');
             // Show detail for the word
             if (foundWord) {
+              currentRootIndex = rootIdx;
+              currentWordIndex = root.words.indexOf(foundWord);
               showDetailPanel(foundWord);
             } else {
               // Fallback: search for the word
