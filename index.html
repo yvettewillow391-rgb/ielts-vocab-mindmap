@@ -606,10 +606,20 @@
           </div>
           <button id="saveCloudConfigBtn" class="w-full py-2 rounded-lg text-xs font-medium bg-sky-500 text-white hover:bg-sky-600 transition-colors">保存配置</button>
           <div class="border-t border-gray-100 pt-3 mt-3">
-            <label class="text-[10px] text-gray-400 font-medium">Anthropic API Key（AI 智能生成单词模板）</label>
-            <input id="anthropicKeyInput" type="password" placeholder="sk-ant-..." class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-purple-400">
-            <button id="saveAnthropicKeyBtn" class="w-full mt-2 py-2 rounded-lg text-xs font-medium bg-purple-500 text-white hover:bg-purple-600 transition-colors">保存 AI Key</button>
-            <p id="anthropicKeyStatus" class="text-[10px] text-green-500 mt-1 hidden">✅ API Key 已配置</p>
+            <label class="text-[10px] text-gray-400 font-medium">🤖 AI 智能生成单词模板</label>
+            <div class="mt-2 space-y-2">
+              <div>
+                <label class="text-[10px] text-green-600 font-medium">Gemini API Key（免费，推荐）</label>
+                <input id="geminiKeyInput" type="password" placeholder="AIza..." class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-green-400">
+                <p class="text-[9px] text-gray-400 mt-0.5">从 <a href="https://aistudio.google.com/apikey" target="_blank" class="text-blue-500 underline">aistudio.google.com/apikey</a> 免费获取</p>
+              </div>
+              <div>
+                <label class="text-[10px] text-purple-600 font-medium">Anthropic API Key（付费，效果更好）</label>
+                <input id="anthropicKeyInput" type="password" placeholder="sk-ant-..." class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-purple-400">
+              </div>
+              <button id="saveAIKeysBtn" class="w-full py-2 rounded-lg text-xs font-medium bg-gradient-to-r from-green-500 to-purple-500 text-white hover:from-green-600 hover:to-purple-600 transition-colors">保存 AI Keys</button>
+              <p id="aiKeyStatus" class="text-[10px] text-green-500 mt-1 hidden">✅ 已配置（优先使用 Gemini 免费）</p>
+            </div>
           </div>
         </div>
         <!-- Auth section (shown when configured) -->
@@ -907,6 +917,7 @@
     const SUPABASE_URL_KEY = 'ielts_supabase_url';
     const SUPABASE_KEY_KEY = 'ielts_supabase_key';
     const ANTHROPIC_KEY_KEY = 'ielts_anthropic_key';
+    const GEMINI_KEY_KEY = 'ielts_gemini_key';
     function loadErrorNotebook() {
       try {
         const raw = localStorage.getItem(ERROR_NB_KEY);
@@ -3360,44 +3371,78 @@
       return entry;
     }
 
-    // AI-powered word enrichment — generates full word template from simple input
+    // AI-powered word enrichment — supports Gemini (free) and Anthropic
     async function enrichWordWithAI(word, meaning, pos) {
-      var apiKey = localStorage.getItem(ANTHROPIC_KEY_KEY);
-      if (!apiKey) throw new Error('请先在云同步面板配置 Anthropic API Key');
+      var geminiKey = localStorage.getItem(GEMINI_KEY_KEY);
+      var anthropicKey = localStorage.getItem(ANTHROPIC_KEY_KEY);
+
+      if (!geminiKey && !anthropicKey) throw new Error('请先在云同步面板配置 AI API Key（Gemini 免费 或 Anthropic）');
 
       var wordInfo = word;
       if (pos) wordInfo = word + ' ' + pos;
       if (meaning) wordInfo = wordInfo + ' ' + meaning;
 
-      var prompt = 'You are an IELTS vocabulary expert. For the word below, generate a complete entry in the following format. Be accurate and educational.\n\nWord: ' + wordInfo + '\n\nReturn ONLY valid JSON with this exact structure:\n{\n  "etymology": "词根拆解 in Chinese, e.g. a（离开）+ vert（转）→ 转开 → 避开",\n  "mnemonic": "一句话记忆 in Chinese with emoji, vivid sentence using root parts to remember meaning",\n  "inflections": [\n    {"word": "inflected form", "pos": "n.", "meaning": "Chinese meaning"}\n  ],\n  "synonyms": [\n    {"word": "synonym", "pos": "v.", "meaning": "Chinese meaning"}\n  ],\n  "antonyms": [\n    {"word": "antonym", "pos": "v.", "meaning": "Chinese meaning"}\n  ],\n  "phrases": [\n    {"en": "English phrase", "zh": "Chinese translation"}\n  ],\n  "sentences": [\n    {"en": "IELTS-level example sentence", "zh": "Chinese translation"}\n  ]\n}\n\nRequirements:\n- etymology: Break down into prefix + root + suffix, explain in Chinese how parts combine\n- mnemonic: Create a memorable Chinese sentence, embed the root word breakdown creatively, max 40 Chinese chars\n- inflections: 2-4 common derivative forms (noun/adj/adv) with POS and meaning\n- synonyms: 3-5 IELTS-level synonyms with POS and Chinese meaning\n- antonyms: 2-3 common antonyms with POS and Chinese meaning\n- phrases: 3-5 common IELTS collocations/phrases with Chinese translations\n- sentences: 1-2 authentic IELTS-style example sentences with Chinese translations\n\nReturn ONLY the JSON, no markdown, no other text.';
+      var prompt = 'You are an IELTS vocabulary expert. For this word: ' + wordInfo + '\n\nGenerate a complete entry. Return ONLY valid JSON (no markdown, no code fences):\n{\n  "etymology": "词根拆解 in Chinese e.g. a（离开）+ vert（转）→ 转开 → 避开",\n  "mnemonic": "一句话记忆 in Chinese with emoji, vivid sentence using root parts, max 40 Chinese chars",\n  "inflections": [{"word": "form", "pos": "n.", "meaning": "Chinese meaning"}],\n  "synonyms": [{"word": "syn", "pos": "v.", "meaning": "Chinese"}],\n  "antonyms": [{"word": "ant", "pos": "v.", "meaning": "Chinese"}],\n  "phrases": [{"en": "English phrase", "zh": "Chinese translation"}],\n  "sentences": [{"en": "IELTS example sentence", "zh": "Chinese translation"}]\n}\nRequirements: etymology breaks down prefix+root+suffix, 2-4 inflections, 3-5 synonyms, 2-3 antonyms, 3-5 phrases, 1-2 sentences.';
 
-      var resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 4096,
-          temperature: 0.3,
-          system: 'You are an IELTS vocabulary expert. Output ONLY valid JSON, no markdown, no code fences.',
-          messages: [{ role: 'user', content: prompt }]
-        })
-      });
+      var text;
 
-      if (!resp.ok) {
-        var errText = await resp.text();
-        try { var errJson = JSON.parse(errText); throw new Error(errJson.error ? errJson.error.message : errText); }
-        catch (e2) { if (e2.message && !e2.message.startsWith('{')) throw e2; throw new Error('API error ' + resp.status + ': ' + errText.substring(0, 200)); }
+      // Try Gemini first (free tier)
+      if (geminiKey) {
+        try {
+          var geminiResp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + geminiKey, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.3, maxOutputTokens: 4096 }
+            })
+          });
+
+          if (geminiResp.ok) {
+            var gData = await geminiResp.json();
+            text = gData.candidates[0].content.parts[0].text;
+          } else if (!anthropicKey) {
+            var gErr = await geminiResp.text();
+            throw new Error('Gemini: ' + gErr.substring(0, 150));
+          }
+          // If Gemini fails and Anthropic is available, fall through to Anthropic
+        } catch (e) {
+          if (!anthropicKey) throw e;
+          // Fall through to Anthropic
+        }
       }
 
-      var data = await resp.json();
-      var text = data.content.filter(function(c) { return c.type === 'text'; }).map(function(c) { return c.text; }).join('');
-      var jsonStr = text.trim();
+      // Try Anthropic if Gemini not configured or failed
+      if (!text && anthropicKey) {
+        var resp = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': anthropicKey,
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 4096,
+            temperature: 0.3,
+            system: 'You are an IELTS vocabulary expert. Output ONLY valid JSON.',
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
 
-      // Strip code fences if present
+        if (!resp.ok) {
+          var errText = await resp.text();
+          try { var errJson = JSON.parse(errText); throw new Error(errJson.error ? errJson.error.message : errText); }
+          catch (e2) { if (e2.message && !e2.message.startsWith('{')) throw e2; throw new Error('API error ' + resp.status + ': ' + errText.substring(0, 200)); }
+        }
+
+        var data = await resp.json();
+        text = data.content.filter(function(c) { return c.type === 'text'; }).map(function(c) { return c.text; }).join('');
+      }
+
+      if (!text) throw new Error('AI 生成失败，请检查 API Key');
+
+      var jsonStr = text.trim();
       var fm = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
       if (fm) jsonStr = fm[1].trim();
 
@@ -3677,7 +3722,7 @@
           html += '<div class="bg-amber-50 rounded-lg p-2 border border-amber-200" id="unknownWordsSection">';
           html += '<div class="flex items-center justify-between mb-1">';
           html += '<span class="text-[10px] font-semibold text-amber-600">⚠ 未识别词根 (' + unknownWords.length + '个) — 将跳过，可手动选择词根后导入</span>';
-          var hasAIKey = !!localStorage.getItem(ANTHROPIC_KEY_KEY);
+          var hasAIKey = !!(localStorage.getItem(GEMINI_KEY_KEY) || localStorage.getItem(ANTHROPIC_KEY_KEY));
           if (hasAIKey) {
             html += '<button id="aiEnrichAllBtn" class="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-purple-500 text-white hover:bg-purple-600 transition-colors">🤖 AI 生成全部</button>';
           }
@@ -4101,7 +4146,10 @@
       if (key) supabaseKeyInput.value = key;
 
       var ak = localStorage.getItem(ANTHROPIC_KEY_KEY);
-      if (ak) { $('anthropicKeyInput').value = ak; $('anthropicKeyStatus').classList.remove('hidden'); }
+      if (ak) $('anthropicKeyInput').value = ak;
+      var gk = localStorage.getItem(GEMINI_KEY_KEY);
+      if (gk) { $('geminiKeyInput').value = gk; $('aiKeyStatus').classList.remove('hidden'); }
+      if (ak || gk) $('aiKeyStatus').classList.remove('hidden');
 
       initSupabase();
 
@@ -4330,12 +4378,14 @@
       cloudOverlay.addEventListener('click', function(e) { if (e.target === cloudOverlay) closeCloudPanel(); });
 
       $('saveCloudConfigBtn').addEventListener('click', saveCloudConfig);
-      $('saveAnthropicKeyBtn').addEventListener('click', function() {
-        var key = $('anthropicKeyInput').value.trim();
-        if (key) {
-          localStorage.setItem(ANTHROPIC_KEY_KEY, key);
-          $('anthropicKeyStatus').classList.remove('hidden');
-          setTimeout(function() { $('anthropicKeyStatus').classList.add('hidden'); }, 2000);
+      $('saveAIKeysBtn').addEventListener('click', function() {
+        var gKey = $('geminiKeyInput').value.trim();
+        var aKey = $('anthropicKeyInput').value.trim();
+        if (gKey) localStorage.setItem(GEMINI_KEY_KEY, gKey);
+        if (aKey) localStorage.setItem(ANTHROPIC_KEY_KEY, aKey);
+        if (gKey || aKey) {
+          $('aiKeyStatus').classList.remove('hidden');
+          setTimeout(function() { $('aiKeyStatus').classList.add('hidden'); }, 2000);
         }
       });
 
