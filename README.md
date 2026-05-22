@@ -27,7 +27,6 @@ An interactive vocabulary learning tool built around **root-word etymology**, fe
 - **Favorites** — Bookmark words and phrases for review
 - **Paste Import** — Batch import words from text (like Taobao address parser)
 - **Online Dictionary** — Look up any word via Free Dictionary API with fallback to Youdao/Cambridge
-- **Edit Mode** — Modify data in-browser (password protected: `01021130`)
 - **Standalone Export** — Generate self-contained HTML with embedded data
 
 ## Quick Start
