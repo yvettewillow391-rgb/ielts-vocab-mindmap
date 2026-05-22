@@ -1701,6 +1701,36 @@
     function getSenEn(sen) { return typeof sen === 'object' ? sen.en : sen; }
     function getSenZh(sen) { return (typeof sen === 'object' && sen.zh) ? sen.zh : ''; }
 
+    // Cross-root word navigation: click a synonym/antonym to jump to its detail
+    window.navigateToWord = function(wordText) {
+      if (!wordText) return;
+      for (var ri = 0; ri < allData.length; ri++) {
+        for (var wi = 0; wi < allData[ri].words.length; wi++) {
+          if (allData[ri].words[wi].word.toLowerCase() === wordText.toLowerCase()) {
+            currentRootIndex = ri;
+            currentWordIndex = wi;
+            exitEditMode();
+            hideDetailPanelSilent();
+            renderRootList(searchInput.value.trim());
+            renderMindMap(allData[ri], wi);
+            showDetailPanel(allData[ri].words[wi]);
+            expandSidebar();
+            return;
+          }
+        }
+      }
+    };
+
+    // Check if a word exists in the database
+    function wordInDB(wordText) {
+      for (var ri = 0; ri < allData.length; ri++) {
+        for (var wi = 0; wi < allData[ri].words.length; wi++) {
+          if (allData[ri].words[wi].word.toLowerCase() === wordText.toLowerCase()) return true;
+        }
+      }
+      return false;
+    }
+
     function posBadge(pos) {
       if (!pos) return '';
       const colorMap = {
@@ -1953,9 +1983,12 @@
           const p = getInfPos(syn);
           const m = getInfMeaning(syn);
           const isFav = isItemFavorited(wordData.word, 'synonym', w);
+          const inDB = wordInDB(w);
           html += '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm bg-violet-50 rounded-lg px-3 py-1.5 border-l-2 border-violet-300">' +
             posBadge(p) +
-            '<span class="font-medium text-violet-800">' + escapeHTML(w) + '</span>' +
+            (inDB
+              ? '<a class="font-medium text-indigo-600 hover:text-indigo-800 underline cursor-pointer" onclick="navigateToWord(\'' + escapeAttr(w) + '\')" title="点击跳转到 ' + escapeHTML(w) + ' 详情">' + escapeHTML(w) + '</a>'
+              : '<span class="font-medium text-violet-800">' + escapeHTML(w) + '</span>') +
             (m ? '<span class="text-violet-500 text-xs">' + escapeHTML(m) + '</span>' : '') +
             '<span class="flex-1 min-w-[24px]"></span>' +
             '<button id="fav-syn-' + si + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
@@ -1972,9 +2005,12 @@
           const p = getInfPos(ant);
           const m = getInfMeaning(ant);
           const isFav = isItemFavorited(wordData.word, 'antonym', w);
+          const inDB = wordInDB(w);
           html += '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm bg-red-50 rounded-lg px-3 py-1.5 border-l-2 border-red-300">' +
             posBadge(p) +
-            '<span class="font-medium text-red-800">' + escapeHTML(w) + '</span>' +
+            (inDB
+              ? '<a class="font-medium text-indigo-600 hover:text-indigo-800 underline cursor-pointer" onclick="navigateToWord(\'' + escapeAttr(w) + '\')" title="点击跳转到 ' + escapeHTML(w) + ' 详情">' + escapeHTML(w) + '</a>'
+              : '<span class="font-medium text-red-800">' + escapeHTML(w) + '</span>') +
             (m ? '<span class="text-red-500 text-xs">' + escapeHTML(m) + '</span>' : '') +
             '<span class="flex-1 min-w-[24px]"></span>' +
             '<button id="fav-ant-' + ai + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
@@ -2049,7 +2085,11 @@
         if (smartImportBtnEl) {
           smartImportBtnEl.addEventListener('click', function(e) {
             e.stopPropagation();
-            openSmartImport();
+            openPasteImport();
+            // Pre-select current word's root
+            if (currentRootIndex >= 0) {
+              pasteRootSelect.value = currentRootIndex;
+            }
           });
         }
       }, 50);
@@ -2577,7 +2617,7 @@
        EDIT MODE
        ================================================================ */
     function escapeAttr(str) {
-      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
     function toggleEditMode() {
