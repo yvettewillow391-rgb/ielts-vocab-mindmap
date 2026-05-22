@@ -498,16 +498,25 @@
     var gate = document.getElementById('pwGate');
     var editAuthenticated = false;
     if (isDeployed) {
-      gate.style.display = 'flex';
-      document.getElementById('pwSubmit').onclick = function() {
-        var p = document.getElementById('pwInput').value;
-        if (p === '01021130') { gate.remove(); editAuthenticated = true; }
-        else if (p === '123456') { gate.remove(); }
-        else { document.getElementById('pwError').style.display = 'block'; }
-      };
-      document.getElementById('pwInput').onkeydown = function(e) {
-        if (e.key === 'Enter') document.getElementById('pwSubmit').click();
-      };
+      // Check if already authenticated this session
+      var savedAuth = sessionStorage.getItem('ielts_auth');
+      if (savedAuth === 'edit') {
+        gate.remove();
+        editAuthenticated = true;
+      } else if (savedAuth === 'view') {
+        gate.remove();
+      } else {
+        gate.style.display = 'flex';
+        document.getElementById('pwSubmit').onclick = function() {
+          var p = document.getElementById('pwInput').value;
+          if (p === '01021130') { gate.remove(); editAuthenticated = true; sessionStorage.setItem('ielts_auth', 'edit'); }
+          else if (p === '123456') { gate.remove(); sessionStorage.setItem('ielts_auth', 'view'); }
+          else { document.getElementById('pwError').style.display = 'block'; }
+        };
+        document.getElementById('pwInput').onkeydown = function(e) {
+          if (e.key === 'Enter') document.getElementById('pwSubmit').click();
+        };
+      }
     } else {
       gate.remove();
       editAuthenticated = true;
@@ -2389,7 +2398,7 @@
         '<button id="pwSubmit" style="width:100%;margin-top:1rem;padding:0.8rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:0.75rem;font-size:0.95rem;font-weight:600;cursor:pointer;transition:opacity 0.2s">进入应用</button>' +
         '<p style="font-size:0.7rem;color:#cbd5e1;margin-top:1.25rem">请输入密码以继续</p>' +
         '</div></div>\n' +
-        '<script>document.getElementById("pwSubmit").onclick=function(){var p=document.getElementById("pwInput").value;if(p==="01021130"){window._standaloneRole="edit";document.getElementById("pwGate").remove()}else if(p==="123456"){window._standaloneRole="view";document.getElementById("pwGate").remove()}else{document.getElementById("pwError").style.display="block"}};document.getElementById("pwInput").onkeydown=function(e){if(e.key==="Enter")document.getElementById("pwSubmit").click()};<\/script>';
+        '<script>var sa=sessionStorage.getItem("ielts_auth");if(sa==="edit"){window._standaloneRole="edit";document.getElementById("pwGate").remove()}else if(sa==="view"){window._standaloneRole="view";document.getElementById("pwGate").remove()}else{document.getElementById("pwSubmit").onclick=function(){var p=document.getElementById("pwInput").value;if(p==="01021130"){window._standaloneRole="edit";document.getElementById("pwGate").remove();sessionStorage.setItem("ielts_auth","edit")}else if(p==="123456"){window._standaloneRole="view";document.getElementById("pwGate").remove();sessionStorage.setItem("ielts_auth","view")}else{document.getElementById("pwError").style.display="block"}};document.getElementById("pwInput").onkeydown=function(e){if(e.key==="Enter")document.getElementById("pwSubmit").click()}};<\/script>';
 
       html = html.replace(/<body[^>]*>/, function(m) { return m + gateHTML; });
 
