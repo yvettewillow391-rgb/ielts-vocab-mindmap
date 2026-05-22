@@ -1450,6 +1450,11 @@
       welcomeScreen.classList.add('hidden');
       chartContainer.classList.remove('hidden');
 
+      // Dynamic height based on word count to ensure consistent spacing
+      var wordCount = rootData.words.length;
+      var minHeight = Math.max(420, wordCount * 50 + 80);
+      chartContainer.style.minHeight = minHeight + 'px';
+
       if (!chart || chart.isDisposed()) {
         initChart();
       }
@@ -1476,10 +1481,10 @@
           roam: true,
           initialTreeDepth: -1,
           expandAndCollapse: true,
-          top: '8%',
+          top: '5%',
           left: '3%',
           right: '22%',
-          bottom: '8%',
+          bottom: '5%',
           symbol: 'circle',
           symbolSize: 8,
           animationDuration: 550,
