@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
   <script src="tips-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     #sidebarInner::-webkit-scrollbar { width: 8px; }
     #sidebarInner::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 4px; }
@@ -194,6 +195,9 @@
       <button id="iconAccent" title="切换发音" class="icon-bar-btn"><span class="icon-emoji">🇺🇸</span><span class="icon-label">发音</span></button>
       <button id="iconAddRoot" title="新增词根" class="icon-bar-btn"><span class="icon-emoji">➕</span><span class="icon-label">新增</span></button>
       <button id="iconSmartImport" title="智能导入" class="icon-bar-btn"><span class="icon-emoji">📋</span><span class="icon-label">导入</span></button>
+      <button id="iconExportData" title="导出数据" class="icon-bar-btn"><span class="icon-emoji">📤</span><span class="icon-label">导出</span></button>
+      <button id="iconImportData" title="导入数据" class="icon-bar-btn"><span class="icon-emoji">📥</span><span class="icon-label">恢复</span></button>
+      <button id="iconCloud" title="云同步" class="icon-bar-btn"><span class="icon-emoji">☁️</span><span class="icon-label">云同步</span></button>
       <button id="iconManage" title="管理单词" class="icon-bar-btn"><span class="icon-emoji">🗑</span><span class="icon-label">管理</span></button>
     </div>
 
@@ -392,6 +396,12 @@
               <div class="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full peer-checked:translate-x-4 transition-transform"></div>
             </div>
           </label>
+          <!-- Speed slider -->
+          <div class="flex items-center gap-1" title="语速调节">
+            <span class="text-[10px] text-gray-400">🐢</span>
+            <input type="range" id="speechRateSlider" min="0.5" max="1.2" step="0.05" value="0.85" class="w-12 h-1 accent-indigo-400">
+            <span class="text-[10px] text-gray-400">🐇</span>
+          </div>
           <button id="stopSpeakBtn" title="停止朗读"
             class="w-7 h-7 flex items-center justify-center rounded-full bg-red-50 text-red-400 hover:bg-red-100 transition-colors hidden">
             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
@@ -540,8 +550,8 @@
   </div>
 
   <!-- Favorites Overlay -->
-  <div id="favOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div id="favPanel" class="bg-white rounded-2xl shadow-2xl w-[95vw] max-w-[820px] max-h-[88vh] flex flex-col overflow-hidden ring-1 ring-gray-900/5">
+  <div id="favOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-0 sm:p-4">
+    <div id="favPanel" class="bg-white shadow-2xl w-full max-w-[820px] h-full sm:max-h-[90vh] sm:rounded-2xl rounded-none flex flex-col overflow-hidden ring-1 ring-gray-900/5">
       <div class="flex-shrink-0 px-6 py-4 flex items-center justify-between border-b border-gray-100">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-lg">⭐</div>
@@ -555,6 +565,67 @@
         </button>
       </div>
       <div id="favBody" class="flex-1 overflow-y-auto px-5 py-4"></div>
+    </div>
+  </div>
+
+  <!-- Cloud Sync Panel -->
+  <div id="cloudOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-0 sm:p-4">
+    <div class="bg-white shadow-2xl w-full max-w-[420px] h-full sm:max-h-[560px] sm:rounded-2xl rounded-none flex flex-col overflow-hidden ring-1 ring-gray-900/5">
+      <div class="flex-shrink-0 px-6 py-4 flex items-center justify-between border-b border-gray-100">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white text-lg">☁️</div>
+          <div>
+            <h3 class="text-base font-bold text-gray-800">云同步</h3>
+            <p class="text-[11px] text-gray-400" id="cloudStatusLabel">未登录</p>
+          </div>
+        </div>
+        <button id="closeCloudBtn" class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="cloudBody" class="flex-1 overflow-y-auto px-5 py-4">
+        <!-- Config section (shown when not configured) -->
+        <div id="cloudConfig" class="space-y-3">
+          <p class="text-xs text-gray-500 mb-3">使用 Supabase 免费云同步数据。请先在 <a href="https://supabase.com" target="_blank" class="text-blue-500 underline">supabase.com</a> 创建免费项目。</p>
+          <div>
+            <label class="text-[10px] text-gray-400 font-medium">Supabase URL</label>
+            <input id="supabaseUrlInput" type="text" placeholder="https://xxxxx.supabase.co" class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-sky-400">
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 font-medium">Anon Key</label>
+            <input id="supabaseKeyInput" type="text" placeholder="eyJhbGciOi..." class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-sky-400">
+          </div>
+          <button id="saveCloudConfigBtn" class="w-full py-2 rounded-lg text-xs font-medium bg-sky-500 text-white hover:bg-sky-600 transition-colors">保存配置</button>
+        </div>
+        <!-- Auth section (shown when configured) -->
+        <div id="cloudAuth" class="hidden space-y-3">
+          <div class="flex rounded-lg bg-gray-100 p-0.5">
+            <button id="tabLogin" class="flex-1 py-1.5 text-xs font-medium rounded-md bg-white text-gray-800 shadow-sm transition-colors">登录</button>
+            <button id="tabRegister" class="flex-1 py-1.5 text-xs font-medium rounded-md text-gray-500 transition-colors">注册</button>
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 font-medium">邮箱</label>
+            <input id="cloudEmailInput" type="email" placeholder="your@email.com" class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-sky-400">
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 font-medium">密码（至少6位）</label>
+            <input id="cloudPasswordInput" type="password" placeholder="••••••" class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-sky-400">
+          </div>
+          <button id="cloudAuthBtn" class="w-full py-2 rounded-lg text-xs font-medium bg-sky-500 text-white hover:bg-sky-600 transition-colors">登录</button>
+          <div id="cloudAuthMsg" class="text-[10px] text-center hidden"></div>
+        </div>
+        <!-- Logged in section -->
+        <div id="cloudLoggedIn" class="hidden space-y-3">
+          <div class="bg-green-50 rounded-xl p-3 text-center">
+            <p class="text-xs text-green-600 font-medium">✅ 已登录</p>
+            <p class="text-[10px] text-green-500 mt-0.5" id="cloudUserEmail"></p>
+          </div>
+          <button id="syncPushBtn" class="w-full py-2 rounded-lg text-xs font-medium bg-sky-500 text-white hover:bg-sky-600 transition-colors">⬆ 上传数据到云端</button>
+          <button id="syncPullBtn" class="w-full py-2 rounded-lg text-xs font-medium bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">⬇ 从云端下载数据</button>
+          <button id="cloudLogoutBtn" class="w-full py-2 rounded-lg text-xs font-medium text-red-500 hover:bg-red-50 transition-colors">退出登录</button>
+          <div id="cloudSyncMsg" class="text-[10px] text-center hidden"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -646,57 +717,71 @@
     window.speechSynthesis.onvoiceschanged = refreshVoices;
 
     function getBestVoice() {
-      // Use cached voices (may have been refreshed via onvoiceschanged)
       if (cachedVoices.length === 0) {
         cachedVoices = window.speechSynthesis.getVoices();
       }
       var voices = cachedVoices.length > 0 ? cachedVoices : window.speechSynthesis.getVoices();
       if (voices.length === 0) return null;
       var langPrefix = accent === 'en-GB' ? 'en-GB' : 'en-US';
-      // Extended male/female keywords covering Chinese Windows voice names
-      var maleKeys = ['Male', 'David', 'Mark', 'James', 'Guy', 'Daniel', 'Tom', 'Peter', 'Ryan', 'Steven', 'George', 'Lee', 'Oliver', 'Harry', 'Noah', 'Microsoft David', 'Microsoft Mark'];
-      var femaleKeys = ['Female', 'Zira', 'Susan', 'Karen', 'Catherine', 'Moira', 'Samantha', 'Linda', 'Mary', 'Hazel', 'Emma', 'Ava', 'Mia', 'Olivia', 'Emily', 'Sophia', 'Microsoft Zira', 'Microsoft Hazel', 'Microsoft Susan'];
-      // Check voice.name and voice.gender (Chromium) if available
-      function matchesFemale(v) {
-        if (v.gender === 'female') return true; // Edge/Chrome may set this
-        return femaleKeys.some(function(k) { return v.name && v.name.toLowerCase().includes(k.toLowerCase()); });
+
+      // Known neural/natural female voices (most human-sounding on Windows/macOS/ChromeOS)
+      var neuralFemale = ['Ava', 'Natasha', 'Jenny', 'Aria', 'Salli', 'Kimberly', 'Joanna', 'Kendra', 'Samantha', 'Karen', 'Moira', 'Tessa'];
+      var neuralMale = ['Guy', 'Daniel', 'Tom', 'Ryan', 'Steven', 'David', 'Mark', 'James', 'Lee', 'Oliver', 'Harry', 'Noah', 'George'];
+
+      function isNeuralFemale(v) {
+        if (v.name && (v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Neural'))) return true;
+        if (v.voiceURI && (v.voiceURI.includes('Natural') || v.voiceURI.includes('Neural') || v.voiceURI.includes('Online'))) return true;
+        if (v.gender === 'female') return true;
+        return neuralFemale.some(function(k) { return v.name && v.name.toLowerCase().includes(k.toLowerCase()); });
       }
-      function matchesMale(v) {
-        if (v.gender === 'male') return true; // Edge/Chrome may set this
-        return maleKeys.some(function(k) { return v.name && v.name.toLowerCase().includes(k.toLowerCase()); });
+      function isFemale(v) {
+        if (v.gender === 'female') return true;
+        if (v.name && /female|woman|girl/i.test(v.name)) return true;
+        return neuralFemale.some(function(k) { return v.name && v.name.toLowerCase().includes(k.toLowerCase()); });
       }
-      var isGender = voiceGender === 'male' ? matchesMale : matchesFemale;
-      var oppositeGender = voiceGender === 'male' ? matchesFemale : matchesMale;
-      // 1. Best: natural voice matching accent + gender
-      var best = voices.filter(function(v) {
-        return v.lang.startsWith(langPrefix) && isGender(v) && (v.name && (v.name.includes('Natural') || v.name.includes('Online')));
-      });
-      if (best.length > 0) return best[0];
-      // 2. Regular voice matching accent + gender
-      var good = voices.filter(function(v) {
-        return v.lang.startsWith(langPrefix) && isGender(v);
-      });
-      if (good.length > 0) return good[0];
-      // 3. Any English voice matching gender (accent agnostic)
-      var enGender = voices.filter(function(v) {
-        return v.lang.startsWith('en-') && isGender(v);
-      });
-      if (enGender.length > 0) return enGender[0];
-      // 4. Voice matching accent, explicitly NOT the opposite gender
-      var accentNonOpposite = voices.filter(function(v) {
-        return v.lang.startsWith(langPrefix) && !oppositeGender(v);
-      });
-      if (accentNonOpposite.length > 0) return accentNonOpposite[0];
-      // 5. Any English voice, not opposite gender
-      var enNonOpposite = voices.filter(function(v) {
-        return v.lang.startsWith('en-') && !oppositeGender(v);
-      });
-      if (enNonOpposite.length > 0) return enNonOpposite[0];
-      // 6. Last resort: any English voice
+      function isMale(v) {
+        if (v.gender === 'male') return true;
+        if (v.name && /male|man|guy/i.test(v.name)) return true;
+        return neuralMale.some(function(k) { return v.name && v.name.toLowerCase().includes(k.toLowerCase()); });
+      }
+      function isNeuralMale(v) {
+        if (v.name && (v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Neural'))) return true;
+        if (v.voiceURI && (v.voiceURI.includes('Natural') || v.voiceURI.includes('Neural') || v.voiceURI.includes('Online'))) return true;
+        if (v.gender === 'male') return true;
+        return neuralMale.some(function(k) { return v.name && v.name.toLowerCase().includes(k.toLowerCase()); });
+      }
+
+      if (voiceGender === 'female') {
+        // Tier 1: Neural en-US female
+        var t1 = voices.filter(function(v) { return v.lang.startsWith('en-US') && isNeuralFemale(v); });
+        if (t1.length > 0) return t1[0];
+        // Tier 2: Any female en-US
+        var t2 = voices.filter(function(v) { return v.lang.startsWith('en-US') && isFemale(v); });
+        if (t2.length > 0) return t2[0];
+        // Tier 3: Neural female any English
+        var t3 = voices.filter(function(v) { return v.lang.startsWith('en-') && isNeuralFemale(v); });
+        if (t3.length > 0) return t3[0];
+        // Tier 4: Any female any English
+        var t4 = voices.filter(function(v) { return v.lang.startsWith('en-') && isFemale(v); });
+        if (t4.length > 0) return t4[0];
+      } else {
+        // Male voice selection
+        var m1 = voices.filter(function(v) { return v.lang.startsWith('en-US') && isNeuralMale(v); });
+        if (m1.length > 0) return m1[0];
+        var m2 = voices.filter(function(v) { return v.lang.startsWith('en-US') && isMale(v); });
+        if (m2.length > 0) return m2[0];
+        var m3 = voices.filter(function(v) { return v.lang.startsWith('en-') && isNeuralMale(v); });
+        if (m3.length > 0) return m3[0];
+        var m4 = voices.filter(function(v) { return v.lang.startsWith('en-') && isMale(v); });
+        if (m4.length > 0) return m4[0];
+      }
+      // Last resort: any English voice
       var enAny = voices.filter(function(v) { return v.lang.startsWith('en-'); });
-      return enAny.length > 0 ? enAny[0] : voices[0];
+      if (enAny.length > 0) return enAny[0];
+      return voices[0];
     }
     let autoRead = false;
+    let speechRate = 0.85;
     let editMode = false;
     let chart = null;
     let speechQueue = [];
@@ -731,6 +816,7 @@
     const detailMeaning   = $('detailMeaning');
     const detailBody      = $('detailBody');
     const autoReadToggle  = $('autoReadToggle');
+    const speechRateSlider = $('speechRateSlider');
     const stopSpeakBtn    = $('stopSpeakBtn');
     const closeDetailBtn  = $('closeDetailBtn');
     const addWordBtn      = $('addWordBtn');
@@ -802,6 +888,9 @@
        ================================================================ */
     var errorNotebook = {}; // { "word": { count: N, errors: [{ time, wrongAnswer, correctAnswer, meaning, type }] } }
     const ERROR_NB_KEY = 'ielts_error_notebook';
+    const SETTINGS_KEY  = 'ielts_settings';
+    const SUPABASE_URL_KEY = 'ielts_supabase_url';
+    const SUPABASE_KEY_KEY = 'ielts_supabase_key';
     function loadErrorNotebook() {
       try {
         const raw = localStorage.getItem(ERROR_NB_KEY);
@@ -810,6 +899,7 @@
     }
     function saveErrorNotebook() {
       localStorage.setItem(ERROR_NB_KEY, JSON.stringify(errorNotebook));
+      autoSyncToCloud();
     }
     function recordDictError(word, userAnswer, correctAnswer, meaning, type) {
       if (!errorNotebook[word]) {
@@ -921,6 +1011,32 @@
     function clearWordErrors(word) {
       delete errorNotebook[word];
       saveErrorNotebook();
+    }
+
+    /* ================================================================
+       SETTINGS PERSISTENCE
+       ================================================================ */
+    function loadSettings() {
+      try {
+        var raw = localStorage.getItem(SETTINGS_KEY);
+        if (raw) {
+          var s = JSON.parse(raw);
+          if (s.voiceGender) voiceGender = s.voiceGender;
+          if (s.accent) accent = s.accent;
+          if (typeof s.speechRate === 'number') speechRate = s.speechRate;
+          if (typeof s.autoRead === 'boolean') autoRead = s.autoRead;
+        }
+      } catch(e) { /* ignore */ }
+    }
+    function saveSettings() {
+      try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+          voiceGender: voiceGender,
+          accent: accent,
+          speechRate: speechRate,
+          autoRead: autoRead
+        }));
+      } catch(e) { /* ignore */ }
     }
 
     /* ================================================================
@@ -1118,8 +1234,8 @@
       u.lang = accent;
       // Use more natural parameters for sentences vs single words
       var isSentence = text.length > 25 && text.includes(' ');
-      u.rate = isSentence ? 0.90 : 0.85;
-      u.pitch = isSentence ? 1.02 : 1.0;
+      u.rate = speechRate;
+      u.pitch = 1.0;
       u.volume = 0.95;
       var bestVoice = getBestVoice();
       if (bestVoice) u.voice = bestVoice;
@@ -1525,7 +1641,7 @@
             if (entry.phonetic) html += '<span class="text-gray-400 text-xs">/' + escapeHTML(entry.phonetic) + '/</span>';
             html += '<button class="text-blue-400 hover:text-blue-600 text-xs ml-1" id="dictSpeakBtn" title="朗读">🔊</button></div>';
 
-            // Collect all definitions AND examples for batch translation
+            // Collect all definitions AND examples
             var allDefs = [];
             var allExamples = [];
             var cnt = 0;
@@ -1538,20 +1654,56 @@
               cnt++;
             });
 
-            // Translate definitions
-            var zhText = '';
-            if (allDefs.length > 0) {
-              zhText = await translateToChinese(allDefs.join(' || '));
-            }
-            var zhParts = zhText ? zhText.split(' || ') : [];
+            // Translate each item individually for accurate 1:1 correspondence
+            var SEP = '\n---SEP---\n';
+            var zhParts = [];
+            var exZhParts = [];
 
-            // Translate examples
-            var examplesZh = '';
-            var nonEmptyExamples = allExamples.filter(function(e) { return e; });
-            if (nonEmptyExamples.length > 0) {
-              examplesZh = await translateToChinese(nonEmptyExamples.join(' || '));
+            // Translate definitions batch
+            if (allDefs.length > 0) {
+              var zhText = await translateToChinese(allDefs.join(SEP));
+              if (zhText) {
+                var parts = zhText.split(SEP);
+                // Verify alignment — if split count wrong, fall back to translating individually
+                if (parts.length === allDefs.length) {
+                  zhParts = parts;
+                } else {
+                  // Individual fallback
+                  for (var di = 0; di < allDefs.length; di++) {
+                    zhParts.push(await translateToChinese(allDefs[di]));
+                  }
+                }
+              }
             }
-            var exZhParts = examplesZh ? examplesZh.split(' || ') : [];
+
+            // Translate examples (same approach)
+            var nonEmptyExamples = allExamples.filter(function(e) { return e; });
+            var exIdxMap = []; // map non-empty index → original index
+            allExamples.forEach(function(e, i) { if (e) exIdxMap.push(i); });
+            if (nonEmptyExamples.length > 0) {
+              var exZhText = await translateToChinese(nonEmptyExamples.join(SEP));
+              if (exZhText) {
+                var parts = exZhText.split(SEP);
+                if (parts.length === nonEmptyExamples.length) {
+                  // Map back to original positions
+                  var mapped = [];
+                  var pi = 0;
+                  allExamples.forEach(function(e, i) {
+                    if (e) { mapped[i] = parts[pi] || ''; pi++; }
+                    else { mapped[i] = ''; }
+                  });
+                  exZhParts = mapped;
+                } else {
+                  // Individual fallback
+                  nonEmptyExamples.forEach(function(e) {
+                    exZhParts.push('');
+                  });
+                  for (var ei = 0; ei < nonEmptyExamples.length; ei++) {
+                    exZhParts[exIdxMap[ei]] = await translateToChinese(nonEmptyExamples[ei]);
+                  }
+                }
+              }
+            }
 
             cnt = 0;
             var defIdx = 0;
@@ -1609,7 +1761,7 @@
       var text = getSpeakableText(word);
       var u = new SpeechSynthesisUtterance(text);
       u.lang = accent;
-      u.rate = 0.85;
+      u.rate = speechRate;
       u.pitch = 1.0;
       var bestVoice = getBestVoice();
       if (bestVoice) u.voice = bestVoice;
@@ -1666,13 +1818,13 @@
           const m = getInfMeaning(inf);
           const favKey = 'inf|' + ii;
           const isFav = isItemFavorited(wordData.word, 'inflection', w);
-          html += '<div class="flex items-center gap-2 text-sm bg-gray-50 rounded-lg px-3 py-1.5">' +
+          html += '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm bg-gray-50 rounded-lg px-3 py-1.5">' +
             posBadge(p) +
             '<span class="font-medium text-gray-800">' + escapeHTML(w) + '</span>' +
             (m ? '<span class="text-gray-400 text-xs">' + escapeHTML(m) + '</span>' : '') +
-            '<span class="flex-1"></span>' +
-            '<button id="fav-inf-' + ii + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors" title="收藏">★</button>' +
-            '<span id="spk-inf-' + ii + '"></span></div>';
+            '<span class="flex-1 min-w-[24px]"></span>' +
+            '<button id="fav-inf-' + ii + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
+            '<span id="spk-inf-' + ii + '" class="flex-shrink-0"></span></div>';
         });
         html += '</div></div>';
       }
@@ -1685,13 +1837,13 @@
           const p = getInfPos(syn);
           const m = getInfMeaning(syn);
           const isFav = isItemFavorited(wordData.word, 'synonym', w);
-          html += '<div class="flex items-center gap-2 text-sm bg-violet-50 rounded-lg px-3 py-1.5 border-l-2 border-violet-300">' +
+          html += '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm bg-violet-50 rounded-lg px-3 py-1.5 border-l-2 border-violet-300">' +
             posBadge(p) +
             '<span class="font-medium text-violet-800">' + escapeHTML(w) + '</span>' +
             (m ? '<span class="text-violet-500 text-xs">' + escapeHTML(m) + '</span>' : '') +
-            '<span class="flex-1"></span>' +
-            '<button id="fav-syn-' + si + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors" title="收藏">★</button>' +
-            '<span id="spk-syn-' + si + '"></span></div>';
+            '<span class="flex-1 min-w-[24px]"></span>' +
+            '<button id="fav-syn-' + si + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
+            '<span id="spk-syn-' + si + '" class="flex-shrink-0"></span></div>';
         });
         html += '</div></div>';
       }
@@ -1704,13 +1856,13 @@
           const p = getInfPos(ant);
           const m = getInfMeaning(ant);
           const isFav = isItemFavorited(wordData.word, 'antonym', w);
-          html += '<div class="flex items-center gap-2 text-sm bg-red-50 rounded-lg px-3 py-1.5 border-l-2 border-red-300">' +
+          html += '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm bg-red-50 rounded-lg px-3 py-1.5 border-l-2 border-red-300">' +
             posBadge(p) +
             '<span class="font-medium text-red-800">' + escapeHTML(w) + '</span>' +
             (m ? '<span class="text-red-500 text-xs">' + escapeHTML(m) + '</span>' : '') +
-            '<span class="flex-1"></span>' +
-            '<button id="fav-ant-' + ai + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors" title="收藏">★</button>' +
-            '<span id="spk-ant-' + ai + '"></span></div>';
+            '<span class="flex-1 min-w-[24px]"></span>' +
+            '<button id="fav-ant-' + ai + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
+            '<span id="spk-ant-' + ai + '" class="flex-shrink-0"></span></div>';
         });
         html += '</div></div>';
       }
@@ -1722,11 +1874,12 @@
           const en = getPhEn(ph);
           const zh = getPhZh(ph);
           const isFav = isItemFavorited(wordData.word, 'phrase', en);
-          html += '<div class="flex items-center gap-2 text-sm bg-amber-50 rounded-lg px-3 py-1.5 border-l-2 border-amber-300">' +
-            '<span class="font-medium text-gray-800 flex-1">' + escapeHTML(en) + '</span>' +
+          html += '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm bg-amber-50 rounded-lg px-3 py-1.5 border-l-2 border-amber-300">' +
+            '<span class="font-medium text-gray-800">' + escapeHTML(en) + '</span>' +
             (zh ? '<span class="text-amber-600 text-xs">' + escapeHTML(zh) + '</span>' : '') +
-            '<button id="fav-ph-' + pi + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors" title="收藏">★</button>' +
-            '<span id="spk-ph-' + pi + '"></span></div>';
+            '<span class="flex-1 min-w-[24px]"></span>' +
+            '<button id="fav-ph-' + pi + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
+            '<span id="spk-ph-' + pi + '" class="flex-shrink-0"></span></div>';
         });
         html += '</div></div>';
       }
@@ -2457,6 +2610,7 @@
 
     function saveDataToStorage() {
       try { localStorage.setItem('ielts_data', JSON.stringify(allData)); } catch(e) {}
+      autoSyncToCloud();
       // Standalone auto-update: re-download HTML after edit
       if (window._isStandalone && window._standaloneRole === 'edit') {
         setTimeout(() => {
@@ -2814,6 +2968,81 @@
       });
       return best;
     }
+    function importFullWordEntries(rootMap, unknownEntries) {
+      var totalAdded = 0;
+      var skipped = 0;
+      var batches = [];
+      var rootCount = Object.keys(rootMap).length;
+      var totalWords = Object.values(rootMap).reduce(function(s, a) { return s + a.length; }, 0);
+      var processed = 0;
+
+      pasteProgress.classList.remove('hidden');
+      pasteProgress.innerHTML = '<div class="flex items-center gap-2 text-xs text-indigo-600"><span class="animate-pulse">⏳</span> 正在导入 <b>' + totalWords + '</b> 个完整单词...</div>';
+
+      Object.keys(rootMap).forEach(function(idx) {
+        var root = allData[parseInt(idx)];
+        var entries = rootMap[idx];
+        var batchWords = [];
+        entries.forEach(function(entry) {
+          processed++;
+          var exists = root.words.some(function(w) { return w.word.toLowerCase() === entry.word.toLowerCase(); });
+          if (!exists) {
+            var meaning = entry.meaning || '';
+            var posFromMeaning = '';
+            var meaningOnly = meaning;
+            var posMatch = meaning.match(/^([a-z]+\.[a-z.\s]*?)\s+(.+)$/i);
+            if (posMatch) { posFromMeaning = posMatch[1]; meaningOnly = posMatch[2]; }
+            var wObj = {
+              word: entry.word,
+              phonetic: '',
+              meaning: meaning,
+              inflections: entry.inflections || [],
+              synonyms: entry.synonyms || [],
+              antonyms: entry.antonyms || [],
+              ielts_phrases: entry.phrases || [],
+              ielts_sentences: entry.sentences || [],
+              etymology: entry.etymology || '',
+              mnemonic: entry.mnemonic || ''
+            };
+            // Auto-generate etymology/mnemonic only if not provided
+            if (!wObj.etymology || !wObj.mnemonic) {
+              autoEnrichWord(wObj, parseInt(idx));
+              // Don't overwrite explicitly provided values
+              if (entry.etymology) wObj.etymology = entry.etymology;
+              if (entry.mnemonic) wObj.mnemonic = entry.mnemonic;
+            }
+            root.words.push(wObj);
+            batchWords.push(entry.word);
+            totalAdded++;
+          } else {
+            skipped++;
+          }
+          pasteProgress.innerHTML = '<div class="text-xs text-indigo-600">⏳ 正在导入 <b>' + processed + '/' + totalWords + '</b>... <span class="text-gray-400">' + root.root + ' +' + batchWords.length + '</span></div>';
+        });
+        if (batchWords.length > 0) batches.push({ rootIdx: parseInt(idx), words: batchWords });
+      });
+
+      if (unknownEntries.length > 0) {
+        pasteProgress.innerHTML += '<div class="text-xs text-amber-500 mt-1">⚠ ' + unknownEntries.length + ' 个单词未识别词根，已跳过</div>';
+      }
+
+      saveDataToStorage();
+
+      var statusMsg = '✅ 导入完成：新增 <b>' + totalAdded + '</b> 个完整单词';
+      if (skipped > 0) statusMsg += '，跳过 <b>' + skipped + '</b> 个重复';
+      pasteProgress.innerHTML = '<div class="text-xs text-green-600 font-medium">' + statusMsg + '</div>';
+
+      setTimeout(function() {
+        pasteOverlay.classList.add('hidden');
+        pasteProgress.classList.add('hidden');
+        pasteProgress.innerHTML = '';
+        pasteConfirmBar.classList.add('hidden');
+        renderRootList(searchInput.value.trim());
+        var summary = '已导入 ' + totalAdded + ' 个完整单词到 ' + rootCount + ' 个词根';
+        recordImport(batches, summary);
+      }, 1500);
+    }
+
     function openSmartImport() {
       pasteRootSelect.innerHTML = '';
       pasteRootSelect.style.display = 'none'; // hide root selector only
@@ -2887,9 +3116,238 @@
       }, 1200);
     }
 
+    // Parse a single word's full structured entry (词根拆解, 变形态, etc.)
+    function parseFullWordEntry(text) {
+      const lines = text.split(/\n/).map(l => l.trim()).filter(l => l);
+      if (lines.length < 2) return null;
+
+      const entry = {
+        word: '',
+        meaning: '',
+        etymology: '',
+        mnemonic: '',
+        inflections: [],
+        synonyms: [],
+        antonyms: [],
+        phrases: [],
+        sentences: []
+      };
+
+      // Line 1: word
+      entry.word = lines[0];
+
+      // Line 2: POS + meaning (e.g., "v. 避免，防止；转移（目光等）")
+      var posMeaningMatch = lines[1].match(/^([a-z]+\.[a-z.\s]*?)\s+(.+)$/i);
+      if (posMeaningMatch) {
+        entry.meaning = lines[1];
+      } else {
+        entry.meaning = lines[1];
+      }
+
+      var section = null; // 'etymology','mnemonic','inflections','synonyms','antonyms','phrases','sentences'
+
+      for (var i = 2; i < lines.length; i++) {
+        var line = lines[i];
+        // Detect section headers
+        if (/^词根(拆解|解析)/.test(line)) { section = 'etymology'; continue; }
+        if (/^(一句话|联想)?记忆/.test(line)) { section = 'mnemonic'; continue; }
+        if (/^变形态/.test(line)) { section = 'inflections'; continue; }
+        if (/^(近义|同义)/.test(line)) { section = 'synonyms'; continue; }
+        if (/^反义/.test(line)) { section = 'antonyms'; continue; }
+        if (/^(常用)?词组/.test(line)) { section = 'phrases'; continue; }
+        if (/^(例句|IELTS例句|雅思例句)/.test(line)) { section = 'sentences'; continue; }
+
+        if (!section) continue;
+
+        if (section === 'etymology') {
+          entry.etymology = line.replace(/^[•·\-]\s*/, '');
+        } else if (section === 'mnemonic') {
+          entry.mnemonic = line.replace(/^[•·\-]\s*/, '');
+        } else if (section === 'inflections') {
+          // Format: • word pos. meaning  OR  • word pos meaning  OR  word pos. meaning
+          var clean = line.replace(/^[•·\-]\s*/, '');
+          var m = clean.match(/^(\S+)\s+((?:[a-z]+\.)+)\s+(.+)$/i);
+          if (m) {
+            entry.inflections.push({ word: m[1], pos: m[2].trim(), meaning: m[3].trim() });
+          } else {
+            // Try just word + meaning
+            var parts = clean.split(/\s+/);
+            if (parts.length >= 2) {
+              entry.inflections.push({ word: parts[0], pos: '', meaning: parts.slice(1).join(' ') });
+            }
+          }
+        } else if (section === 'synonyms') {
+          var clean = line.replace(/^[•·\-]\s*/, '');
+          var m = clean.match(/^(\S+)\s+((?:[a-z]+\.)+)\s+(.+)$/i);
+          if (m) {
+            entry.synonyms.push({ word: m[1], pos: m[2].trim(), meaning: m[3].trim() });
+          } else {
+            // Try without POS
+            var m2 = clean.match(/^(\S+(?:\s+\S+)?)\s+(.+)$/);
+            if (m2) {
+              var w = m2[1];
+              var rest = m2[2];
+              var posMatch = rest.match(/^((?:[a-z]+\.)+)\s+(.+)$/i);
+              if (posMatch) {
+                entry.synonyms.push({ word: w, pos: posMatch[1].trim(), meaning: posMatch[2].trim() });
+              } else {
+                entry.synonyms.push({ word: w, pos: '', meaning: rest });
+              }
+            }
+          }
+        } else if (section === 'antonyms') {
+          var clean = line.replace(/^[•·\-]\s*/, '');
+          var m = clean.match(/^(\S+)\s+((?:[a-z]+\.)+)\s+(.+)$/i);
+          if (m) {
+            entry.antonyms.push({ word: m[1], pos: m[2].trim(), meaning: m[3].trim() });
+          } else {
+            var m2 = clean.match(/^(\S+(?:\s+\S+)?)\s+(.+)$/);
+            if (m2) {
+              var w = m2[1];
+              var rest = m2[2];
+              var posMatch = rest.match(/^((?:[a-z]+\.)+)\s+(.+)$/i);
+              if (posMatch) {
+                entry.antonyms.push({ word: w, pos: posMatch[1].trim(), meaning: posMatch[2].trim() });
+              } else {
+                entry.antonyms.push({ word: w, pos: '', meaning: rest });
+              }
+            }
+          }
+        } else if (section === 'phrases') {
+          var clean = line.replace(/^[•·\-]\s*/, '');
+          // Format: english phrase  chinese meaning
+          // Typically: "avert one's eyes/gaze from  把目光从……移开"
+          var m = clean.match(/^(.+?)\s{2,}(.+)$/);
+          if (m) {
+            entry.phrases.push({ en: m[1].trim(), zh: m[2].trim() });
+          } else {
+            // Try splitting at last Chinese boundary
+            var m2 = clean.match(/^(.+[a-z])\s+(.+)$/);
+            if (m2) {
+              entry.phrases.push({ en: m2[1].trim(), zh: m2[2].trim() });
+            }
+          }
+        } else if (section === 'sentences') {
+          // English sentence, possibly followed by Chinese translation on next line in （）
+          if (line.startsWith('（') || line.startsWith('(')) {
+            // This is a Chinese translation line, ignore as it belongs to previous sentence
+            // Already handled below
+          } else {
+            var en = line;
+            var zh = '';
+            // Check next line for Chinese translation in （）
+            if (i + 1 < lines.length) {
+              var nextLine = lines[i + 1];
+              var zhMatch = nextLine.match(/^[（(](.+)[）)]$/);
+              if (zhMatch) {
+                zh = zhMatch[1];
+                i++; // skip next line
+              }
+            }
+            entry.sentences.push({ en: en, zh: zh });
+          }
+        }
+      }
+
+      return entry;
+    }
+
     function parsePastedText() {
       const raw = pasteInput.value.trim();
       if (!raw) { pastePreview.innerHTML = '<p class="text-xs text-red-400 text-center py-4">请先粘贴文本</p>'; pasteConfirmBar.classList.add('hidden'); return; }
+
+      // Detect structured full-word format (contains section headers)
+      var isFullWordFormat = /^(词根(拆解|解析)|(一句话|联想)?记忆|变形态|近义|同义|反义|(常用)?词组|(IELTS|雅思)?例句)/m.test(raw);
+
+      if (isFullWordFormat) {
+        // Split into individual word entries (separated by blank lines or ---)
+        var blocks = raw.split(/\n\s*\n|^---+\s*$/m).filter(function(b) { return b.trim(); });
+        var fullEntries = [];
+        blocks.forEach(function(block) {
+          var entry = parseFullWordEntry(block.trim());
+          if (entry && entry.word) fullEntries.push(entry);
+        });
+
+        if (fullEntries.length === 0) {
+          pastePreview.innerHTML = '<p class="text-xs text-amber-500 text-center py-4">未能解析到完整单词，请检查格式</p>';
+          pasteConfirmBar.classList.add('hidden');
+          return;
+        }
+
+        // Auto-detect roots for each entry
+        var rootMap = {};
+        var unknownEntries = [];
+        fullEntries.forEach(function(entry) {
+          var rootIdx = detectRoot(entry.word);
+          if (rootIdx !== null && rootIdx >= 0) {
+            if (!rootMap[rootIdx]) rootMap[rootIdx] = [];
+            rootMap[rootIdx].push(entry);
+          } else {
+            unknownEntries.push(entry);
+          }
+        });
+
+        var totalImportable = Object.values(rootMap).reduce(function(s, a) { return s + a.length; }, 0);
+        var html = '<div class="text-xs text-gray-500 mb-2">📋 解析到 <b>' + fullEntries.length + '</b> 个完整单词（含词根拆解、变形态等），智能识别到 <b>' + Object.keys(rootMap).length + '</b> 个词根</div>';
+        html += '<div class="space-y-2 max-h-80 overflow-y-auto" id="smartPreviewArea">';
+
+        Object.keys(rootMap).forEach(function(idx) {
+          var root = allData[parseInt(idx)];
+          var entries = rootMap[idx];
+          html += '<div class="bg-indigo-50 rounded-lg p-2 border border-indigo-100">';
+          html += '<div class="text-[10px] font-semibold text-indigo-600 mb-1">📌 ' + escapeHTML(root.root) + (root.root_meaning ? ' (' + escapeHTML(root.root_meaning) + ')' : '') + ' <span class="text-gray-400 font-normal">— ' + entries.length + '个词</span></div>';
+          entries.forEach(function(entry) {
+            html += '<div class="ml-2 py-1 border-b border-indigo-100 last:border-0">';
+            html += '<div class="flex items-center gap-2 text-[10px]"><span class="font-bold text-gray-800">' + escapeHTML(entry.word) + '</span><span class="text-gray-500 text-[10px]">' + escapeHTML(entry.meaning) + '</span></div>';
+            if (entry.etymology) html += '<div class="text-[10px] text-gray-400 ml-1 mt-0.5">🔍 ' + escapeHTML(entry.etymology) + '</div>';
+            if (entry.inflections.length > 0) html += '<div class="text-[10px] text-gray-400 ml-1">📎 ' + entry.inflections.length + ' 个变形态</div>';
+            if (entry.synonyms.length > 0) html += '<div class="text-[10px] text-gray-400 ml-1">≈ ' + entry.synonyms.length + ' 个近义词</div>';
+            if (entry.phrases.length > 0) html += '<div class="text-[10px] text-gray-400 ml-1">📝 ' + entry.phrases.length + ' 个词组</div>';
+            html += '</div>';
+          });
+          html += '</div>';
+        });
+
+        if (unknownEntries.length > 0) {
+          html += '<div class="bg-amber-50 rounded-lg p-2 border border-amber-200">';
+          html += '<div class="text-[10px] font-semibold text-amber-600 mb-1">⚠ 未识别词根 (' + unknownEntries.length + '个) — 将跳过</div>';
+          unknownEntries.forEach(function(entry) {
+            html += '<div class="text-[10px] text-gray-400 ml-2">' + escapeHTML(entry.word) + ' — ' + escapeHTML(entry.meaning.substring(0, 30)) + '</div>';
+          });
+          html += '</div>';
+        }
+
+        html += '<div class="mt-3 p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between gap-3">';
+        html += '<span class="text-xs text-gray-600">将导入 <b class="text-indigo-600">' + totalImportable + '</b> 个完整单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownEntries.length > 0 ? ' <span class="text-amber-500">（' + unknownEntries.length + ' 个未识别将跳过）</span>' : '') + '</span>';
+        html += '<div class="flex gap-2 flex-shrink-0">';
+        html += '<button id="inlineCancelBtn" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">取消</button>';
+        html += '<button id="inlineConfirmBtn" class="px-5 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 transition-colors">✅ 确认导入</button>';
+        html += '</div></div>';
+        pastePreview.innerHTML = html;
+
+        // Store full entries for import
+        pendingParsedData = { mode: 'fullword', fullEntries, rootMap, unknownEntries };
+
+        pasteSummary.innerHTML = '将导入 <b class="text-indigo-600">' + totalImportable + '</b> 个完整单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根';
+        pasteConfirmBar.classList.remove('hidden');
+
+        // Attach inline button handlers
+        setTimeout(function() {
+          var confirmBtn = document.getElementById('inlineConfirmBtn');
+          var cancelBtn = document.getElementById('inlineCancelBtn');
+          if (confirmBtn) confirmBtn.addEventListener('click', function() {
+            pasteConfirmBar.classList.add('hidden');
+            importFullWordEntries(rootMap, unknownEntries);
+          });
+          if (cancelBtn) cancelBtn.addEventListener('click', function() {
+            pastePreview.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">已取消。可重新粘贴文本解析。</p>';
+            pasteConfirmBar.classList.add('hidden');
+            pendingParsedData = null;
+          });
+        }, 50);
+
+        return;
+      }
 
       const lines = raw.split(/[\n\r]+/).filter(l => l.trim());
       const parsed = [];
@@ -2977,14 +3435,32 @@
           html += '</div>';
         }
 
+        // Inline confirm buttons inside preview
+        const totalImportable = Object.values(rootMap).reduce((s, a) => s + a.length, 0);
+        html += '<div class="mt-3 p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between gap-3">';
+        html += '<span class="text-xs text-gray-600">将导入 <b class="text-indigo-600">' + totalImportable + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownWords.length > 0 ? ' <span class="text-amber-500">（' + unknownWords.length + ' 个未识别将跳过）</span>' : '') + '</span>';
+        html += '<div class="flex gap-2 flex-shrink-0">';
+        html += '<button id="inlineCancelBtn" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">取消</button>';
+        html += '<button id="inlineConfirmBtn" class="px-5 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 transition-colors">✅ 确认导入</button>';
+        html += '</div></div>';
         html += '</div>';
         pastePreview.innerHTML = html;
+
+        // Attach inline button handlers
+        document.getElementById('inlineConfirmBtn').addEventListener('click', function() {
+          pasteConfirmBar.classList.add('hidden');
+          importSmartWords(rootMap, unknownWords);
+        });
+        document.getElementById('inlineCancelBtn').addEventListener('click', function() {
+          pastePreview.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">已取消。可重新粘贴文本解析。</p>';
+          pasteConfirmBar.classList.add('hidden');
+          pendingParsedData = null;
+        });
 
         // Cache parsed data for confirm step
         pendingParsedData = { mode: 'smart', parsed, rootMap, unknownWords };
 
-        // Show confirm bar
-        const totalImportable = Object.values(rootMap).reduce((s, a) => s + a.length, 0);
+        // Show sticky confirm bar too
         pasteSummary.innerHTML = '将导入 <b class="text-indigo-600">' + totalImportable + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownWords.length > 0 ? ' <span class="text-amber-500">（' + unknownWords.length + ' 个未识别将跳过）</span>' : '');
         pasteConfirmBar.classList.remove('hidden');
       } else {
@@ -3168,6 +3644,441 @@
       URL.revokeObjectURL(url);
     }
 
+    // Export user data (favorites, error notebook, settings, custom data)
+    function exportUserData() {
+      var userData = {
+        version: 1,
+        date: new Date().toISOString(),
+        favorites: { words: [...favorites.words], items: favorites.items },
+        errorNotebook: errorNotebook,
+        settings: {
+          voiceGender: voiceGender,
+          accent: accent,
+          speechRate: speechRate,
+          autoRead: autoRead
+        }
+      };
+      // Include custom data if exists
+      try {
+        var saved = localStorage.getItem('ielts_data');
+        if (saved) userData.customData = JSON.parse(saved);
+      } catch(e) {}
+
+      var blob = new Blob([JSON.stringify(userData, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'ielts_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Import user data from file
+    function importUserData(file) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          var data = JSON.parse(e.target.result);
+          if (!data || typeof data !== 'object') throw new Error('Invalid format');
+
+          // Show preview in a simple confirm dialog
+          var preview = '';
+          if (data.favorites) {
+            var wordCount = Array.isArray(data.favorites.words) ? data.favorites.words.length : 0;
+            var itemCount = data.favorites.items ? Object.keys(data.favorites.items).length : 0;
+            preview += '⭐ 收藏: ' + wordCount + ' 个单词, ' + itemCount + ' 项\n';
+          }
+          if (data.errorNotebook) {
+            var errWords = Object.keys(data.errorNotebook).length;
+            preview += '📝 错题本: ' + errWords + ' 个单词\n';
+          }
+          if (data.settings) {
+            preview += '⚙ 设置: ' + (data.settings.voiceGender || '?') + ' / ' + (data.settings.accent || '?') + '\n';
+          }
+          if (data.customData) {
+            preview += '📚 自定义单词数据\n';
+          }
+          preview += '\n⚠ 导入将覆盖当前数据，确认继续？';
+
+          if (confirm(preview)) {
+            if (data.favorites) {
+              localStorage.setItem('ielts_favorites', JSON.stringify(data.favorites));
+              favorites.words = new Set(data.favorites.words || []);
+              favorites.items = data.favorites.items || {};
+            }
+            if (data.errorNotebook) {
+              errorNotebook = data.errorNotebook;
+              saveErrorNotebook();
+            }
+            if (data.customData) {
+              localStorage.setItem('ielts_data', JSON.stringify(data.customData));
+            }
+            if (data.settings) {
+              localStorage.setItem(SETTINGS_KEY, JSON.stringify(data.settings));
+            }
+            alert('✅ 数据已导入，页面将刷新。');
+            location.reload();
+          }
+        } catch(err) {
+          alert('❌ 文件格式错误，无法导入。\n' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function triggerImportFile() {
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = function() {
+        if (this.files && this.files[0]) {
+          importUserData(this.files[0]);
+        }
+      };
+      input.click();
+    }
+
+    /* ================================================================
+       SUPABASE CLOUD SYNC
+       ================================================================ */
+    var supabaseClient = null;
+
+    // Cloud panel DOM refs
+    var cloudOverlay, cloudBody, cloudConfig, cloudAuth, cloudLoggedIn,
+        cloudStatusLabel, cloudUserEmail, cloudAuthMsg, cloudSyncMsg,
+        supabaseUrlInput, supabaseKeyInput, cloudEmailInput, cloudPasswordInput,
+        cloudAuthBtn, tabLogin, tabRegister;
+
+    // Mode: 'login' or 'register'
+    var cloudAuthMode = 'login';
+
+    function initCloudDomRefs() {
+      cloudOverlay = $('cloudOverlay');
+      cloudBody = $('cloudBody');
+      cloudConfig = $('cloudConfig');
+      cloudAuth = $('cloudAuth');
+      cloudLoggedIn = $('cloudLoggedIn');
+      cloudStatusLabel = $('cloudStatusLabel');
+      cloudUserEmail = $('cloudUserEmail');
+      cloudAuthMsg = $('cloudAuthMsg');
+      cloudSyncMsg = $('cloudSyncMsg');
+      supabaseUrlInput = $('supabaseUrlInput');
+      supabaseKeyInput = $('supabaseKeyInput');
+      cloudEmailInput = $('cloudEmailInput');
+      cloudPasswordInput = $('cloudPasswordInput');
+      cloudAuthBtn = $('cloudAuthBtn');
+      tabLogin = $('tabLogin');
+      tabRegister = $('tabRegister');
+    }
+
+    function initSupabase() {
+      var url = localStorage.getItem(SUPABASE_URL_KEY);
+      var key = localStorage.getItem(SUPABASE_KEY_KEY);
+      if (url && key && window.supabase) {
+        try {
+          supabaseClient = window.supabase.createClient(url, key);
+          return true;
+        } catch(e) { supabaseClient = null; }
+      }
+      return false;
+    }
+
+    function saveCloudConfig() {
+      var url = supabaseUrlInput.value.trim();
+      var key = supabaseKeyInput.value.trim();
+      if (!url || !key) { alert('请填写 Supabase URL 和 Anon Key'); return; }
+      localStorage.setItem(SUPABASE_URL_KEY, url);
+      localStorage.setItem(SUPABASE_KEY_KEY, key);
+      initSupabase();
+      cloudConfig.classList.add('hidden');
+      cloudAuth.classList.remove('hidden');
+      updateCloudStatus();
+    }
+
+    function updateCloudStatus() {
+      if (!supabaseClient) {
+        cloudStatusLabel.textContent = '未配置';
+        return;
+      }
+      supabaseClient.auth.getSession().then(function(res) {
+        if (res.data && res.data.session) {
+          cloudStatusLabel.textContent = '已登录';
+          cloudUserEmail.textContent = res.data.session.user.email;
+          showCloudSection('loggedIn');
+        } else {
+          cloudStatusLabel.textContent = '已配置，未登录';
+          showCloudSection('auth');
+        }
+      }).catch(function() {
+        cloudStatusLabel.textContent = '已配置，未登录';
+        showCloudSection('auth');
+      });
+    }
+
+    function showCloudSection(section) {
+      cloudConfig.classList.add('hidden');
+      cloudAuth.classList.add('hidden');
+      cloudLoggedIn.classList.add('hidden');
+      if (section === 'config') cloudConfig.classList.remove('hidden');
+      else if (section === 'auth') cloudAuth.classList.remove('hidden');
+      else if (section === 'loggedIn') cloudLoggedIn.classList.remove('hidden');
+    }
+
+    function openCloudPanel() {
+      if (!cloudOverlay) initCloudDomRefs();
+
+      // Check if configured
+      var url = localStorage.getItem(SUPABASE_URL_KEY);
+      var key = localStorage.getItem(SUPABASE_KEY_KEY);
+      if (url) supabaseUrlInput.value = url;
+      if (key) supabaseKeyInput.value = key;
+
+      initSupabase();
+
+      if (!supabaseClient) {
+        showCloudSection('config');
+      } else {
+        updateCloudStatus();
+      }
+
+      cloudOverlay.classList.remove('hidden');
+    }
+
+    function closeCloudPanel() {
+      cloudOverlay.classList.add('hidden');
+    }
+
+    async function cloudAuthAction() {
+      var email = cloudEmailInput.value.trim();
+      var password = cloudPasswordInput.value.trim();
+      if (!email || !password) { showCloudMsg('auth', '请填写邮箱和密码', 'red'); return; }
+      if (password.length < 6) { showCloudMsg('auth', '密码至少6位', 'red'); return; }
+
+      cloudAuthBtn.disabled = true;
+      cloudAuthBtn.textContent = '处理中...';
+      showCloudMsg('auth', '', '');
+      cloudAuthMsg.classList.add('hidden');
+
+      try {
+        var res;
+        if (cloudAuthMode === 'register') {
+          res = await supabaseClient.auth.signUp({ email: email, password: password });
+          if (res.data.user) {
+            showCloudMsg('auth', '✅ 注册成功！请检查邮箱确认（如已开启邮箱验证）。现在可以登录了。', 'green');
+            cloudAuthMode = 'login';
+            updateAuthTabUI();
+          }
+          if (res.error) throw res.error;
+        } else {
+          res = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+          if (res.data.session) {
+            showCloudMsg('auth', '✅ 登录成功！', 'green');
+            setTimeout(function() {
+              updateCloudStatus();
+              // Auto-sync: pull from cloud
+              syncPullSilent();
+              cloudEmailInput.value = '';
+              cloudPasswordInput.value = '';
+            }, 500);
+          }
+          if (res.error) throw res.error;
+        }
+      } catch(e) {
+        showCloudMsg('auth', '❌ ' + (e.message || e), 'red');
+      }
+      cloudAuthBtn.disabled = false;
+      cloudAuthBtn.textContent = cloudAuthMode === 'register' ? '注册' : '登录';
+    }
+
+    async function cloudLogout() {
+      if (supabaseClient) {
+        await supabaseClient.auth.signOut();
+      }
+      showCloudSection('auth');
+      cloudStatusLabel.textContent = '已配置，未登录';
+      updateCloudStatus();
+    }
+
+    function showCloudMsg(type, msg, color) {
+      var el = type === 'auth' ? cloudAuthMsg : cloudSyncMsg;
+      if (!msg) { el.classList.add('hidden'); return; }
+      el.textContent = msg;
+      el.style.color = color;
+      el.classList.remove('hidden');
+    }
+
+    // Sync data to cloud
+    async function syncPush() {
+      if (!supabaseClient) { showCloudMsg('sync', '❌ 未配置或未登录', 'red'); return; }
+      var sessionRes = await supabaseClient.auth.getSession();
+      if (!sessionRes.data.session) { showCloudMsg('sync', '❌ 请先登录', 'red'); return; }
+
+      showCloudMsg('sync', '⏳ 正在上传...', '#6366f1');
+      try {
+        var keys = {
+          'favorites': { words: [...favorites.words], items: favorites.items },
+          'error_notebook': errorNotebook,
+          'settings': { voiceGender: voiceGender, accent: accent, speechRate: speechRate, autoRead: autoRead }
+        };
+        try {
+          var saved = localStorage.getItem('ielts_data');
+          if (saved) keys['custom_data'] = JSON.parse(saved);
+        } catch(e) {}
+
+        for (var k in keys) {
+          await supabaseClient.from('user_data').upsert({
+            key: k,
+            data: keys[k],
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'user_id,key' });
+        }
+        showCloudMsg('sync', '✅ 上传完成！', 'green');
+      } catch(e) {
+        showCloudMsg('sync', '❌ 上传失败: ' + (e.message || e), 'red');
+      }
+    }
+
+    // Sync data from cloud
+    async function syncPull() {
+      if (!supabaseClient) { showCloudMsg('sync', '❌ 未配置或未登录', 'red'); return; }
+      var sessionRes = await supabaseClient.auth.getSession();
+      if (!sessionRes.data.session) { showCloudMsg('sync', '❌ 请先登录', 'red'); return; }
+
+      showCloudMsg('sync', '⏳ 正在下载...', '#6366f1');
+      try {
+        var res = await supabaseClient.from('user_data').select('*');
+        if (res.error) throw res.error;
+
+        var data = res.data || [];
+        var updated = 0;
+        data.forEach(function(row) {
+          if (row.key === 'favorites' && row.data) {
+            localStorage.setItem('ielts_favorites', JSON.stringify(row.data));
+            updated++;
+          } else if (row.key === 'error_notebook' && row.data) {
+            localStorage.setItem('ielts_error_notebook', JSON.stringify(row.data));
+            updated++;
+          } else if (row.key === 'settings' && row.data) {
+            localStorage.setItem('ielts_settings', JSON.stringify(row.data));
+            updated++;
+          } else if (row.key === 'custom_data' && row.data) {
+            localStorage.setItem('ielts_data', JSON.stringify(row.data));
+            updated++;
+          }
+        });
+
+        if (updated > 0) {
+          showCloudMsg('sync', '✅ 下载完成！已更新 ' + updated + ' 项数据，页面将刷新。', 'green');
+          setTimeout(function() { location.reload(); }, 1200);
+        } else {
+          showCloudMsg('sync', '✅ 云端暂无数据，请先上传。', '#f59e0b');
+        }
+      } catch(e) {
+        showCloudMsg('sync', '❌ 下载失败: ' + (e.message || e), 'red');
+      }
+    }
+
+    // Silent pull (after login, no feedback)
+    async function syncPullSilent() {
+      try {
+        var res = await supabaseClient.from('user_data').select('*');
+        if (res.error) return;
+        var data = res.data || [];
+        var changed = false;
+        data.forEach(function(row) {
+          if (row.key === 'favorites' && row.data) {
+            localStorage.setItem('ielts_favorites', JSON.stringify(row.data));
+            changed = true;
+          } else if (row.key === 'error_notebook' && row.data) {
+            localStorage.setItem('ielts_error_notebook', JSON.stringify(row.data));
+            changed = true;
+          } else if (row.key === 'settings' && row.data) {
+            localStorage.setItem('ielts_settings', JSON.stringify(row.data));
+            changed = true;
+          } else if (row.key === 'custom_data' && row.data) {
+            localStorage.setItem('ielts_data', JSON.stringify(row.data));
+            changed = true;
+          }
+        });
+        if (changed) location.reload();
+      } catch(e) { /* silent */ }
+    }
+
+    // Auto-sync push (called from save functions when logged in)
+    var _syncDebounceTimer = null;
+    function autoSyncToCloud() {
+      if (!supabaseClient) return;
+      clearTimeout(_syncDebounceTimer);
+      _syncDebounceTimer = setTimeout(function() {
+        syncPushSilent();
+      }, 3000); // debounce 3s
+    }
+
+    async function syncPushSilent() {
+      try {
+        var sessionRes = await supabaseClient.auth.getSession();
+        if (!sessionRes.data.session) return;
+        var keys = {
+          'favorites': { words: [...favorites.words], items: favorites.items },
+          'error_notebook': errorNotebook,
+          'settings': { voiceGender: voiceGender, accent: accent, speechRate: speechRate, autoRead: autoRead }
+        };
+        try {
+          var saved = localStorage.getItem('ielts_data');
+          if (saved) keys['custom_data'] = JSON.parse(saved);
+        } catch(e) {}
+        for (var k in keys) {
+          await supabaseClient.from('user_data').upsert({
+            key: k,
+            data: keys[k],
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'user_id,key' });
+        }
+      } catch(e) { /* silent */ }
+    }
+
+    function updateAuthTabUI() {
+      if (cloudAuthMode === 'login') {
+        tabLogin.classList.add('bg-white', 'text-gray-800', 'shadow-sm');
+        tabLogin.classList.remove('text-gray-500');
+        tabRegister.classList.remove('bg-white', 'text-gray-800', 'shadow-sm');
+        tabRegister.classList.add('text-gray-500');
+        cloudAuthBtn.textContent = '登录';
+      } else {
+        tabRegister.classList.add('bg-white', 'text-gray-800', 'shadow-sm');
+        tabRegister.classList.remove('text-gray-500');
+        tabLogin.classList.remove('bg-white', 'text-gray-800', 'shadow-sm');
+        tabLogin.classList.add('text-gray-500');
+        cloudAuthBtn.textContent = '注册';
+      }
+    }
+
+    // Wire up cloud panel event listeners (called after DOM ready)
+    function wireCloudEvents() {
+      initCloudDomRefs();
+      $('closeCloudBtn').addEventListener('click', closeCloudPanel);
+      cloudOverlay.addEventListener('click', function(e) { if (e.target === cloudOverlay) closeCloudPanel(); });
+
+      $('saveCloudConfigBtn').addEventListener('click', saveCloudConfig);
+
+      tabLogin.addEventListener('click', function() {
+        cloudAuthMode = 'login';
+        updateAuthTabUI();
+      });
+      tabRegister.addEventListener('click', function() {
+        cloudAuthMode = 'register';
+        updateAuthTabUI();
+      });
+
+      cloudAuthBtn.addEventListener('click', cloudAuthAction);
+      $('cloudLogoutBtn').addEventListener('click', cloudLogout);
+      $('syncPushBtn').addEventListener('click', syncPush);
+      $('syncPullBtn').addEventListener('click', syncPull);
+    }
+
+    // Initialize supabase on load
+    initSupabase();
+
     /* ================================================================
        EVENT HANDLERS
        ================================================================ */
@@ -3211,6 +4122,7 @@
         });
         this.classList.add('active-accent', 'bg-indigo-100', 'text-indigo-700');
         this.classList.remove('bg-gray-100', 'text-gray-500');
+        saveSettings();
       });
     });
 
@@ -3233,10 +4145,12 @@
     $('voiceMaleBtn').addEventListener('click', function() {
       voiceGender = 'male';
       updateVoiceButtons();
+      saveSettings();
     });
     $('voiceFemaleBtn').addEventListener('click', function() {
       voiceGender = 'female';
       updateVoiceButtons();
+      saveSettings();
     });
     updateVoiceButtons();
 
@@ -3248,6 +4162,13 @@
         const wordData = allData[currentRootIndex].words[currentWordIndex];
         if (wordData) startAutoRead(wordData);
       }
+      saveSettings();
+    });
+
+    // Speech rate slider
+    speechRateSlider.addEventListener('input', function() {
+      speechRate = parseFloat(this.value);
+      saveSettings();
     });
 
     // Stop speak button
@@ -3369,6 +4290,16 @@
     $('iconSmartImport').addEventListener('click', function() {
       if (isMobile()) closeSidebarMobile(); else expandSidebar();
       openSmartImport();
+    });
+    $('iconExportData').addEventListener('click', function() {
+      exportUserData();
+    });
+    $('iconImportData').addEventListener('click', function() {
+      triggerImportFile();
+    });
+    $('iconCloud').addEventListener('click', function() {
+      if (isMobile()) closeSidebarMobile(); else expandSidebar();
+      openCloudPanel();
     });
     $('iconManage').addEventListener('click', function() {
       if (isMobile()) closeSidebarMobile(); else expandSidebar();
@@ -3563,6 +4494,7 @@
           words: [...favorites.words],
           items: favorites.items
         }));
+        autoSyncToCloud();
       } catch (e) { /* ignore */ }
     }
 
@@ -4163,9 +5095,9 @@
                 html += '<div class="syn-preview text-gray-500 leading-relaxed line-clamp-1">' + basicHtml + '</div>';
                 // Expanded detail (hidden by default)
                 html += '<div class="syn-detail hidden mt-2 space-y-1.5">';
-                html += '<div class="flex items-start gap-1.5"><span class="text-[10px] text-red-400 font-medium flex-shrink-0 mt-0.5">初级</span><span class="text-gray-700 leading-relaxed">' + basicHtml + '</span></div>';
+                html += '<div class="flex items-start gap-1.5"><span class="text-[10px] text-red-400 font-medium flex-shrink-0 mt-0.5">初级</span><div><span class="text-gray-700 leading-relaxed">' + basicHtml + '</span>' + (up.basic_zh ? '<p class="text-[10px] text-gray-400 mt-0.5">' + escapeHTML(up.basic_zh) + '</p>' : '') + '</div></div>';
                 html += '<div class="text-center text-gray-300 text-[10px]">⬇ 替换升级</div>';
-                html += '<div class="flex items-start gap-1.5"><span class="text-[10px] text-green-500 font-medium flex-shrink-0 mt-0.5">高级</span><span class="text-gray-800 leading-relaxed font-medium">' + advHtml + '</span></div>';
+                html += '<div class="flex items-start gap-1.5"><span class="text-[10px] text-green-500 font-medium flex-shrink-0 mt-0.5">高级</span><div><span class="text-gray-800 leading-relaxed font-medium">' + advHtml + '</span>' + (up.advanced_zh ? '<p class="text-[10px] text-gray-400 mt-0.5">' + escapeHTML(up.advanced_zh) + '</p>' : '') + '</div></div>';
                 html += '<div class="flex flex-wrap gap-1 mt-1.5 pt-1.5 border-t border-gray-100">';
                 (up.highlights || []).forEach(function(h) {
                   html += '<span class="text-[10px] inline-flex items-center gap-1"><span class="bg-red-100 text-red-700 rounded px-1">' + escapeHTML(h.old) + '</span><span class="text-gray-300">→</span><span class="bg-green-100 text-green-700 rounded px-1">' + escapeHTML(h.new) + '</span></span>';
@@ -4252,6 +5184,20 @@
       loadFavorites();
       loadImportHistory();
       loadErrorNotebook();
+      loadSettings();
+      wireCloudEvents();
+
+      // Apply loaded settings to UI
+      if (speechRateSlider) speechRateSlider.value = speechRate;
+      if (autoReadToggle) autoReadToggle.checked = autoRead;
+      if (voiceGender === 'male') { updateVoiceButtons(); }
+      // Highlight accent button
+      document.querySelectorAll('.accent-btn').forEach(function(b) {
+        if (b.dataset.accent === accent) {
+          b.classList.add('active-accent', 'bg-indigo-100', 'text-indigo-700');
+          b.classList.remove('bg-gray-100', 'text-gray-500');
+        }
+      });
 
       // Merge localStorage edits into fresh data.json (preserve enriched fields)
       try {

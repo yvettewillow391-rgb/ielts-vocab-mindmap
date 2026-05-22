@@ -1776,19 +1776,38 @@ window.__TIPS__ = {
           "basic": "I think this is very important for our health.",
           "advanced": "I believe this is absolutely essential for our well-being.",
           "highlights": [
-            {"old": "think", "new": "believe"},
-            {"old": "very important", "new": "absolutely essential"},
-            {"old": "health", "new": "well-being"}
-          ]
+            {
+              "old": "think",
+              "new": "believe"
+            },
+            {
+              "old": "very important",
+              "new": "absolutely essential"
+            },
+            {
+              "old": "health",
+              "new": "well-being"
+            }
+          ],
+          "basic_zh": "我认为这对我们的健康非常重要。",
+          "advanced_zh": "我相信这对我们的福祉至关重要。"
         },
         {
           "type": "写作",
           "basic": "Education is very important for a country's development.",
           "advanced": "Education is fundamentally crucial to a nation's socioeconomic development.",
           "highlights": [
-            {"old": "very important", "new": "fundamentally crucial"},
-            {"old": "a country's development", "new": "a nation's socioeconomic development"}
-          ]
+            {
+              "old": "very important",
+              "new": "fundamentally crucial"
+            },
+            {
+              "old": "a country's development",
+              "new": "a nation's socioeconomic development"
+            }
+          ],
+          "basic_zh": "教育对于一个国家的发展非常重要。",
+          "advanced_zh": "教育对国家的社会经济发展至关重要。"
         }
       ]
     },
@@ -1832,19 +1851,38 @@ window.__TIPS__ = {
           "basic": "I think that technology is making our lives better.",
           "advanced": "I strongly believe that technology has significantly enhanced our quality of life.",
           "highlights": [
-            {"old": "think", "new": "strongly believe"},
-            {"old": "making our lives better", "new": "significantly enhanced our quality of life"}
-          ]
+            {
+              "old": "think",
+              "new": "strongly believe"
+            },
+            {
+              "old": "making our lives better",
+              "new": "significantly enhanced our quality of life"
+            }
+          ],
+          "basic_zh": "我认为技术正在让我们的生活变得更美好。",
+          "advanced_zh": "我坚信技术大大提高了我们的生活质量。"
         },
         {
           "type": "写作",
           "basic": "Many people think social media is harmful to young people.",
           "advanced": "A growing number of scholars contend that social media exerts a detrimental influence on adolescents.",
           "highlights": [
-            {"old": "Many people think", "new": "A growing number of scholars contend"},
-            {"old": "is harmful to", "new": "exerts a detrimental influence on"},
-            {"old": "young people", "new": "adolescents"}
-          ]
+            {
+              "old": "Many people think",
+              "new": "A growing number of scholars contend"
+            },
+            {
+              "old": "is harmful to",
+              "new": "exerts a detrimental influence on"
+            },
+            {
+              "old": "young people",
+              "new": "adolescents"
+            }
+          ],
+          "basic_zh": "许多人认为社交媒体对年轻人有害。",
+          "advanced_zh": "越来越多的学者认为，社交媒体对青少年产生不利影响。"
         }
       ]
     },
@@ -1883,21 +1921,46 @@ window.__TIPS__ = {
           "basic": "Too much screen time can cause eye problems.",
           "advanced": "Excessive screen exposure may lead to significant vision deterioration.",
           "highlights": [
-            {"old": "Too much", "new": "Excessive"},
-            {"old": "can cause", "new": "may lead to"},
-            {"old": "eye problems", "new": "significant vision deterioration"}
-          ]
+            {
+              "old": "Too much",
+              "new": "Excessive"
+            },
+            {
+              "old": "can cause",
+              "new": "may lead to"
+            },
+            {
+              "old": "eye problems",
+              "new": "significant vision deterioration"
+            }
+          ],
+          "basic_zh": "屏幕时间过长会导致眼睛问题。",
+          "advanced_zh": "过度接触屏幕可能会导致视力严重恶化。"
         },
         {
           "type": "写作",
           "basic": "Pollution causes many health problems in cities.",
           "advanced": "Environmental pollution gives rise to a wide range of adverse health issues in urban areas.",
           "highlights": [
-            {"old": "Pollution", "new": "Environmental pollution"},
-            {"old": "causes", "new": "gives rise to"},
-            {"old": "many health problems", "new": "a wide range of adverse health issues"},
-            {"old": "in cities", "new": "in urban areas"}
-          ]
+            {
+              "old": "Pollution",
+              "new": "Environmental pollution"
+            },
+            {
+              "old": "causes",
+              "new": "gives rise to"
+            },
+            {
+              "old": "many health problems",
+              "new": "a wide range of adverse health issues"
+            },
+            {
+              "old": "in cities",
+              "new": "in urban areas"
+            }
+          ],
+          "basic_zh": "污染导致城市出现许多健康问题。",
+          "advanced_zh": "环境污染在城市地区引起了广泛的不利健康问题。"
         }
       ]
     },
@@ -1936,20 +1999,42 @@ window.__TIPS__ = {
           "basic": "We need to fix this problem as soon as possible.",
           "advanced": "It is imperative that we address this issue at the earliest opportunity.",
           "highlights": [
-            {"old": "need to fix", "new": "It is imperative that we address"},
-            {"old": "this problem", "new": "this issue"},
-            {"old": "as soon as possible", "new": "at the earliest opportunity"}
-          ]
+            {
+              "old": "need to fix",
+              "new": "It is imperative that we address"
+            },
+            {
+              "old": "this problem",
+              "new": "this issue"
+            },
+            {
+              "old": "as soon as possible",
+              "new": "at the earliest opportunity"
+            }
+          ],
+          "basic_zh": "我们需要尽快解决此问题。",
+          "advanced_zh": "我们必须尽早解决这个问题。"
         },
         {
           "type": "写作",
           "basic": "The government should solve the housing problem quickly.",
           "advanced": "The government must take immediate measures to tackle the housing crisis.",
           "highlights": [
-            {"old": "should solve", "new": "must take immediate measures to tackle"},
-            {"old": "quickly", "new": "immediate"},
-            {"old": "the housing problem", "new": "the housing crisis"}
-          ]
+            {
+              "old": "should solve",
+              "new": "must take immediate measures to tackle"
+            },
+            {
+              "old": "quickly",
+              "new": "immediate"
+            },
+            {
+              "old": "the housing problem",
+              "new": "the housing crisis"
+            }
+          ],
+          "basic_zh": "政府应该尽快解决住房问题。",
+          "advanced_zh": "政府必须立即采取措施解决住房危机。"
         }
       ]
     },
@@ -1988,21 +2073,46 @@ window.__TIPS__ = {
           "basic": "There are many reasons why people choose to study abroad.",
           "advanced": "There are numerous compelling reasons why individuals opt to pursue education overseas.",
           "highlights": [
-            {"old": "many", "new": "numerous compelling"},
-            {"old": "reasons", "new": "reasons"},
-            {"old": "people", "new": "individuals"},
-            {"old": "choose", "new": "opt to"},
-            {"old": "study abroad", "new": "pursue education overseas"}
-          ]
+            {
+              "old": "many",
+              "new": "numerous compelling"
+            },
+            {
+              "old": "reasons",
+              "new": "reasons"
+            },
+            {
+              "old": "people",
+              "new": "individuals"
+            },
+            {
+              "old": "choose",
+              "new": "opt to"
+            },
+            {
+              "old": "study abroad",
+              "new": "pursue education overseas"
+            }
+          ],
+          "basic_zh": "人们选择出国留学的原因有很多。",
+          "advanced_zh": "个人选择在海外接受教育有许多令人信服的理由。"
         },
         {
           "type": "写作",
           "basic": "There are many factors that affect economic growth.",
           "advanced": "A multitude of interconnected factors exert a considerable influence on economic growth.",
           "highlights": [
-            {"old": "There are many factors", "new": "A multitude of interconnected factors"},
-            {"old": "affect", "new": "exert a considerable influence on"}
-          ]
+            {
+              "old": "There are many factors",
+              "new": "A multitude of interconnected factors"
+            },
+            {
+              "old": "affect",
+              "new": "exert a considerable influence on"
+            }
+          ],
+          "basic_zh": "影响经济增长的因素很多。",
+          "advanced_zh": "众多相互关联的因素对经济增长产生了相当大的影响。"
         }
       ]
     },
@@ -2041,19 +2151,38 @@ window.__TIPS__ = {
           "basic": "Exercise is good for both your body and mind.",
           "advanced": "Regular physical activity is highly beneficial for both physical and mental well-being.",
           "highlights": [
-            {"old": "Exercise", "new": "Regular physical activity"},
-            {"old": "is good for", "new": "is highly beneficial for"},
-            {"old": "your body and mind", "new": "physical and mental well-being"}
-          ]
+            {
+              "old": "Exercise",
+              "new": "Regular physical activity"
+            },
+            {
+              "old": "is good for",
+              "new": "is highly beneficial for"
+            },
+            {
+              "old": "your body and mind",
+              "new": "physical and mental well-being"
+            }
+          ],
+          "basic_zh": "锻炼对身心健康都有好处。",
+          "advanced_zh": "定期的身体活动对身心健康非常有益。"
         },
         {
           "type": "写作",
           "basic": "This change is good for the economy.",
           "advanced": "This reform has produced favorable outcomes for the national economy.",
           "highlights": [
-            {"old": "This change is good for", "new": "This reform has produced favorable outcomes for"},
-            {"old": "the economy", "new": "the national economy"}
-          ]
+            {
+              "old": "This change is good for",
+              "new": "This reform has produced favorable outcomes for"
+            },
+            {
+              "old": "the economy",
+              "new": "the national economy"
+            }
+          ],
+          "basic_zh": "这种变化对经济有好处。",
+          "advanced_zh": "这一改革为国民经济带来了有利结果。"
         }
       ]
     },
@@ -2092,18 +2221,34 @@ window.__TIPS__ = {
           "basic": "Eating too much junk food is really bad for you.",
           "advanced": "Excessive consumption of processed foods is highly detrimental to one's overall health.",
           "highlights": [
-            {"old": "Eating too much junk food", "new": "Excessive consumption of processed foods"},
-            {"old": "is really bad for you", "new": "is highly detrimental to one's overall health"}
-          ]
+            {
+              "old": "Eating too much junk food",
+              "new": "Excessive consumption of processed foods"
+            },
+            {
+              "old": "is really bad for you",
+              "new": "is highly detrimental to one's overall health"
+            }
+          ],
+          "basic_zh": "吃太多垃圾食品对你真的不好。",
+          "advanced_zh": "过量食用加工食品对整体健康极为有害。"
         },
         {
           "type": "写作",
           "basic": "These policies had bad effects on small businesses.",
           "advanced": "These policies exerted adverse consequences on small and medium-sized enterprises.",
           "highlights": [
-            {"old": "had bad effects on", "new": "exerted adverse consequences on"},
-            {"old": "small businesses", "new": "small and medium-sized enterprises"}
-          ]
+            {
+              "old": "had bad effects on",
+              "new": "exerted adverse consequences on"
+            },
+            {
+              "old": "small businesses",
+              "new": "small and medium-sized enterprises"
+            }
+          ],
+          "basic_zh": "这些政策对小企业产生了不良影响。",
+          "advanced_zh": "这些政策对中小企业产生了不利影响。"
         }
       ]
     },
@@ -2142,20 +2287,42 @@ window.__TIPS__ = {
           "basic": "House prices have gone up a lot in recent years.",
           "advanced": "Property values have soared dramatically over the past several years.",
           "highlights": [
-            {"old": "House prices", "new": "Property values"},
-            {"old": "have gone up a lot", "new": "have soared dramatically"},
-            {"old": "in recent years", "new": "over the past several years"}
-          ]
+            {
+              "old": "House prices",
+              "new": "Property values"
+            },
+            {
+              "old": "have gone up a lot",
+              "new": "have soared dramatically"
+            },
+            {
+              "old": "in recent years",
+              "new": "over the past several years"
+            }
+          ],
+          "basic_zh": "近年来，房价上涨了很多。",
+          "advanced_zh": "过去几年，房地产价值大幅飙升。"
         },
         {
           "type": "写作",
           "basic": "Internet use has increased very fast in developing countries.",
           "advanced": "Internet penetration has surged exponentially across developing nations.",
           "highlights": [
-            {"old": "Internet use", "new": "Internet penetration"},
-            {"old": "has increased very fast", "new": "has surged exponentially"},
-            {"old": "in developing countries", "new": "across developing nations"}
-          ]
+            {
+              "old": "Internet use",
+              "new": "Internet penetration"
+            },
+            {
+              "old": "has increased very fast",
+              "new": "has surged exponentially"
+            },
+            {
+              "old": "in developing countries",
+              "new": "across developing nations"
+            }
+          ],
+          "basic_zh": "互联网的使用在发展中国家增长非常快。",
+          "advanced_zh": "互联网普及率在发展中国家呈指数级增长。"
         }
       ]
     },
@@ -2194,19 +2361,38 @@ window.__TIPS__ = {
           "basic": "The number of people watching TV has gone down a lot.",
           "advanced": "Television viewership has plummeted substantially over the past decade.",
           "highlights": [
-            {"old": "The number of people watching TV", "new": "Television viewership"},
-            {"old": "has gone down a lot", "new": "has plummeted substantially"}
-          ]
+            {
+              "old": "The number of people watching TV",
+              "new": "Television viewership"
+            },
+            {
+              "old": "has gone down a lot",
+              "new": "has plummeted substantially"
+            }
+          ],
+          "basic_zh": "看电视的人数下降了很多。",
+          "advanced_zh": "在过去十年中，电视收视率大幅下降。"
         },
         {
           "type": "写作",
           "basic": "The forest area is becoming smaller every year.",
           "advanced": "The total forest coverage is dwindling at an alarming annual rate.",
           "highlights": [
-            {"old": "The forest area", "new": "The total forest coverage"},
-            {"old": "is becoming smaller", "new": "is dwindling"},
-            {"old": "every year", "new": "at an alarming annual rate"}
-          ]
+            {
+              "old": "The forest area",
+              "new": "The total forest coverage"
+            },
+            {
+              "old": "is becoming smaller",
+              "new": "is dwindling"
+            },
+            {
+              "old": "every year",
+              "new": "at an alarming annual rate"
+            }
+          ],
+          "basic_zh": "森林面积逐年缩小。",
+          "advanced_zh": "森林覆盖率每年都在以惊人的速度下降。"
         }
       ]
     },
@@ -2245,21 +2431,46 @@ window.__TIPS__ = {
           "basic": "The graph shows that sales went up last year.",
           "advanced": "The data clearly demonstrates that sales figures experienced a marked increase during the previous year.",
           "highlights": [
-            {"old": "The graph shows", "new": "The data clearly demonstrates"},
-            {"old": "sales went up", "new": "sales figures experienced a marked increase"},
-            {"old": "last year", "new": "during the previous year"}
-          ]
+            {
+              "old": "The graph shows",
+              "new": "The data clearly demonstrates"
+            },
+            {
+              "old": "sales went up",
+              "new": "sales figures experienced a marked increase"
+            },
+            {
+              "old": "last year",
+              "new": "during the previous year"
+            }
+          ],
+          "basic_zh": "图表显示，去年销售额有所增长。",
+          "advanced_zh": "数据清楚地表明，去年的销售数字显著增加。"
         },
         {
           "type": "写作",
           "basic": "This research shows that exercise helps mental health.",
           "advanced": "This study reveals that regular physical activity significantly enhances psychological well-being.",
           "highlights": [
-            {"old": "This research shows", "new": "This study reveals"},
-            {"old": "exercise", "new": "regular physical activity"},
-            {"old": "helps", "new": "significantly enhances"},
-            {"old": "mental health", "new": "psychological well-being"}
-          ]
+            {
+              "old": "This research shows",
+              "new": "This study reveals"
+            },
+            {
+              "old": "exercise",
+              "new": "regular physical activity"
+            },
+            {
+              "old": "helps",
+              "new": "significantly enhances"
+            },
+            {
+              "old": "mental health",
+              "new": "psychological well-being"
+            }
+          ],
+          "basic_zh": "这项研究表明，锻炼有助于心理健康。",
+          "advanced_zh": "这项研究表明，有规律的身体活动可以显著增强心理健康。"
         }
       ]
     },
