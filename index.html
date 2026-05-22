@@ -1620,17 +1620,23 @@
       dictWordList.innerHTML = dictItems.map((item, i) => {
         let cls = 'text-xs text-gray-400';
         let icon = '<span class="w-5 text-center text-[10px] text-gray-300">' + (i + 1) + '</span>';
+        let label;
         if (item.correct === true) {
           cls = 'text-xs text-green-600 font-medium';
           icon = '<span class="w-5 text-center">✓</span>';
+          label = item.text;
         } else if (item.correct === false) {
           cls = 'text-xs text-red-500 font-medium';
           icon = '<span class="w-5 text-center">✗</span>';
+          label = item.text + ' → ' + item.answer;
         } else if (i === dictIndex && !dictAnswered) {
           cls = 'text-xs text-indigo-500 font-medium';
           icon = '<span class="w-5 text-center">▶</span>';
+          label = '???';
+        } else {
+          label = '???';
         }
-        const label = item.type === 'word' ? item.text : (item.text.length > 35 ? item.text.substring(0, 35) + '...' : item.text);
+        if (label.length > 40) label = label.substring(0, 40) + '...';
         return '<div class="flex items-center gap-2 ' + cls + '">' + icon + '<span>' + escapeHTML(label) + '</span></div>';
       }).join('');
     }
