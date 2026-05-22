@@ -38,8 +38,6 @@ open index.html
 ```
 
 Or visit the deployed site (password gate):
-
-- **Edit mode**: password `01021130`
 - **View mode**: password `123456`
 
 ## Project Structure
