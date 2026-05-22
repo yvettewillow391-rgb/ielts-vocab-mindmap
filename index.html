@@ -17,15 +17,21 @@
     #detailInner { scroll-behavior: smooth; }
     /* Collapsible sidebar */
     #sidebar { transition: width 0.3s ease; }
-    #sidebar.collapsed { width: 48px !important; flex-shrink: 0; }
+    #sidebar.collapsed { width: 56px !important; flex-shrink: 0; }
     #sidebar .sidebar-content { transition: opacity 0.2s ease; }
     #sidebar.collapsed .sidebar-content { opacity: 0; pointer-events: none; }
     #collapseBtn { transition: transform 0.3s ease; }
     #sidebar.collapsed #collapseBtn { transform: rotate(180deg); }
     /* Icon bar (shown when collapsed) */
     #iconBar { display: none; }
-    #sidebar.collapsed #iconBar { display: flex !important; flex-direction: column; align-items: center; gap: 10px; padding-top: 8px; }
+    #sidebar.collapsed #iconBar { display: flex !important; flex-direction: column; align-items: center; gap: 12px; padding: 10px 4px; }
     #sidebar.collapsed #sidebarInner { display: none; }
+    .icon-bar-btn { width: 40px; height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; border-radius: 10px; cursor: pointer; transition: all 0.15s; background: transparent; flex-shrink: 0; }
+    .icon-bar-btn .icon-emoji { font-size: 18px; line-height: 1; }
+    .icon-bar-btn .icon-label { font-size: 8px; color: #9ca3af; margin-top: 1px; line-height: 1; }
+    .icon-bar-btn:hover { background: #f3f4f6; }
+    .icon-bar-btn.primary { background: #eef2ff; }
+    .icon-bar-btn.primary:hover { background: #e0e7ff; }
     /* Tips responsive grid */
     @media (min-width: 600px) {
       .tips-card-grid { grid-template-columns: repeat(2, 1fr) !important; }
@@ -33,8 +39,8 @@
     /* ===== MOBILE RESPONSIVE ===== */
     @media (max-width: 767px) {
       /* Auto-collapse sidebar on mobile */
-      #sidebar:not(.expanded-mobile) { width: 48px !important; flex-shrink: 0; }
-      #sidebar:not(.expanded-mobile) #iconBar { display: flex !important; flex-direction: column; align-items: center; gap: 10px; padding-top: 8px; }
+      #sidebar:not(.expanded-mobile) { width: 56px !important; flex-shrink: 0; }
+      #sidebar:not(.expanded-mobile) #iconBar { display: flex !important; flex-direction: column; align-items: center; gap: 12px; padding: 10px 4px; }
       #sidebar:not(.expanded-mobile) #sidebarInner { display: none; }
       #sidebar.expanded-mobile { width: 100vw !important; position: fixed; left: 0; top: 0; bottom: 0; z-index: 50; }
       #sidebar.expanded-mobile #iconBar { display: none; }
@@ -161,11 +167,13 @@
   <aside id="sidebar" class="w-80 flex-shrink-0 bg-white shadow-lg z-20 flex flex-col" style="overflow:hidden">
     <!-- Icon bar (shown only when collapsed) -->
     <div id="iconBar">
-      <button id="expandFromIcon" title="展开侧栏" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:#f3f4f6;border-radius:8px;cursor:pointer;color:#6b7280;font-size:14px">▶</button>
-      <button id="iconSearch" title="搜索" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;border-radius:8px;cursor:pointer;color:#9ca3af;font-size:14px">🔍</button>
-      <button id="iconDict" title="默写" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;border-radius:8px;cursor:pointer;color:#9ca3af;font-size:14px">✏️</button>
-      <button id="iconTips" title="技巧" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;border-radius:8px;cursor:pointer;color:#9ca3af;font-size:14px">💡</button>
-      <button id="iconFav" title="收藏" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;border-radius:8px;cursor:pointer;color:#9ca3af;font-size:14px">⭐</button>
+      <button id="expandFromIcon" title="展开侧栏" class="icon-bar-btn primary" style="margin-bottom:4px">▶</button>
+      <button id="iconSearch" title="搜索单词" class="icon-bar-btn"><span class="icon-emoji">🔍</span><span class="icon-label">搜索</span></button>
+      <button id="iconDict" title="默写模式" class="icon-bar-btn"><span class="icon-emoji">✏️</span><span class="icon-label">默写</span></button>
+      <button id="iconTips" title="词汇技巧" class="icon-bar-btn"><span class="icon-emoji">💡</span><span class="icon-label">技巧</span></button>
+      <button id="iconFav" title="我的收藏" class="icon-bar-btn"><span class="icon-emoji">⭐</span><span class="icon-label">收藏</span></button>
+      <button id="iconAccent" title="切换发音" class="icon-bar-btn"><span class="icon-emoji">🇺🇸</span><span class="icon-label">发音</span></button>
+      <button id="iconAddRoot" title="新增词根" class="icon-bar-btn"><span class="icon-emoji">➕</span><span class="icon-label">新增</span></button>
     </div>
 
     <!-- Main sidebar content -->
@@ -2394,6 +2402,25 @@
     $('iconFav').addEventListener('click', function() {
       if (isMobile()) closeSidebarMobile(); else expandSidebar();
       toggleFavFilter();
+    });
+    $('iconAccent').addEventListener('click', function() {
+      // Toggle accent between US and UK
+      accent = (accent === 'en-US') ? 'en-GB' : 'en-US';
+      // Update accent buttons
+      document.querySelectorAll('.accent-btn').forEach(function(b) {
+        var isActive = b.dataset.accent === accent;
+        b.classList.toggle('active-accent', isActive);
+        b.classList.toggle('bg-indigo-100', isActive);
+        b.classList.toggle('text-indigo-700', isActive);
+        b.classList.toggle('bg-gray-100', !isActive);
+        b.classList.toggle('text-gray-500', !isActive);
+      });
+      // Update emoji
+      document.querySelector('#iconAccent .icon-emoji').textContent = accent === 'en-US' ? '🇺🇸' : '🇬🇧';
+    });
+    $('iconAddRoot').addEventListener('click', function() {
+      if (isMobile()) closeSidebarMobile(); else expandSidebar();
+      addNewRoot();
     });
 
     // Chart pan controls
