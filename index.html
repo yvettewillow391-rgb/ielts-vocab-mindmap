@@ -3274,107 +3274,121 @@
 
       // Show progress
       pasteProgress.classList.remove('hidden');
-      pasteProgress.innerHTML = '<div class="flex items-center gap-2 text-xs text-indigo-600"><span class="animate-pulse">⏳</span> 正在导入 <b>' + totalWords + '</b> 个单词...</div>';
 
-      // Import known words
+      // Build list of ALL words to import (both known-root and unknown)
+      var allWords = [];
       Object.keys(rootMap).forEach(function(idx) {
         var root = allData[parseInt(idx)];
-        var words = rootMap[idx];
-        var batchWords = [];
-        words.forEach(function(p) {
-          processed++;
-          var exists = root.words.some(function(w) { return w.word.toLowerCase() === p.word.toLowerCase(); });
-          if (!exists) {
-            var wObj = {
-              word: p.word,
+        rootMap[idx].forEach(function(p) {
+          allWords.push({ word: p.word, meaning: p.meaning, pos: p.pos, rootIdx: parseInt(idx), rootName: root.root, knownRoot: true });
+        });
+      });
+      unknownWords.forEach(function(p) {
+        allWords.push({ word: p.word, meaning: p.meaning, pos: p.pos, rootIdx: null, rootName: null, knownRoot: false });
+      });
+
+      var totalAll = allWords.length;
+      if (hasAI) {
+        pasteProgress.innerHTML = '<div class="text-xs text-purple-600">🤖 AI 正在生成 <b>' + totalAll + '</b> 个单词的完整模板...</div>';
+      } else {
+        pasteProgress.innerHTML = '<div class="text-xs text-indigo-600">⏳ 正在导入 <b>' + totalAll + '</b> 个单词...</div>';
+      }
+
+      var aiUnknownWords = [];
+
+      for (var i = 0; i < allWords.length; i++) {
+        var p = allWords[i];
+        pasteProgress.innerHTML += '<div class="text-[10px] text-purple-500 mt-0.5">🤖 ' + (hasAI ? 'AI 生成' : '导入') + ' <b>' + escapeHTML(p.word) + '</b> (' + (i + 1) + '/' + totalAll + ')... <span class="animate-pulse">⏳</span></div>';
+
+        var wObj, rootIdx;
+
+        if (hasAI) {
+          // AI enrichment for ALL words
+          try {
+            var entry = await enrichWordWithAI(p.word, p.meaning, p.pos);
+            if (p.knownRoot) {
+              rootIdx = p.rootIdx;
+            } else {
+              var detected = detectRoot(entry.word);
+              rootIdx = (detected !== null && detected >= 0) ? detected : null;
+            }
+            var meaning = (entry.pos ? entry.pos + ' ' : '') + (entry.meaning && entry.meaning !== p.meaning ? entry.meaning : p.meaning);
+            wObj = {
+              word: entry.word,
               phonetic: '',
+              meaning: meaning,
+              inflections: entry.inflections || [],
+              synonyms: entry.synonyms || [],
+              antonyms: entry.antonyms || [],
+              ielts_phrases: entry.phrases || [],
+              ielts_sentences: entry.sentences || [],
+              etymology: entry.etymology || '',
+              mnemonic: entry.mnemonic || ''
+            };
+          } catch (err) {
+            // AI failed, use basic entry
+            wObj = {
+              word: p.word, phonetic: '',
               meaning: (p.pos ? p.pos + ' ' : '') + p.meaning,
               inflections: [], synonyms: [], antonyms: [],
               ielts_phrases: [], ielts_sentences: [],
               etymology: '', mnemonic: ''
             };
-            autoEnrichWord(wObj, parseInt(idx));
+            if (p.knownRoot) { rootIdx = p.rootIdx; autoEnrichWord(wObj, rootIdx); }
+            else { rootIdx = null; }
+            pasteProgress.innerHTML += '<div class="text-[10px] text-red-400">  ⚠ ' + escapeHTML(p.word) + ' AI 失败，使用基础数据: ' + escapeHTML(err.message) + '</div>';
+          }
+        } else {
+          // No AI — fast path with autoEnrichWord
+          rootIdx = p.knownRoot ? p.rootIdx : null;
+          wObj = {
+            word: p.word, phonetic: '',
+            meaning: (p.pos ? p.pos + ' ' : '') + p.meaning,
+            inflections: [], synonyms: [], antonyms: [],
+            ielts_phrases: [], ielts_sentences: [],
+            etymology: '', mnemonic: ''
+          };
+          if (rootIdx !== null) autoEnrichWord(wObj, rootIdx);
+        }
+
+        // Insert into root
+        if (rootIdx !== null && rootIdx >= 0) {
+          var root = allData[rootIdx];
+          var exists = root.words.some(function(w) { return w.word.toLowerCase() === wObj.word.toLowerCase(); });
+          if (!exists) {
             root.words.push(wObj);
-            batchWords.push(p.word);
+            var batch = batches.find(function(b) { return b.rootIdx === rootIdx; });
+            if (!batch) { batch = { rootIdx: rootIdx, words: [] }; batches.push(batch); }
+            batch.words.push(wObj.word);
             totalAdded++;
+            if (hasAI) aiEnriched++;
+            pasteProgress.innerHTML += '<div class="text-[10px] text-green-500">  ✅ ' + escapeHTML(wObj.word) + ' → ' + escapeHTML(root.root) + (hasAI ? ' (AI)' : '') + '</div>';
           } else {
             skipped++;
+            pasteProgress.innerHTML += '<div class="text-[10px] text-gray-400">  ⏭ ' + escapeHTML(wObj.word) + ' 已存在，跳过</div>';
           }
-          pasteProgress.innerHTML = '<div class="text-xs text-indigo-600">⏳ 正在导入 <b>' + processed + '/' + totalWords + '</b>... <span class="text-gray-400">' + root.root + ' +' + batchWords.length + '</span></div>';
-        });
-        if (batchWords.length > 0) batches.push({ rootIdx: parseInt(idx), words: batchWords });
-      });
-
-      // Auto-enrich unknown words via AI
-      var aiUnknownWords = []; // AI-enriched but still no root match
-      if (unknownWords.length > 0 && hasAI) {
-        pasteProgress.innerHTML += '<div class="text-xs text-purple-600 mt-2">🤖 AI 正在生成 ' + unknownWords.length + ' 个单词的完整模板...</div>';
-        for (var i = 0; i < unknownWords.length; i++) {
-          var p = unknownWords[i];
-          pasteProgress.innerHTML += '<div class="text-[10px] text-purple-500 mt-0.5">🤖 生成 <b>' + escapeHTML(p.word) + '</b> (' + (i + 1) + '/' + unknownWords.length + ')... <span class="animate-pulse">⏳</span></div>';
-          try {
-            var entry = await enrichWordWithAI(p.word, p.meaning, p.pos);
-            var rootIdx = detectRoot(entry.word);
-            if (rootIdx !== null && rootIdx >= 0) {
-              var root = allData[rootIdx];
-              var exists = root.words.some(function(w) { return w.word.toLowerCase() === entry.word.toLowerCase(); });
-              if (!exists) {
-                var meaning = (entry.pos ? entry.pos + ' ' : '') + (entry.meaning || p.meaning);
-                var wObj = {
-                  word: entry.word,
-                  phonetic: '',
-                  meaning: meaning,
-                  inflections: entry.inflections || [],
-                  synonyms: entry.synonyms || [],
-                  antonyms: entry.antonyms || [],
-                  ielts_phrases: entry.phrases || [],
-                  ielts_sentences: entry.sentences || [],
-                  etymology: entry.etymology || '',
-                  mnemonic: entry.mnemonic || ''
-                };
-                root.words.push(wObj);
-                if (!batches.some(function(b) { return b.rootIdx === rootIdx; })) {
-                  batches.push({ rootIdx: rootIdx, words: [] });
-                }
-                var batch = batches.find(function(b) { return b.rootIdx === rootIdx; });
-                if (batch) batch.words.push(entry.word);
-                totalAdded++;
-                aiEnriched++;
-                pasteProgress.innerHTML += '<div class="text-[10px] text-green-500">  ✅ ' + escapeHTML(entry.word) + ' → ' + escapeHTML(root.root) + '</div>';
-              } else {
-                skipped++;
-              }
-            } else {
-              // AI enriched but root not detected — collect for manual selection
-              aiUnknownWords.push(entry);
-              pasteProgress.innerHTML += '<div class="text-[10px] text-amber-500">  ⚠ ' + escapeHTML(entry.word) + ' — 词根未识别，请手动选择</div>';
-            }
-          } catch (err) {
-            pasteProgress.innerHTML += '<div class="text-[10px] text-red-400">  ❌ ' + escapeHTML(p.word) + ': ' + escapeHTML(err.message) + '</div>';
+        } else {
+          if (hasAI) {
+            aiUnknownWords.push(wObj);
+            pasteProgress.innerHTML += '<div class="text-[10px] text-amber-500">  ⚠ ' + escapeHTML(wObj.word) + ' — 词根未识别，请手动选择</div>';
           }
         }
-      } else if (unknownWords.length > 0) {
-        // Show inline Gemini key prompt so user doesn't need cloud panel
-        pasteProgress.innerHTML += '<div class="mt-2 p-3 bg-purple-50 rounded-xl border border-purple-200" id="inlineKeyPrompt">' +
-          '<div class="text-xs font-medium text-purple-700 mb-1">🤖 输入 Gemini API Key 即可 AI 自动生成单词模板（免费）</div>' +
-          '<div class="text-[10px] text-purple-400 mb-2">从 <a href="https://aistudio.google.com/apikey" target="_blank" class="text-blue-500 underline">aistudio.google.com/apikey</a> 获取 → 粘贴下方 → 点保存</div>' +
-          '<div class="flex gap-2"><input id="inlineGeminiKeyInput" type="password" placeholder="AIza..." class="flex-1 px-3 py-1.5 text-xs border border-purple-200 rounded-lg outline-none focus:border-purple-400">' +
-          '<button id="inlineSaveGeminiKeyBtn" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-purple-500 text-white hover:bg-purple-600 transition-colors flex-shrink-0">保存并重试</button></div>' +
-          '<p id="inlineKeyMsg" class="text-[10px] text-green-500 mt-1 hidden">✅ 已保存！请重新点击解析 → 确认导入</p></div>';
+      }
 
+      // If no AI key, show inline key prompt for unknown words
+      if (!hasAI && unknownWords.length > 0) {
+        pasteProgress.innerHTML += '<div class="mt-2 p-3 bg-purple-50 rounded-xl border border-purple-200" id="inlineKeyPrompt">' +
+          '<div class="text-xs font-medium text-purple-700 mb-1">🤖 输入 Gemini API Key 即可 AI 自动生成完整模板（免费）</div>' +
+          '<div class="text-[10px] text-purple-400 mb-2">从 <a href="https://aistudio.google.com/apikey" target="_blank" class="text-blue-500 underline">aistudio.google.com/apikey</a> 获取 → 粘贴 → 保存</div>' +
+          '<div class="flex gap-2"><input id="inlineGeminiKeyInput" type="password" placeholder="AIza..." class="flex-1 px-3 py-1.5 text-xs border border-purple-200 rounded-lg outline-none focus:border-purple-400">' +
+          '<button id="inlineSaveGeminiKeyBtn" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-purple-500 text-white hover:bg-purple-600 flex-shrink-0">保存并重试</button></div>' +
+          '<p id="inlineKeyMsg" class="text-[10px] text-green-500 mt-1 hidden">✅ 已保存！请重新解析 → 确认导入</p></div>';
         setTimeout(function() {
           var saveBtn = document.getElementById('inlineSaveGeminiKeyBtn');
-          if (saveBtn) {
-            saveBtn.addEventListener('click', function() {
-              var key = document.getElementById('inlineGeminiKeyInput').value.trim();
-              if (key) {
-                localStorage.setItem(GEMINI_KEY_KEY, key);
-                document.getElementById('inlineKeyMsg').classList.remove('hidden');
-                saveBtn.disabled = true;
-                saveBtn.textContent = '✅ 已保存';
-              }
-            });
-          }
+          if (saveBtn) saveBtn.addEventListener('click', function() {
+            var key = document.getElementById('inlineGeminiKeyInput').value.trim();
+            if (key) { localStorage.setItem(GEMINI_KEY_KEY, key); document.getElementById('inlineKeyMsg').classList.remove('hidden'); saveBtn.disabled = true; saveBtn.textContent = '✅ 已保存'; }
+          });
         }, 100);
       }
 
@@ -3460,6 +3474,8 @@
             pasteProgress.innerHTML = '';
             pasteConfirmBar.classList.add('hidden');
             renderRootList(searchInput.value.trim());
+            var uniqueRoots = batches.reduce(function(s, b) { if (s.indexOf(b.rootIdx) === -1) s.push(b.rootIdx); return s; }, []);
+            var rootCount = uniqueRoots.length;
             var summary = '已智能导入 ' + totalAdded + ' 个单词到 ' + rootCount + ' 个词根' + (aiEnriched > 0 ? '（' + aiEnriched + ' 个 AI 生成）' : '');
             recordImport(batches, summary);
           });
