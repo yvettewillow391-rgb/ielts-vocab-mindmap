@@ -193,6 +193,8 @@
       <button id="iconFav" title="我的收藏" class="icon-bar-btn"><span class="icon-emoji">⭐</span><span class="icon-label">收藏</span></button>
       <button id="iconAccent" title="切换发音" class="icon-bar-btn"><span class="icon-emoji">🇺🇸</span><span class="icon-label">发音</span></button>
       <button id="iconAddRoot" title="新增词根" class="icon-bar-btn"><span class="icon-emoji">➕</span><span class="icon-label">新增</span></button>
+      <button id="iconSmartImport" title="智能导入" class="icon-bar-btn"><span class="icon-emoji">📋</span><span class="icon-label">导入</span></button>
+      <button id="iconManage" title="管理单词" class="icon-bar-btn"><span class="icon-emoji">🗑</span><span class="icon-label">管理</span></button>
     </div>
 
     <!-- Main sidebar content -->
@@ -3227,6 +3229,14 @@
     $('iconAddRoot').addEventListener('click', function() {
       if (isMobile()) closeSidebarMobile(); else expandSidebar();
       addNewRoot();
+    });
+    $('iconSmartImport').addEventListener('click', function() {
+      if (isMobile()) closeSidebarMobile(); else expandSidebar();
+      openSmartImport();
+    });
+    $('iconManage').addEventListener('click', function() {
+      if (isMobile()) closeSidebarMobile(); else expandSidebar();
+      openManageModal();
     });
 
     // Scroll to top/bottom buttons
