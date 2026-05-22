@@ -3179,15 +3179,21 @@
         html += '<div class="text-xs font-semibold text-amber-700 mb-2">📌 请为 AI 生成的单词选择词根（' + aiUnknownWords.length + '个）</div>';
         html += '<div class="space-y-2">';
         aiUnknownWords.forEach(function(entry, i) {
-          html += '<div class="flex items-center gap-2 bg-white rounded-lg p-2 border border-amber-100">';
+          html += '<div class="bg-white rounded-lg p-2 border border-amber-100">';
+          html += '<div class="flex items-center gap-2 mb-1.5">';
           html += '<span class="text-xs font-bold text-gray-800 min-w-[80px]">' + escapeHTML(entry.word) + '</span>';
           html += '<span class="text-[10px] text-gray-400 flex-1 truncate">' + escapeHTML(entry.meaning || '') + '</span>';
-          html += '<select id="manualRootSelect' + i + '" class="text-[10px] border border-gray-200 rounded-lg px-2 py-1.5 outline-none focus:border-amber-400 min-w-[140px]">';
+          html += '<select id="manualRootSelect' + i + '" class="text-[10px] border border-gray-200 rounded-lg px-2 py-1.5 outline-none focus:border-amber-400 min-w-[140px]" onchange="var cr=document.getElementById(\'newRootRow' + i + '\');cr.style.display=this.value===\'-1\'?\'flex\':\'none\'">';
           html += '<option value="">选择词根...</option>';
           allData.forEach(function(root, ri) {
             html += '<option value="' + ri + '">' + escapeHTML(root.root) + (root.root_meaning ? ' (' + escapeHTML(root.root_meaning) + ')' : '') + '</option>';
           });
+          html += '<option value="-1">➕ 创建新词根...</option>';
           html += '</select></div>';
+          html += '<div id="newRootRow' + i + '" class="hidden gap-2 items-center">';
+          html += '<input id="newRootName' + i + '" type="text" placeholder="词根名（如: spect）" class="flex-1 px-2 py-1 text-[10px] border border-amber-300 rounded-lg outline-none focus:border-amber-500">';
+          html += '<input id="newRootMeaning' + i + '" type="text" placeholder="中文释义（如: 看）" class="flex-1 px-2 py-1 text-[10px] border border-amber-300 rounded-lg outline-none focus:border-amber-500">';
+          html += '</div></div>';
         });
         html += '<div class="flex gap-2 mt-2">';
         html += '<button id="manualRootConfirmBtn" class="flex-1 py-2 rounded-lg text-xs font-medium bg-amber-500 text-white hover:bg-amber-600 transition-colors">✅ 确认导入所选</button>';
@@ -3201,8 +3207,7 @@
           var skipBtn = document.getElementById('manualRootSkipBtn');
 
           function finish(resultBatches, added, skipped) {
-            var result = { batches: resultBatches, added: added, skipped: skipped };
-            callback(result);
+            callback({ batches: resultBatches, added: added, skipped: skipped });
             resolve();
           }
 
@@ -3217,44 +3222,59 @@
               var resultBatches = [];
               var added = 0;
               var skipped = 0;
+              var newRoots = []; // track newly created roots to add to allData
+
               aiUnknownWords.forEach(function(entry, i) {
                 var sel = document.getElementById('manualRootSelect' + i);
-                if (sel && sel.value !== '') {
-                  var rootIdx = parseInt(sel.value);
-                  var root = allData[rootIdx];
-                  var exists = root.words.some(function(w) { return w.word.toLowerCase() === entry.word.toLowerCase(); });
-                  if (!exists) {
-                    var wObj = {
-                      word: entry.word,
-                      phonetic: '',
-                      meaning: entry.meaning || '',
-                      inflections: entry.inflections || [],
-                      synonyms: entry.synonyms || [],
-                      antonyms: entry.antonyms || [],
-                      ielts_phrases: entry.phrases || [],
-                      ielts_sentences: entry.sentences || [],
-                      etymology: entry.etymology || '',
-                      mnemonic: entry.mnemonic || ''
-                    };
-                    root.words.push(wObj);
-                    var batch = resultBatches.find(function(b) { return b.rootIdx === rootIdx; });
-                    if (!batch) { batch = { rootIdx: rootIdx, words: [] }; resultBatches.push(batch); }
-                    batch.words.push(entry.word);
-                    added++;
+                if (!sel || sel.value === '') { skipped++; return; }
+
+                var rootIdx;
+                if (sel.value === '-1') {
+                  // Create new root
+                  var newName = (document.getElementById('newRootName' + i) || {}).value || '';
+                  var newMeaning = (document.getElementById('newRootMeaning' + i) || {}).value || '';
+                  if (!newName) { skipped++; return; }
+                  // Check if already created in this batch
+                  var existingNew = newRoots.find(function(r) { return r.root.toLowerCase() === newName.toLowerCase(); });
+                  if (existingNew) {
+                    rootIdx = existingNew.idx;
                   } else {
-                    skipped++;
+                    rootIdx = allData.length + newRoots.length;
+                    newRoots.push({ root: newName, root_meaning: newMeaning, words: [], idx: rootIdx });
                   }
+                } else {
+                  rootIdx = parseInt(sel.value);
+                }
+
+                var root = rootIdx < allData.length ? allData[rootIdx] : newRoots.find(function(r) { return r.idx === rootIdx; });
+                if (!root) { skipped++; return; }
+
+                var exists = root.words.some(function(w) { return w.word.toLowerCase() === entry.word.toLowerCase(); });
+                if (!exists) {
+                  root.words.push(entry);
+                  var batch = resultBatches.find(function(b) { return b.rootIdx === rootIdx; });
+                  if (!batch) { batch = { rootIdx: rootIdx, words: [] }; resultBatches.push(batch); }
+                  batch.words.push(entry.word);
+                  added++;
                 } else {
                   skipped++;
                 }
               });
-              finish(resultBatches, added, skipped);
+
+              // Add new roots to allData
+              newRoots.forEach(function(nr) {
+                allData.push({ root: nr.root, root_meaning: nr.root_meaning, words: nr.words });
+              });
 
               // Disable controls
               if (confirmBtn) confirmBtn.disabled = true;
               if (skipBtn) skipBtn.disabled = true;
               var selects = pasteProgress.querySelectorAll('select');
               selects.forEach(function(s) { s.disabled = true; });
+              var inputs = pasteProgress.querySelectorAll('input');
+              inputs.forEach(function(s) { s.disabled = true; });
+
+              finish(resultBatches, added, skipped);
             });
           }
         }, 100);
