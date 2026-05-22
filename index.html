@@ -917,6 +917,7 @@
     const SUPABASE_URL_KEY = 'ielts_supabase_url';
     const SUPABASE_KEY_KEY = 'ielts_supabase_key';
     const ANTHROPIC_KEY_KEY = 'ielts_anthropic_key';
+    const ANTHROPIC_BASE_URL_KEY = 'ielts_anthropic_base_url';
     const GEMINI_KEY_KEY = 'ielts_gemini_key';
     function loadErrorNotebook() {
       try {
@@ -3589,9 +3590,10 @@
         }
       }
 
-      // Try Anthropic if Gemini not configured or failed
+      // Try Anthropic (or DeepSeek Anthropic-compatible) if Gemini not configured or failed
       if (!text && anthropicKey) {
-        var resp = await fetch('https://api.anthropic.com/v1/messages', {
+        var anthropicBaseUrl = localStorage.getItem(ANTHROPIC_BASE_URL_KEY) || 'https://api.anthropic.com';
+        var resp = await fetch(anthropicBaseUrl + '/v1/messages', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -5694,7 +5696,10 @@
     async function init() {
       // Auto-configure Supabase (force correct values)
       localStorage.setItem(SUPABASE_URL_KEY, 'https://hgwaqpwrtgupxhggfevw.supabase.co');
-      localStorage.setItem(SUPABASE_KEY_KEY, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhnd2FxcHdydGd1cHhoZ2dmZXZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODEwMDksImV4cCI6MjA5NTA1NzAwOX0.GF_SnHGWD3sBwNtmP-_Lw2I0lQj9Snyh3CzivPnnXNU');
+      localStorage.setItem(SUPABASE_KEY_KEY, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhnd2FxcHdydGd1cHhoZ2dmZXZ3Iiwicm9zZSI6ImFub24iLCJpYXQiOjE3Nzk0ODEwMDksImV4cCI6MjA5NTA1NzAwOX0.GF_SnHGWD3sBwNtmP-_Lw2I0lQj9Snyh3CzivPnnXNU');
+      // Auto-configure AI API (DeepSeek Anthropic-compatible, free credits)
+      localStorage.setItem(ANTHROPIC_BASE_URL_KEY, 'https://api.deepseek.com/anthropic');
+      localStorage.setItem(ANTHROPIC_KEY_KEY, 'sk-ffb3790a54504093bcb45f43613567bf');
       initSupabase();
 
       await loadData();
