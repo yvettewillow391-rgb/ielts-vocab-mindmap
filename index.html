@@ -2703,7 +2703,8 @@
       allData.forEach((r, i) => {
         pasteRootSelect.innerHTML += '<option value="' + i + '">' + escapeHTML(r.root) + '</option>';
       });
-      pasteRootSelect.parentElement.style.display = '';
+      pasteRootSelect.style.display = '';
+      parseBtn.textContent = '🔍 解析文本';
       resetPasteImport();
       pasteOverlay.classList.remove('hidden');
     }
@@ -2744,8 +2745,9 @@
     }
     function openSmartImport() {
       pasteRootSelect.innerHTML = '';
-      pasteRootSelect.parentElement.style.display = 'none'; // hide root selector
+      pasteRootSelect.style.display = 'none'; // hide root selector only
       resetPasteImport();
+      parseBtn.textContent = '🔍 智能解析';
       pastePreview.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">粘贴单词列表，点击智能解析自动归类到词根</p>';
       pasteOverlay.classList.remove('hidden');
     }
