@@ -5201,13 +5201,9 @@
        INIT
        ================================================================ */
     async function init() {
-      // Auto-configure Supabase if not yet set
-      if (!localStorage.getItem(SUPABASE_URL_KEY)) {
-        localStorage.setItem(SUPABASE_URL_KEY, 'https://hgwaqpwrtgupxhggfevw.supabase.co');
-      }
-      if (!localStorage.getItem(SUPABASE_KEY_KEY)) {
-        localStorage.setItem(SUPABASE_KEY_KEY, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhnd2FxcHdydGd1cHhoZ2dmZXZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODEwMDksImV4cCI6MjA5NTA1NzAwOX0.GF_SnHGWD3sBwNtmP-_Lw2I0lQj9Snyh3CzivPnnXNU');
-      }
+      // Auto-configure Supabase (force correct values)
+      localStorage.setItem(SUPABASE_URL_KEY, 'https://hgwaqpwrtgupxhggfevw.supabase.co');
+      localStorage.setItem(SUPABASE_KEY_KEY, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhnd2FxcHdydGd1cHhoZ2dmZXZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODEwMDksImV4cCI6MjA5NTA1NzAwOX0.GF_SnHGWD3sBwNtmP-_Lw2I0lQj9Snyh3CzivPnnXNU');
       initSupabase();
 
       await loadData();
