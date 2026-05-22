@@ -573,31 +573,34 @@
       var voices = window.speechSynthesis.getVoices();
       if (voices.length === 0) return null;
       var langPrefix = accent === 'en-GB' ? 'en-GB' : 'en-US';
-      // Keywords for gender detection
-      var maleKeys = voiceGender === 'male' ? ['Male', 'David', 'Mark', 'James', 'Guy', 'Daniel', 'Tom', 'Peter', 'Ryan'] : [];
-      var femaleKeys = voiceGender === 'female' ? ['Female', 'Zira', 'Susan', 'Karen', 'Catherine', 'Moira', 'Samantha', 'Linda', 'Mary', 'Hazel', 'Emma', 'Ava'] : [];
-      // Prefer natural/online voices first
-      var natural = voices.filter(function(v) { return v.lang.startsWith(langPrefix) && (v.name.includes('Natural') || v.name.includes('Online')); });
-      // Then check gender
-      var genderMatch = natural.filter(function(v) {
-        return (voiceGender === 'male' && maleKeys.some(function(k) { return v.name.includes(k); })) ||
-               (voiceGender === 'female' && femaleKeys.some(function(k) { return v.name.includes(k); }));
-      });
-      if (genderMatch.length > 0) return genderMatch[0];
-      if (natural.length > 0) return natural[0];
-      // Fallback to any matching voice
-      var allMatching = voices.filter(function(v) { return v.lang.startsWith(langPrefix); });
-      if (allMatching.length > 0) {
-        var genderFiltered = allMatching.filter(function(v) {
-          return (voiceGender === 'male' && maleKeys.some(function(k) { return v.name.includes(k); })) ||
-                 (voiceGender === 'female' && femaleKeys.some(function(k) { return v.name.includes(k); }));
-        });
-        if (genderFiltered.length > 0) return genderFiltered[0];
-        return allMatching[0];
+      var maleKeys = ['Male', 'David', 'Mark', 'James', 'Guy', 'Daniel', 'Tom', 'Peter', 'Ryan', 'Steven', 'George', 'Lee', 'Oliver', 'Harry', 'Noah'];
+      var femaleKeys = ['Female', 'Zira', 'Susan', 'Karen', 'Catherine', 'Moira', 'Samantha', 'Linda', 'Mary', 'Hazel', 'Emma', 'Ava', 'Mia', 'Olivia', 'Emily', 'Sophia'];
+      var targetKeys = voiceGender === 'male' ? maleKeys : femaleKeys;
+      // Returns true if voice name matches target gender
+      function isGender(v) {
+        return targetKeys.some(function(k) { return v.name.toLowerCase().includes(k.toLowerCase()); });
       }
-      // Try any English voice
-      var anyEn = voices.filter(function(v) { return v.lang.startsWith('en-'); });
-      return anyEn.length > 0 ? anyEn[0] : null;
+      // 1. Best: natural voice matching accent + gender
+      var best = voices.filter(function(v) {
+        return v.lang.startsWith(langPrefix) && isGender(v) && (v.name.includes('Natural') || v.name.includes('Online'));
+      });
+      if (best.length > 0) return best[0];
+      // 2. Good: natural voice matching accent (any gender) — only if no gender-specific natural found
+      // Skip: we don't want wrong gender
+      // 3. Regular voice matching accent + gender
+      var good = voices.filter(function(v) {
+        return v.lang.startsWith(langPrefix) && isGender(v);
+      });
+      if (good.length > 0) return good[0];
+      // 4. Any voice matching accent
+      var any = voices.filter(function(v) { return v.lang.startsWith(langPrefix); });
+      if (any.length > 0) return any[0];
+      // 5. Any English voice matching gender
+      var enGender = voices.filter(function(v) { return v.lang.startsWith('en-') && isGender(v); });
+      if (enGender.length > 0) return enGender[0];
+      // 6. Last resort: any English voice
+      var enAny = voices.filter(function(v) { return v.lang.startsWith('en-'); });
+      return enAny.length > 0 ? enAny[0] : null;
     }
     let autoRead = false;
     let editMode = false;
@@ -1202,6 +1205,7 @@
       const w = allData[currentRootIndex].words[currentWordIndex];
       if (!w) return;
       doDictLookup(w.word, dictResult);
+      setTimeout(function() { dictResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 100);
     }
 
     // Sidebar dictionary lookup
