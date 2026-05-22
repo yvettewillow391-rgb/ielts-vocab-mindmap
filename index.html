@@ -9,16 +9,12 @@
   <script src="tips-data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
-    #sidebarInner::-webkit-scrollbar { width: 10px; }
-    #sidebarInner::-webkit-scrollbar-track { background: #e5e7eb; border-radius: 5px; margin: 4px 0; }
-    #sidebarInner::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 5px; border: 2px solid transparent; background-clip: content-box; }
-    #sidebarInner::-webkit-scrollbar-thumb:hover { background: #6b7280; border: 2px solid transparent; background-clip: content-box; }
-    #sidebarInner { scrollbar-width: auto; scrollbar-color: #9ca3af #e5e7eb; }
-    #rootList { scrollbar-width: auto; scrollbar-color: #9ca3af #f3f4f6; }
-    #rootList::-webkit-scrollbar { width: 8px; }
-    #rootList::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 4px; }
-    #rootList::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
-    #rootList::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    #sidebar { overflow: hidden; }
+    #sidebarInner::-webkit-scrollbar { width: 12px; }
+    #sidebarInner::-webkit-scrollbar-track { background: #e5e7eb; border-radius: 6px; }
+    #sidebarInner::-webkit-scrollbar-thumb { background: #6b7280; border-radius: 6px; min-height: 40px; }
+    #sidebarInner::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+    #sidebarInner { scrollbar-width: auto; scrollbar-color: #6b7280 #e5e7eb; }
     #detailInner::-webkit-scrollbar { width: 8px; }
     #detailInner::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 4px; }
     #detailInner::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
@@ -193,7 +189,7 @@
   </div>
 
   <!-- ===== LEFT SIDEBAR ===== -->
-  <aside id="sidebar" class="w-80 flex-shrink-0 bg-white shadow-lg z-20" style="position:relative">
+  <aside id="sidebar" class="w-80 flex-shrink-0 bg-white shadow-lg z-20 flex flex-col" style="position:relative">
     <!-- Icon bar (shown only when collapsed) -->
     <div id="iconBar">
       <button id="expandFromIcon" title="展开侧栏" class="icon-bar-btn primary" style="margin-bottom:4px">▶</button>
@@ -213,7 +209,7 @@
     </div>
 
     <!-- Main sidebar content -->
-    <div id="sidebarInner" style="position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:scroll;overflow-x:hidden">
+    <div id="sidebarInner" style="flex:1;min-height:0;overflow-y:scroll;overflow-x:hidden">
     <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
       <div>
         <h1 class="text-lg font-bold text-indigo-700 tracking-tight">IELTS 词根记忆脑图</h1>
