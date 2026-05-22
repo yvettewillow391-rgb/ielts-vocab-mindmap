@@ -3883,16 +3883,22 @@
         });
 
         if (unknownEntries.length > 0) {
-          html += '<div class="bg-amber-50 rounded-lg p-2 border border-amber-200">';
+          html += '<div class="bg-amber-50 rounded-lg p-2 border border-amber-200" id="unknownWordsSection">';
           html += '<div class="text-[10px] font-semibold text-amber-600 mb-1">⚠ 未识别词根 (' + unknownEntries.length + '个) — 将跳过</div>';
           unknownEntries.forEach(function(entry) {
             html += '<div class="text-[10px] text-gray-400 ml-2">' + escapeHTML(entry.word) + ' — ' + escapeHTML(entry.meaning.substring(0, 30)) + '</div>';
           });
+          html += '<div class="mt-2 pt-2 border-t border-amber-200 flex items-center gap-1.5 flex-wrap">';
+          html += '<span class="text-[10px] text-amber-600 flex-shrink-0">手动创建词根：</span>';
+          html += '<input id="manualRootName" class="text-[10px] px-2 py-0.5 rounded border border-amber-300 w-16 flex-shrink-0" placeholder="词根名">';
+          html += '<input id="manualRootMeaning" class="text-[10px] px-2 py-0.5 rounded border border-amber-300 flex-1 min-w-[80px]" placeholder="词根含义（可选）">';
+          html += '<button id="manualCreateRootBtn" class="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500 text-white hover:bg-amber-600 transition-colors flex-shrink-0">➕ 创建并分配</button>';
+          html += '</div>';
           html += '</div>';
         }
 
         html += '<div class="mt-3 p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between gap-3">';
-        html += '<span class="text-xs text-gray-600">将导入 <b class="text-indigo-600">' + totalImportable + '</b> 个完整单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownEntries.length > 0 ? ' <span class="text-amber-500">（' + unknownEntries.length + ' 个' + (hasAIKey ? 'AI 将自动生成并导入' : '未识别将跳过') + '）</span>' : '') + '</span>';
+        html += '<span class="text-xs text-gray-600" id="inlineConfirmSummary">将导入 <b class="text-indigo-600">' + totalImportable + '</b> 个完整单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownEntries.length > 0 ? ' <span class="text-amber-500">（' + unknownEntries.length + ' 个' + (hasAIKey ? 'AI 将自动生成并导入' : '未识别将跳过') + '）</span>' : '') + '</span>';
         html += '<div class="flex gap-2 flex-shrink-0">';
         html += '<button id="inlineCancelBtn" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">取消</button>';
         if (hasAIKey) {
@@ -3921,6 +3927,39 @@
             pasteConfirmBar.classList.add('hidden');
             pendingParsedData = null;
           });
+          // Manual root creation handler
+          var manualCreateRootBtn = document.getElementById('manualCreateRootBtn');
+          if (manualCreateRootBtn) {
+            manualCreateRootBtn.addEventListener('click', function() {
+              var rootName = document.getElementById('manualRootName').value.trim();
+              var rootMeaning = document.getElementById('manualRootMeaning').value.trim();
+              if (!rootName) { alert('请输入词根名称'); return; }
+              allData.push({ root: rootName, root_meaning: rootMeaning, words: [] });
+              var newIdx = allData.length - 1;
+              rootMap[newIdx] = unknownEntries.slice();
+              var movedCount = unknownEntries.length;
+              unknownEntries.length = 0;
+              var cardHtml = '<div class="bg-green-50 rounded-lg p-2 border border-green-200">';
+              cardHtml += '<div class="text-[10px] font-semibold text-green-700 mb-1">📌 ' + escapeHTML(rootName) + (rootMeaning ? ' (' + escapeHTML(rootMeaning) + ')' : '') + ' <span class="text-gray-400 font-normal">— ' + movedCount + '个词 ✅ 新建</span></div>';
+              rootMap[newIdx].forEach(function(entry) {
+                cardHtml += '<div class="ml-2 py-1 border-b border-green-100 last:border-0">';
+                cardHtml += '<div class="flex items-center gap-2 text-[10px]"><span class="font-bold text-gray-800">' + escapeHTML(entry.word) + '</span><span class="text-gray-500 text-[10px]">' + escapeHTML(entry.meaning) + '</span></div>';
+                if (entry.etymology) cardHtml += '<div class="text-[10px] text-gray-400 ml-1 mt-0.5">🔍 ' + escapeHTML(entry.etymology) + '</div>';
+                cardHtml += '</div>';
+              });
+              cardHtml += '</div>';
+              var newCard = document.createElement('div');
+              newCard.innerHTML = cardHtml;
+              var unknownSection = document.getElementById('unknownWordsSection');
+              unknownSection.parentNode.insertBefore(newCard.firstElementChild, unknownSection);
+              unknownSection.remove();
+              var newTotal = Object.values(rootMap).reduce(function(s, a) { return s + a.length; }, 0);
+              pasteSummary.innerHTML = '将导入 <b class="text-indigo-600">' + newTotal + '</b> 个完整单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根';
+              var summaryEl = document.getElementById('inlineConfirmSummary');
+              if (summaryEl) summaryEl.innerHTML = '将导入 <b class="text-indigo-600">' + newTotal + '</b> 个完整单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根';
+              saveLocalData();
+            });
+          }
         }, 50);
 
         return;
@@ -4014,6 +4053,12 @@
             html += '<span class="text-gray-500 flex-1 truncate">' + escapeHTML(p.meaning) + '</span>';
             html += '</div>';
           });
+          html += '<div class="mt-2 pt-2 border-t border-amber-200 flex items-center gap-1.5 flex-wrap">';
+          html += '<span class="text-[10px] text-amber-600 flex-shrink-0">手动创建词根：</span>';
+          html += '<input id="manualRootName" class="text-[10px] px-2 py-0.5 rounded border border-amber-300 w-16 flex-shrink-0" placeholder="词根名">';
+          html += '<input id="manualRootMeaning" class="text-[10px] px-2 py-0.5 rounded border border-amber-300 flex-1 min-w-[80px]" placeholder="词根含义（可选）">';
+          html += '<button id="manualCreateRootBtn" class="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500 text-white hover:bg-amber-600 transition-colors flex-shrink-0">➕ 创建并分配</button>';
+          html += '</div>';
           html += '<div id="aiEnrichProgress" class="hidden mt-2"></div>';
           html += '<div id="aiEnrichResults" class="mt-2 space-y-2"></div>';
           html += '</div>';
@@ -4022,7 +4067,7 @@
         // Inline confirm buttons inside preview
         const totalImportable = Object.values(rootMap).reduce((s, a) => s + a.length, 0);
         html += '<div class="mt-3 p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between gap-3">';
-        html += '<span class="text-xs text-gray-600">将导入 <b class="text-indigo-600">' + totalImportable + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownWords.length > 0 ? ' <span class="text-amber-500">（' + unknownWords.length + ' 个' + (hasAIKey ? 'AI 将自动生成并导入' : '未识别将跳过') + '）</span>' : '') + '</span>';
+        html += '<span class="text-xs text-gray-600" id="inlineConfirmSummary">将导入 <b class="text-indigo-600">' + totalImportable + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownWords.length > 0 ? ' <span class="text-amber-500">（' + unknownWords.length + ' 个' + (hasAIKey ? 'AI 将自动生成并导入' : '未识别将跳过') + '）</span>' : '') + '</span>';
         html += '<div class="flex gap-2 flex-shrink-0">';
         html += '<button id="inlineCancelBtn" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">取消</button>';
         if (hasAIKey) {
@@ -4064,11 +4109,51 @@
           });
         }
 
+        // Manual root creation handler
+        var manualCreateRootBtn = document.getElementById('manualCreateRootBtn');
+        if (manualCreateRootBtn) {
+          manualCreateRootBtn.addEventListener('click', function() {
+            var rootName = document.getElementById('manualRootName').value.trim();
+            var rootMeaning = document.getElementById('manualRootMeaning').value.trim();
+            if (!rootName) { alert('请输入词根名称'); return; }
+            allData.push({ root: rootName, root_meaning: rootMeaning, words: [] });
+            var newIdx = allData.length - 1;
+            rootMap[newIdx] = unknownWords.slice();
+            var movedCount = unknownWords.length;
+            unknownWords.length = 0;
+            // Build new root card HTML
+            var cardHtml = '<div class="bg-green-50 rounded-lg p-2 border border-green-200">';
+            cardHtml += '<div class="text-[10px] font-semibold text-green-700 mb-1">📌 ' + escapeHTML(rootName) + (rootMeaning ? ' (' + escapeHTML(rootMeaning) + ')' : '') + ' <span class="text-gray-400 font-normal">— ' + movedCount + '个词 ✅ 新建</span></div>';
+            rootMap[newIdx].forEach(function(p) {
+              cardHtml += '<div class="flex items-center gap-2 text-[10px] ml-2 py-0.5">';
+              cardHtml += '<span class="font-bold text-gray-800 min-w-[80px]">' + escapeHTML(p.word) + '</span>';
+              if (p.pos) cardHtml += '<span class="text-indigo-400 min-w-[40px]">' + escapeHTML(p.pos) + '</span>';
+              cardHtml += '<span class="text-gray-500 flex-1 truncate">' + escapeHTML(p.meaning) + '</span>';
+              cardHtml += '</div>';
+            });
+            cardHtml += '</div>';
+            var newCard = document.createElement('div');
+            newCard.innerHTML = cardHtml;
+            var unknownSection = document.getElementById('unknownWordsSection');
+            unknownSection.parentNode.insertBefore(newCard.firstElementChild, unknownSection);
+            unknownSection.remove();
+            // Update confirm bar
+            var newTotal = Object.values(rootMap).reduce(function(s, a) { return s + a.length; }, 0);
+            pasteSummary.innerHTML = '将导入 <b class="text-indigo-600">' + newTotal + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根';
+            // Update inline confirm bar summary text
+            var summaryEl = document.getElementById('inlineConfirmSummary');
+            if (summaryEl) summaryEl.innerHTML = '将导入 <b class="text-indigo-600">' + newTotal + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根';
+            // Save to localStorage
+            try { localStorage.setItem('ielts_data', JSON.stringify(allData)); } catch(e) {}
+          });
+        }
+
         // Cache parsed data for confirm step
         pendingParsedData = { mode: 'smart', parsed, rootMap, unknownWords };
 
         // Show sticky confirm bar too
-        pasteSummary.innerHTML = '将导入 <b class="text-indigo-600">' + totalImportable + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownWords.length > 0 ? ' <span class="text-amber-500">（' + unknownWords.length + ' 个' + (hasAIKey ? 'AI 将自动生成并导入' : '未识别将跳过') + '）</span>' : '');
+        var stickyTotal = Object.values(rootMap).reduce(function(s, a) { return s + a.length; }, 0);
+        pasteSummary.innerHTML = '将导入 <b class="text-indigo-600">' + stickyTotal + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownWords.length > 0 ? ' <span class="text-amber-500">（' + unknownWords.length + ' 个' + (hasAIKey ? 'AI 将自动生成并导入' : '未识别将跳过') + '）</span>' : '');
         pasteConfirmBar.classList.remove('hidden');
       } else {
         // Manual mode — show flat list
