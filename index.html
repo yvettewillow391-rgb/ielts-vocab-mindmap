@@ -3396,21 +3396,75 @@
 
       saveDataToStorage();
 
-      // Show done state
-      var statusMsg = '✅ 导入完成：新增 <b>' + totalAdded + '</b> 个单词';
-      if (aiEnriched > 0) statusMsg += '（其中 <b>' + aiEnriched + '</b> 个 AI 生成）';
-      if (skipped > 0) statusMsg += '，跳过 <b>' + skipped + '</b> 个重复';
-      pasteProgress.innerHTML = '<div class="text-xs text-green-600 font-medium">' + statusMsg + '</div>';
+      // Collect all newly added words for the success dialog
+      var newWordList = []; // {word, rootIdx, rootName}
+      batches.forEach(function(b) {
+        var root = allData[b.rootIdx];
+        b.words.forEach(function(w) {
+          newWordList.push({ word: w, rootIdx: b.rootIdx, rootName: root.root });
+        });
+      });
 
+      // Build success dialog with clickable word links
+      var statusMsg = '✅ 导入完成：新增 <b class="text-green-700">' + totalAdded + '</b> 个单词';
+      if (aiEnriched > 0) statusMsg += '（<span class="text-purple-600">' + aiEnriched + ' 个 AI 生成</span>）';
+      if (skipped > 0) statusMsg += '，跳过 ' + skipped + ' 个重复';
+      var html = '<div class="mt-3 p-3 bg-green-50 rounded-xl border border-green-200">';
+      html += '<div class="text-xs font-medium mb-2">' + statusMsg + '</div>';
+      if (newWordList.length > 0) {
+        html += '<div class="text-[10px] text-gray-500 mb-1.5">点击单词可查看详情：</div>';
+        html += '<div class="flex flex-wrap gap-1.5">';
+        newWordList.forEach(function(nw) {
+          html += '<button class="new-word-link text-[11px] font-bold bg-white border border-green-200 rounded-lg px-2.5 py-1 hover:bg-green-100 hover:border-green-400 transition-colors cursor-pointer" data-word="' + escapeHTML(nw.word) + '" data-root-idx="' + nw.rootIdx + '" style="color:#059669">' + escapeHTML(nw.word) + '<span class="text-[9px] text-gray-400 ml-1 font-normal">' + escapeHTML(nw.rootName) + '</span></button>';
+        });
+        html += '</div>';
+      }
+      html += '<div class="flex gap-2 mt-3">';
+      html += '<button id="closeImportBtn" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-green-500 text-white hover:bg-green-600 transition-colors">关闭</button>';
+      html += '</div></div>';
+      pasteProgress.innerHTML = html;
+
+      // Wire up word link buttons
       setTimeout(function() {
-        pasteOverlay.classList.add('hidden');
-        pasteProgress.classList.add('hidden');
-        pasteProgress.innerHTML = '';
-        pasteConfirmBar.classList.add('hidden');
-        renderRootList(searchInput.value.trim());
-        var summary = '已智能导入 ' + totalAdded + ' 个单词到 ' + rootCount + ' 个词根' + (aiEnriched > 0 ? '（' + aiEnriched + ' 个 AI 生成）' : '');
-        recordImport(batches, summary);
-      }, 1800);
+        document.querySelectorAll('.new-word-link').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var word = this.dataset.word;
+            var rootIdx = parseInt(this.dataset.rootIdx);
+            var foundWord = null;
+            if (rootIdx >= 0 && rootIdx < allData.length) {
+              var root = allData[rootIdx];
+              foundWord = root.words.find(function(w) { return w.word.toLowerCase() === word.toLowerCase(); });
+            }
+            // Close paste overlay
+            pasteOverlay.classList.add('hidden');
+            pasteProgress.classList.add('hidden');
+            pasteProgress.innerHTML = '';
+            pasteConfirmBar.classList.add('hidden');
+            renderRootList('');
+            // Show detail for the word
+            if (foundWord) {
+              showDetailPanel(foundWord);
+            } else {
+              // Fallback: search for the word
+              searchInput.value = word;
+              doSearch(word);
+            }
+          });
+        });
+
+        var closeBtn = document.getElementById('closeImportBtn');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() {
+            pasteOverlay.classList.add('hidden');
+            pasteProgress.classList.add('hidden');
+            pasteProgress.innerHTML = '';
+            pasteConfirmBar.classList.add('hidden');
+            renderRootList(searchInput.value.trim());
+            var summary = '已智能导入 ' + totalAdded + ' 个单词到 ' + rootCount + ' 个词根' + (aiEnriched > 0 ? '（' + aiEnriched + ' 个 AI 生成）' : '');
+            recordImport(batches, summary);
+          });
+        }
+      }, 100);
     }
 
     // Parse a single word's full structured entry (词根拆解, 变形态, etc.)
