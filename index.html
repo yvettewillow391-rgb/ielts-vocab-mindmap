@@ -3614,7 +3614,7 @@
       if (pos) wordInfo = word + ' ' + pos;
       if (meaning) wordInfo = wordInfo + ' ' + meaning;
 
-      var prompt = 'You are an IELTS vocabulary expert. For this word: ' + wordInfo + '\n\nGenerate a complete entry. Return ONLY valid JSON (no markdown, no code fences):\n{\n  "etymology": "词根拆解 in Chinese e.g. a（离开）+ vert（转）→ 转开 → 避开",\n  "mnemonic": "一句话记忆 in Chinese with emoji, vivid sentence using root parts, max 40 Chinese chars",\n  "inflections": [{"word": "form", "pos": "n.", "meaning": "Chinese meaning"}],\n  "synonyms": [{"word": "syn", "pos": "v.", "meaning": "Chinese"}],\n  "antonyms": [{"word": "ant", "pos": "v.", "meaning": "Chinese"}],\n  "phrases": [{"en": "English phrase", "zh": "Chinese translation"}],\n  "sentences": [{"en": "IELTS example sentence", "zh": "Chinese translation"}]\n}\nRequirements: etymology breaks down prefix+root+suffix, 2-4 inflections, 3-5 synonyms, 2-3 antonyms, 3-5 phrases, 1-2 sentences.';
+      var prompt = 'You are an IELTS vocabulary expert. For the word "' + wordInfo + '", generate ALL of the following in valid JSON format. EVERY field is REQUIRED — do not skip any:\n\n{\n  "etymology": "词根拆解: Break down prefix+root+suffix in Chinese, explain how parts combine to form meaning. Example: sub(在...之下) + mit(送) → 从下面送上去 → 提交，服从",\n  "mnemonic": "一句话记忆: A vivid Chinese memory sentence using root parts, with 🔑 emoji, max 40 Chinese characters",\n  "inflections": [{"word": "derivative", "pos": "n.", "meaning": "Chinese meaning"}],\n  "synonyms": [{"word": "synonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "antonyms": [{"word": "antonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "phrases": [{"en": "English collocation", "zh": "Chinese translation"}],\n  "sentences": [{"en": "IELTS-level example sentence", "zh": "Chinese translation"}]\n}\n\nCRITICAL REQUIREMENTS:\n- etymology: MUST be provided. Analyze the actual word\'s prefix/root/suffix.\n- mnemonic: MUST be provided. Use creative imagery.\n- inflections: MUST provide 2-4 derivative forms (noun/adj/adv forms) with POS and Chinese meaning.\n- synonyms: MUST provide 3-5 IELTS-level synonyms with POS and Chinese meaning.\n- antonyms: MUST provide 2-3 antonyms with POS and Chinese meaning.\n- phrases: MUST provide 3-5 common IELTS collocations with Chinese translations.\n- sentences: MUST provide 1-2 IELTS-style sentences with Chinese translations.\n\nReturn ONLY the JSON object, no markdown, no code fences, no extra text.';
 
       var text;
 
@@ -3655,10 +3655,10 @@
             'anthropic-version': '2023-06-01'
           },
           body: JSON.stringify({
-            model: 'claude-sonnet-4-6',
+            model: anthropicBaseUrl.includes('deepseek') ? 'deepseek-chat' : 'claude-sonnet-4-6',
             max_tokens: 4096,
             temperature: 0.3,
-            system: 'You are an IELTS vocabulary expert. Output ONLY valid JSON.',
+            system: 'You are an IELTS vocabulary expert. You MUST return ALL requested fields. Output ONLY valid JSON, no markdown, no code fences.',
             messages: [{ role: 'user', content: prompt }]
           })
         });
