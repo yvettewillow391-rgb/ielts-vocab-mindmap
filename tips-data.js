@@ -1778,15 +1778,21 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "think",
-              "new": "believe"
+              "new": "believe",
+              "old_zh": "认为",
+              "new_zh": "相信"
             },
             {
               "old": "very important",
-              "new": "absolutely essential"
+              "new": "absolutely essential",
+              "old_zh": "非常重要",
+              "new_zh": "绝对必不可少"
             },
             {
               "old": "health",
-              "new": "well-being"
+              "new": "well-being",
+              "old_zh": "卫生",
+              "new_zh": "健康"
             }
           ],
           "basic_zh": "我认为这对我们的健康非常重要。",
@@ -1799,11 +1805,15 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "very important",
-              "new": "fundamentally crucial"
+              "new": "fundamentally crucial",
+              "old_zh": "非常重要",
+              "new_zh": "从根本上至关重要"
             },
             {
               "old": "a country's development",
-              "new": "a nation's socioeconomic development"
+              "new": "a nation's socioeconomic development",
+              "old_zh": "一个国家的发展",
+              "new_zh": ""
             }
           ],
           "basic_zh": "教育对于一个国家的发展非常重要。",
@@ -1853,11 +1863,15 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "think",
-              "new": "strongly believe"
+              "new": "strongly believe",
+              "old_zh": "认为",
+              "new_zh": "坚信"
             },
             {
               "old": "making our lives better",
-              "new": "significantly enhanced our quality of life"
+              "new": "significantly enhanced our quality of life",
+              "old_zh": "",
+              "new_zh": ""
             }
           ],
           "basic_zh": "我认为技术正在让我们的生活变得更美好。",
@@ -1870,15 +1884,21 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "Many people think",
-              "new": "A growing number of scholars contend"
+              "new": "A growing number of scholars contend",
+              "old_zh": "很多人认为",
+              "new_zh": ""
             },
             {
               "old": "is harmful to",
-              "new": "exerts a detrimental influence on"
+              "new": "exerts a detrimental influence on",
+              "old_zh": "有害于",
+              "new_zh": ""
             },
             {
               "old": "young people",
-              "new": "adolescents"
+              "new": "adolescents",
+              "old_zh": "年轻人",
+              "new_zh": "青少年"
             }
           ],
           "basic_zh": "许多人认为社交媒体对年轻人有害。",
@@ -1923,15 +1943,21 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "Too much",
-              "new": "Excessive"
+              "new": "Excessive",
+              "old_zh": "太多了？",
+              "new_zh": "过度"
             },
             {
               "old": "can cause",
-              "new": "may lead to"
+              "new": "may lead to",
+              "old_zh": "可能导致",
+              "new_zh": "可能导致"
             },
             {
               "old": "eye problems",
-              "new": "significant vision deterioration"
+              "new": "significant vision deterioration",
+              "old_zh": "眼睛问题",
+              "new_zh": "视力严重恶化"
             }
           ],
           "basic_zh": "屏幕时间过长会导致眼睛问题。",
@@ -1944,19 +1970,27 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "Pollution",
-              "new": "Environmental pollution"
+              "new": "Environmental pollution",
+              "old_zh": "环境污染",
+              "new_zh": "环境污染"
             },
             {
               "old": "causes",
-              "new": "gives rise to"
+              "new": "gives rise to",
+              "old_zh": "原因（causes）",
+              "new_zh": "引起"
             },
             {
               "old": "many health problems",
-              "new": "a wide range of adverse health issues"
+              "new": "a wide range of adverse health issues",
+              "old_zh": "健康问题",
+              "new_zh": ""
             },
             {
               "old": "in cities",
-              "new": "in urban areas"
+              "new": "in urban areas",
+              "old_zh": "乡人数",
+              "new_zh": "7.410.8城市地区"
             }
           ],
           "basic_zh": "污染导致城市出现许多健康问题。",
@@ -2001,15 +2035,21 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "need to fix",
-              "new": "It is imperative that we address"
+              "new": "It is imperative that we address",
+              "old_zh": "需要修复",
+              "new_zh": ""
             },
             {
               "old": "this problem",
-              "new": "this issue"
+              "new": "this issue",
+              "old_zh": "这个问题",
+              "new_zh": "这个问题的人吗？"
             },
             {
               "old": "as soon as possible",
-              "new": "at the earliest opportunity"
+              "new": "at the earliest opportunity",
+              "old_zh": "",
+              "new_zh": ""
             }
           ],
           "basic_zh": "我们需要尽快解决此问题。",
@@ -2022,15 +2062,21 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "should solve",
-              "new": "must take immediate measures to tackle"
+              "new": "must take immediate measures to tackle",
+              "old_zh": "应该能够解决",
+              "new_zh": ""
             },
             {
               "old": "quickly",
-              "new": "immediate"
+              "new": "immediate",
+              "old_zh": "快速",
+              "new_zh": "即时"
             },
             {
               "old": "the housing problem",
-              "new": "the housing crisis"
+              "new": "the housing crisis",
+              "old_zh": "H. 住房问题",
+              "new_zh": "住房危机"
             }
           ],
           "basic_zh": "政府应该尽快解决住房问题。",
@@ -2075,23 +2121,33 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "many",
-              "new": "numerous compelling"
+              "new": "numerous compelling",
+              "old_zh": "许多的",
+              "new_zh": "众多引人注目的"
             },
             {
               "old": "reasons",
-              "new": "reasons"
+              "new": "reasons",
+              "old_zh": "原因",
+              "new_zh": "原因"
             },
             {
               "old": "people",
-              "new": "individuals"
+              "new": "individuals",
+              "old_zh": "用户",
+              "new_zh": "个人"
             },
             {
               "old": "choose",
-              "new": "opt to"
+              "new": "opt to",
+              "old_zh": "选择",
+              "new_zh": "选择"
             },
             {
               "old": "study abroad",
-              "new": "pursue education overseas"
+              "new": "pursue education overseas",
+              "old_zh": "留学",
+              "new_zh": "在海外接受教育"
             }
           ],
           "basic_zh": "人们选择出国留学的原因有很多。",
@@ -2104,11 +2160,15 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "There are many factors",
-              "new": "A multitude of interconnected factors"
+              "new": "A multitude of interconnected factors",
+              "old_zh": "",
+              "new_zh": ""
             },
             {
               "old": "affect",
-              "new": "exert a considerable influence on"
+              "new": "exert a considerable influence on",
+              "old_zh": "影响\tyǐngxiǎng",
+              "new_zh": ""
             }
           ],
           "basic_zh": "影响经济增长的因素很多。",
@@ -2153,15 +2213,21 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "Exercise",
-              "new": "Regular physical activity"
+              "new": "Regular physical activity",
+              "old_zh": "练习",
+              "new_zh": "定期运动。"
             },
             {
               "old": "is good for",
-              "new": "is highly beneficial for"
+              "new": "is highly beneficial for",
+              "old_zh": "适用于",
+              "new_zh": ""
             },
             {
               "old": "your body and mind",
-              "new": "physical and mental well-being"
+              "new": "physical and mental well-being",
+              "old_zh": "",
+              "new_zh": ""
             }
           ],
           "basic_zh": "锻炼对身心健康都有好处。",
@@ -2174,11 +2240,15 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "This change is good for",
-              "new": "This reform has produced favorable outcomes for"
+              "new": "This reform has produced favorable outcomes for",
+              "old_zh": "",
+              "new_zh": ""
             },
             {
               "old": "the economy",
-              "new": "the national economy"
+              "new": "the national economy",
+              "old_zh": "- 经济",
+              "new_zh": "国民经济"
             }
           ],
           "basic_zh": "这种变化对经济有好处。",
@@ -2223,11 +2293,15 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "Eating too much junk food",
-              "new": "Excessive consumption of processed foods"
+              "new": "Excessive consumption of processed foods",
+              "old_zh": "",
+              "new_zh": ""
             },
             {
               "old": "is really bad for you",
-              "new": "is highly detrimental to one's overall health"
+              "new": "is highly detrimental to one's overall health",
+              "old_zh": "",
+              "new_zh": ""
             }
           ],
           "basic_zh": "吃太多垃圾食品对你真的不好。",
@@ -2240,11 +2314,15 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "had bad effects on",
-              "new": "exerted adverse consequences on"
+              "new": "exerted adverse consequences on",
+              "old_zh": "",
+              "new_zh": ""
             },
             {
               "old": "small businesses",
-              "new": "small and medium-sized enterprises"
+              "new": "small and medium-sized enterprises",
+              "old_zh": "小型企业",
+              "new_zh": ""
             }
           ],
           "basic_zh": "这些政策对小企业产生了不良影响。",
@@ -2289,15 +2367,21 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "House prices",
-              "new": "Property values"
+              "new": "Property values",
+              "old_zh": "房价",
+              "new_zh": "属性值"
             },
             {
               "old": "have gone up a lot",
-              "new": "have soared dramatically"
+              "new": "have soared dramatically",
+              "old_zh": "",
+              "new_zh": "大幅飙升"
             },
             {
               "old": "in recent years",
-              "new": "over the past several years"
+              "new": "over the past several years",
+              "old_zh": "近年",
+              "new_zh": ""
             }
           ],
           "basic_zh": "近年来，房价上涨了很多。",
@@ -2310,15 +2394,21 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "Internet use",
-              "new": "Internet penetration"
+              "new": "Internet penetration",
+              "old_zh": "网络使用：",
+              "new_zh": "互联网普及率高"
             },
             {
               "old": "has increased very fast",
-              "new": "has surged exponentially"
+              "new": "has surged exponentially",
+              "old_zh": "",
+              "new_zh": "呈指数级增长"
             },
             {
               "old": "in developing countries",
-              "new": "across developing nations"
+              "new": "across developing nations",
+              "old_zh": "在发展中国家",
+              "new_zh": "跨越发展中国家"
             }
           ],
           "basic_zh": "互联网的使用在发展中国家增长非常快。",
@@ -2363,11 +2453,15 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "The number of people watching TV",
-              "new": "Television viewership"
+              "new": "Television viewership",
+              "old_zh": "",
+              "new_zh": "电视收视率"
             },
             {
               "old": "has gone down a lot",
-              "new": "has plummeted substantially"
+              "new": "has plummeted substantially",
+              "old_zh": "",
+              "new_zh": "已经大幅下降"
             }
           ],
           "basic_zh": "看电视的人数下降了很多。",
@@ -2380,15 +2474,21 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "The forest area",
-              "new": "The total forest coverage"
+              "new": "The total forest coverage",
+              "old_zh": "林区",
+              "new_zh": ""
             },
             {
               "old": "is becoming smaller",
-              "new": "is dwindling"
+              "new": "is dwindling",
+              "old_zh": "变得越来越小",
+              "new_zh": "正在减少"
             },
             {
               "old": "every year",
-              "new": "at an alarming annual rate"
+              "new": "at an alarming annual rate",
+              "old_zh": "度进行检测",
+              "new_zh": ""
             }
           ],
           "basic_zh": "森林面积逐年缩小。",
@@ -2433,15 +2533,21 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "The graph shows",
-              "new": "The data clearly demonstrates"
+              "new": "The data clearly demonstrates",
+              "old_zh": "图表显示",
+              "new_zh": ""
             },
             {
               "old": "sales went up",
-              "new": "sales figures experienced a marked increase"
+              "new": "sales figures experienced a marked increase",
+              "old_zh": "销售额上升",
+              "new_zh": ""
             },
             {
               "old": "last year",
-              "new": "during the previous year"
+              "new": "during the previous year",
+              "old_zh": "去年",
+              "new_zh": ""
             }
           ],
           "basic_zh": "图表显示，去年销售额有所增长。",
@@ -2454,19 +2560,27 @@ window.__TIPS__ = {
           "highlights": [
             {
               "old": "This research shows",
-              "new": "This study reveals"
+              "new": "This study reveals",
+              "old_zh": "研究显示……",
+              "new_zh": "这项研究揭示了"
             },
             {
               "old": "exercise",
-              "new": "regular physical activity"
+              "new": "regular physical activity",
+              "old_zh": "练习 ",
+              "new_zh": "定期运动。"
             },
             {
               "old": "helps",
-              "new": "significantly enhances"
+              "new": "significantly enhances",
+              "old_zh": "帮助",
+              "new_zh": "显著增强"
             },
             {
               "old": "mental health",
-              "new": "psychological well-being"
+              "new": "psychological well-being",
+              "old_zh": "心理健康",
+              "new_zh": "心理健康"
             }
           ],
           "basic_zh": "这项研究表明，锻炼有助于心理健康。",
