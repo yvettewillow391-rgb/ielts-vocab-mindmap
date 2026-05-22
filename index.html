@@ -193,6 +193,16 @@
       </div>
     </div>
 
+    <!-- Dictionary lookup -->
+    <div class="px-4 pb-1">
+      <div class="flex gap-1.5">
+        <input id="dictLookupInput" type="text" placeholder="查词典，输入单词..."
+          class="flex-1 pl-2.5 pr-2 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors">
+        <button id="dictLookupBtn" class="px-2.5 py-1.5 text-xs font-medium rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors flex-shrink-0">查词</button>
+      </div>
+      <div id="dictLookupResult" class="hidden mt-2 bg-blue-50 rounded-lg p-2.5 text-xs max-h-48 overflow-y-auto"></div>
+    </div>
+
     <!-- Accent toggle -->
     <div class="px-4 pb-2 flex items-center gap-2">
       <span class="text-xs text-gray-400">发音:</span>
@@ -213,12 +223,6 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
         </svg>
         技巧
-      </button>
-      <button id="shareBtn" class="flex-1 py-2 text-xs font-medium rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center justify-center gap-1" title="分享此页面">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
-        </svg>
-        分享
       </button>
     </div>
 
@@ -621,6 +625,9 @@
     // Favorite refs
     const dictBtn          = $('dictBtn');
     const dictResult       = $('dictResult');
+    const dictLookupInput  = $('dictLookupInput');
+    const dictLookupBtn    = $('dictLookupBtn');
+    const dictLookupResult = $('dictLookupResult');
     const favoriteBtn      = $('favoriteBtn');
     const favStarIcon      = $('favStarIcon');
     const favFilterBtn     = $('favFilterBtn');
@@ -1057,34 +1064,43 @@
       return '<span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium ' + cls + ' flex-shrink-0">' + escapeHTML(pos) + '</span>';
     }
 
-    async function lookupDictionary() {
-      if (currentWordIndex < 0 || currentRootIndex < 0) return;
-      const w = allData[currentRootIndex].words[currentWordIndex];
-      if (!w) return;
-      const word = w.word;
-      dictResult.classList.remove('hidden');
-      dictResult.innerHTML = '<div class="flex items-center gap-2 text-blue-500 text-xs"><div class="w-3 h-3 border-2 border-blue-300 border-t-blue-500 rounded-full animate-spin"></div>查询中...</div>';
+    async function doDictLookup(word, resultEl) {
+      resultEl.classList.remove('hidden');
+      resultEl.innerHTML = '<div class="flex items-center gap-2 text-blue-500 text-xs"><div class="w-3 h-3 border-2 border-blue-300 border-t-blue-500 rounded-full animate-spin"></div>查询中...</div>';
 
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 3000);
+      const timeout = setTimeout(() => controller.abort(), 4000);
 
-      try {
-        const res = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(word), { signal: controller.signal });
-        clearTimeout(timeout);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-        if (!data || !data[0]) throw new Error('Empty');
+      // Try Free Dictionary API first, then fall back to MyMemory as proxy
+      async function tryFetch(url) {
+        try {
+          const res = await fetch(url, { signal: controller.signal });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return await res.json();
+        } catch { return null; }
+      }
 
+      const encWord = encodeURIComponent(word);
+      let data = await tryFetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encWord);
+      clearTimeout(timeout);
+
+      if (data && data[0]) {
         const entry = data[0];
         let html = '<div class="flex items-center justify-between mb-2"><span class="font-bold text-blue-700 text-sm">' + escapeHTML(entry.word || word) + '</span>';
         if (entry.phonetic) html += '<span class="text-gray-400 text-xs">/' + escapeHTML(entry.phonetic) + '/</span>';
-        html += '<button class="text-blue-400 hover:text-blue-600 text-xs ml-1" onclick="event.stopPropagation();speakWord(\'' + escapeHTML(word) + '\')" title="朗读">🔊</button></div>';
+        var spkW = escapeHTML(word);
+        html += '<button class="text-blue-400 hover:text-blue-600 text-xs ml-1" id="dictSpeakBtn" title="朗读">🔊</button></div>';
+        // Attach speaker after render
+        setTimeout(function() {
+          var b = document.getElementById('dictSpeakBtn');
+          if (b) b.onclick = function() { speak(spkW); };
+        }, 50);
 
         let count = 0;
-        (entry.meanings || []).forEach(m => {
+        (entry.meanings || []).forEach(function(m) {
           if (count >= 4) return;
           html += '<div class="mb-1.5"><span class="text-[11px] italic text-blue-500 font-medium">' + escapeHTML(m.partOfSpeech || '') + '</span>';
-          (m.definitions || []).slice(0, 3).forEach(d => {
+          (m.definitions || []).slice(0, 3).forEach(function(d) {
             html += '<div class="text-xs text-gray-700 ml-1">· ' + escapeHTML(d.definition) + '</div>';
             if (d.example) html += '<div class="text-[11px] text-gray-400 ml-4">"<i>' + escapeHTML(d.example) + '</i>"</div>';
           });
@@ -1092,21 +1108,39 @@
           count++;
         });
         if (entry.phonetics && entry.phonetics[0] && entry.phonetics[0].audio) {
-          html += '<button class="text-[10px] text-blue-400 hover:text-blue-600 mt-1" onclick="new Audio(\'' + entry.phonetics[0].audio + '\').play()">🔊 发音</button>';
+          html += '<button class="text-[10px] text-blue-400 hover:text-blue-600 mt-1" onclick="new Audio(\'' + entry.phonetics[0].audio.replace(/'/g, "\\'") + '\').play()">🔊 发音</button>';
         }
-        html += '<div class="flex gap-2 mt-2"><a href="https://dictionary.cambridge.org/zhs/%E8%AF%8D%E5%85%B8/%E8%8B%B1%E8%AF%AD/' + encodeURIComponent(word) + '" target="_blank" class="text-[10px] text-blue-400 hover:underline">剑桥词典 →</a>';
-        html += '<a href="https://m.youdao.com/dict?le=eng&q=' + encodeURIComponent(word) + '" target="_blank" class="text-[10px] text-red-400 hover:underline">有道词典 →</a>';
-        html += '<button class="text-[10px] text-gray-400 hover:text-gray-600 ml-auto" onclick="document.getElementById(\'dictResult\').classList.add(\'hidden\')">关闭</button></div>';
-        dictResult.innerHTML = html;
-      } catch (e) {
-        clearTimeout(timeout);
-        // API blocked/timeout — show direct links
-        dictResult.innerHTML = '<div class="text-xs text-gray-500 mb-2">离线词典API不可用</div>' +
-          '<div class="flex flex-wrap gap-2"><a href="https://m.youdao.com/dict?le=eng&q=' + encodeURIComponent(word) + '" target="_blank" class="text-xs px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100">📖 有道词典</a>' +
-          '<a href="https://dictionary.cambridge.org/zhs/%E8%AF%8D%E5%85%B8/%E8%8B%B1%E8%AF%AD/' + encodeURIComponent(word) + '" target="_blank" class="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100">🔵 剑桥词典</a>' +
-          '<button class="text-[10px] text-gray-400 hover:text-gray-600 ml-auto" onclick="document.getElementById(\'dictResult\').classList.add(\'hidden\')">关闭</button></div>';
+        html += '<div class="flex gap-2 mt-2"><a href="https://dictionary.cambridge.org/zhs/dictionary/english/' + encWord + '" target="_blank" class="text-[10px] text-blue-400 hover:underline">剑桥词典 →</a>';
+        html += '<a href="https://m.youdao.com/dict?le=eng&q=' + encWord + '" target="_blank" class="text-[10px] text-red-400 hover:underline">有道词典 →</a>';
+        html += '<button class="text-[10px] text-gray-400 hover:text-gray-600 ml-auto" onclick="this.parentElement.parentElement.classList.add(\'hidden\')">关闭</button></div>';
+        resultEl.innerHTML = html;
+      } else {
+        // API unavailable — show direct links
+        resultEl.innerHTML = '<div class="text-xs text-gray-500 mb-2">词典API不可用，使用在线词典：</div>' +
+          '<div class="flex flex-wrap gap-2"><a href="https://m.youdao.com/dict?le=eng&q=' + encWord + '" target="_blank" class="text-xs px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100">📖 有道词典</a>' +
+          '<a href="https://dictionary.cambridge.org/zhs/dictionary/english/' + encWord + '" target="_blank" class="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100">🔵 剑桥词典</a>' +
+          '<a href="https://www.oxfordlearnersdictionaries.com/definition/english/' + encWord + '" target="_blank" class="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100">📗 牛津</a>' +
+          '<button class="text-[10px] text-gray-400 hover:text-gray-600 ml-auto" onclick="this.parentElement.parentElement.classList.add(\'hidden\')">关闭</button></div>';
       }
     }
+
+    function lookupDictionary() {
+      if (currentWordIndex < 0 || currentRootIndex < 0) return;
+      const w = allData[currentRootIndex].words[currentWordIndex];
+      if (!w) return;
+      doDictLookup(w.word, dictResult);
+    }
+
+    // Sidebar dictionary lookup
+    function sidebarDictLookup() {
+      const word = dictLookupInput.value.trim();
+      if (!word) return;
+      doDictLookup(word, dictLookupResult);
+    }
+    dictLookupBtn.addEventListener('click', sidebarDictLookup);
+    dictLookupInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') sidebarDictLookup();
+    });
 
     function showDetailPanel(wordData) {
       if (!wordData) return;
@@ -2395,9 +2429,7 @@
     $('closeTipsBtn').addEventListener('click', closeTips);
     $('fullscreenTipsBtn').addEventListener('click', toggleTipsFullscreen);
 
-    // Share — generate standalone HTML
-    $('shareBtn').addEventListener('click', exportStandalone);
-
+    // Export — generate standalone HTML (kept for future use)
     function exportStandalone() {
       let html = document.documentElement.outerHTML;
       const dataJson = JSON.stringify(allData);
