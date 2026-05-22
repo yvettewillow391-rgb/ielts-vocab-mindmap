@@ -169,6 +169,7 @@
     <div id="iconBar">
       <button id="expandFromIcon" title="展开侧栏" class="icon-bar-btn primary" style="margin-bottom:4px">▶</button>
       <button id="iconSearch" title="搜索单词" class="icon-bar-btn"><span class="icon-emoji">🔍</span><span class="icon-label">搜索</span></button>
+      <button id="iconDictionary" title="查词典" class="icon-bar-btn"><span class="icon-emoji">📖</span><span class="icon-label">词典</span></button>
       <button id="iconDict" title="默写模式" class="icon-bar-btn"><span class="icon-emoji">✏️</span><span class="icon-label">默写</span></button>
       <button id="iconTips" title="词汇技巧" class="icon-bar-btn"><span class="icon-emoji">💡</span><span class="icon-label">技巧</span></button>
       <button id="iconFav" title="我的收藏" class="icon-bar-btn"><span class="icon-emoji">⭐</span><span class="icon-label">收藏</span></button>
@@ -421,11 +422,14 @@
           <!-- Word display area (hidden until answer checked) -->
           <div class="text-center py-4">
             <p class="text-xs text-gray-400 mb-1">听发音，输入对应的<span id="dictTypeLabel">单词</span></p>
-            <button id="dictReplayBtn" class="mx-auto w-14 h-14 rounded-full bg-indigo-50 text-indigo-500 hover:bg-indigo-100 transition-colors flex items-center justify-center">
-              <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-              </svg>
-            </button>
+            <div class="flex items-center justify-center gap-3">
+              <button id="dictReplayBtn" class="w-14 h-14 rounded-full bg-indigo-50 text-indigo-500 hover:bg-indigo-100 transition-colors flex items-center justify-center">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+              </button>
+              <button id="dictReadAllBtn" class="px-3 py-2 text-xs font-medium rounded-xl bg-indigo-100 text-indigo-600 hover:bg-indigo-200 transition-colors" title="连续朗读所有单词">🔊 连读</button>
+            </div>
           </div>
 
           <!-- Input -->
@@ -1104,10 +1108,25 @@
       return '<span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium ' + cls + ' flex-shrink-0">' + escapeHTML(pos) + '</span>';
     }
 
+    async function translateToChinese(text) {
+      try {
+        var controller = new AbortController();
+        var timeout = setTimeout(function() { controller.abort(); }, 3000);
+        var res = await fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=en|zh', { signal: controller.signal });
+        clearTimeout(timeout);
+        if (res.ok) {
+          var data = await res.json();
+          if (data.responseData && data.responseData.translatedText) {
+            return data.responseData.translatedText;
+          }
+        }
+      } catch(e) {}
+      return '';
+    }
+
     async function doDictLookup(word, resultEl) {
       resultEl.classList.remove('hidden');
       var encWord = encodeURIComponent(word);
-      // Always show links immediately
       resultEl.innerHTML = '<div class="flex items-center justify-between mb-2"><span class="font-bold text-blue-700 text-sm">' + escapeHTML(word) + '</span>' +
         '<button class="text-[10px] text-gray-400 hover:text-gray-600" onclick="this.parentElement.parentElement.parentElement.classList.add(\'hidden\')">关闭</button></div>' +
         '<div class="flex items-center gap-2 text-blue-500 text-xs mb-2"><div class="w-3 h-3 border-2 border-blue-300 border-t-blue-500 rounded-full animate-spin"></div>获取释义中...</div>' +
@@ -1115,7 +1134,6 @@
         '<a href="https://dictionary.cambridge.org/zhs/dictionary/english/' + encWord + '" target="_blank" class="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100">🔵 剑桥词典</a>' +
         '<a href="https://www.oxfordlearnersdictionaries.com/definition/english/' + encWord + '" target="_blank" class="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100">📗 牛津</a></div>';
 
-      // Try API in background
       try {
         var controller = new AbortController();
         var timeout = setTimeout(function() { controller.abort(); }, 4000);
@@ -1128,13 +1146,37 @@
             var html = '<div class="flex items-center justify-between mb-2"><span class="font-bold text-blue-700 text-sm">' + escapeHTML(entry.word || word) + '</span>';
             if (entry.phonetic) html += '<span class="text-gray-400 text-xs">/' + escapeHTML(entry.phonetic) + '/</span>';
             html += '<button class="text-blue-400 hover:text-blue-600 text-xs ml-1" id="dictSpeakBtn" title="朗读">🔊</button></div>';
+
+            // Collect all definitions for batch translation
+            var allDefs = [];
             var cnt = 0;
+            (entry.meanings || []).forEach(function(m) {
+              if (cnt >= 4) return;
+              (m.definitions || []).slice(0, 2).forEach(function(d) {
+                allDefs.push(d.definition);
+              });
+              cnt++;
+            });
+
+            // Translate definitions to Chinese
+            var zhText = '';
+            if (allDefs.length > 0) {
+              zhText = await translateToChinese(allDefs.join(' || '));
+            }
+            var zhParts = zhText ? zhText.split(' || ') : [];
+
+            cnt = 0;
+            var defIdx = 0;
             (entry.meanings || []).forEach(function(m) {
               if (cnt >= 4) return;
               html += '<div class="mb-1.5"><span class="text-[11px] italic text-blue-500 font-medium">' + escapeHTML(m.partOfSpeech || '') + '</span>';
               (m.definitions || []).slice(0, 3).forEach(function(d) {
-                html += '<div class="text-xs text-gray-700 ml-1">· ' + escapeHTML(d.definition) + '</div>';
+                html += '<div class="text-xs text-gray-700 ml-1">· ' + escapeHTML(d.definition);
+                var zh = zhParts[defIdx] || '';
+                if (zh) html += ' <span class="text-gray-400">' + escapeHTML(zh) + '</span>';
+                html += '</div>';
                 if (d.example) html += '<div class="text-[11px] text-gray-400 ml-4">"<i>' + escapeHTML(d.example) + '</i>"</div>';
+                defIdx++;
               });
               html += '</div>';
               cnt++;
@@ -1146,16 +1188,13 @@
             html += '<a href="https://m.youdao.com/dict?le=eng&q=' + encWord + '" target="_blank" class="text-[10px] text-red-400 hover:underline">有道词典 →</a>';
             html += '<button class="text-[10px] text-gray-400 hover:text-gray-600 ml-auto" onclick="this.parentElement.parentElement.classList.add(\'hidden\')">关闭</button></div>';
             resultEl.innerHTML = html;
-            // Attach speaker
             setTimeout(function() {
               var b = document.getElementById('dictSpeakBtn');
               if (b) b.onclick = function() { speak(word); };
             }, 100);
           }
         }
-      } catch(e) {
-        // API failed, links already visible
-      }
+      } catch(e) {}
     }
 
     function lookupDictionary() {
@@ -2438,6 +2477,10 @@
       if (isMobile()) closeSidebarMobile(); else expandSidebar();
       setTimeout(function() { searchInput.focus(); }, 400);
     });
+    $('iconDictionary').addEventListener('click', function() {
+      if (isMobile()) closeSidebarMobile(); else expandSidebar();
+      setTimeout(function() { dictLookupInput.focus(); dictLookupInput.select(); }, 400);
+    });
     $('iconDict').addEventListener('click', function() {
       if (isMobile()) closeSidebarMobile(); else expandSidebar();
       $('openDictBtn').click();
@@ -2489,6 +2532,12 @@
     $('closeDictBtn').addEventListener('click', closeDictation);
     dictStartBtn.addEventListener('click', startDictation);
     dictReplayBtn.addEventListener('click', dictSpeak);
+    $('dictReadAllBtn').addEventListener('click', function() {
+      // Continuous read all dictation items
+      stopAllSpeech();
+      var items = dictItems.map(function(item) { return item.text; });
+      speakSequence(items);
+    });
     dictCheckBtn.addEventListener('click', checkDictAnswer);
     dictNextBtn.addEventListener('click', () => { dictIndex++; showDictItem(); });
     $('dictRetryBtn').addEventListener('click', startDictation);
