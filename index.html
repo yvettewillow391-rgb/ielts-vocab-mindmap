@@ -9,11 +9,16 @@
   <script src="tips-data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
-    #sidebarInner::-webkit-scrollbar { width: 8px; }
-    #sidebarInner::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 4px; }
-    #sidebarInner::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
-    #sidebarInner::-webkit-scrollbar-thumb:hover { background: #6b7280; }
-    #sidebarInner { scrollbar-width: thin; scrollbar-color: #9ca3af #f3f4f6; }
+    #sidebarInner::-webkit-scrollbar { width: 10px; }
+    #sidebarInner::-webkit-scrollbar-track { background: #e5e7eb; border-radius: 5px; margin: 4px 0; }
+    #sidebarInner::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 5px; border: 2px solid transparent; background-clip: content-box; }
+    #sidebarInner::-webkit-scrollbar-thumb:hover { background: #6b7280; border: 2px solid transparent; background-clip: content-box; }
+    #sidebarInner { scrollbar-width: auto; scrollbar-color: #9ca3af #e5e7eb; }
+    #rootList { scrollbar-width: auto; scrollbar-color: #9ca3af #f3f4f6; }
+    #rootList::-webkit-scrollbar { width: 8px; }
+    #rootList::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 4px; }
+    #rootList::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
+    #rootList::-webkit-scrollbar-thumb:hover { background: #6b7280; }
     #detailInner::-webkit-scrollbar { width: 8px; }
     #detailInner::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 4px; }
     #detailInner::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
@@ -208,7 +213,7 @@
     </div>
 
     <!-- Main sidebar content -->
-    <div id="sidebarInner" style="position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;overflow-x:hidden">
+    <div id="sidebarInner" style="position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:scroll;overflow-x:hidden">
     <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
       <div>
         <h1 class="text-lg font-bold text-indigo-700 tracking-tight">IELTS 词根记忆脑图</h1>
