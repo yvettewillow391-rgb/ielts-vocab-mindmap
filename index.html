@@ -539,10 +539,29 @@
     </div>
   </div>
 
+  <!-- Favorites Overlay -->
+  <div id="favOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-35 hidden flex items-center justify-center p-4">
+    <div id="favPanel" class="bg-white rounded-2xl shadow-2xl w-[95vw] max-w-[820px] max-h-[88vh] flex flex-col overflow-hidden ring-1 ring-gray-900/5">
+      <div class="flex-shrink-0 px-6 py-4 flex items-center justify-between border-b border-gray-100">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-lg">⭐</div>
+          <div>
+            <h3 class="text-base font-bold text-gray-800">我的收藏</h3>
+            <p class="text-[11px] text-gray-400" id="favCountLabel">共 0 项</p>
+          </div>
+        </div>
+        <button id="closeFavBtn" class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="favBody" class="flex-1 overflow-y-auto px-5 py-4"></div>
+    </div>
+  </div>
+
   <!-- Paste Import Overlay -->
   <div id="pasteOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-[720px] max-h-[90vh] flex flex-col overflow-hidden ring-1 ring-gray-900/5">
-      <div class="sticky top-0 bg-white z-10 px-5 py-3.5 flex items-center justify-between border-b border-gray-100">
+      <div class="px-5 py-3.5 flex items-center justify-between border-b border-gray-100 flex-shrink-0">
         <div class="flex items-center gap-2.5">
           <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-lg">📋</div>
           <div>
@@ -554,7 +573,7 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
-      <div class="px-5 py-4 space-y-3 overflow-y-auto">
+      <div class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
         <div>
           <label class="text-xs font-medium text-gray-500 mb-1.5 block">粘贴文本（每行一个单词，支持: word — 释义 / word pos. 释义 / word 释义）</label>
           <textarea id="pasteInput" class="w-full h-32 text-xs border border-gray-200 rounded-xl p-3 resize-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 outline-none" placeholder="例:&#10;submit — vt. 提交；服从&#10;abandon — vt. 放弃；抛弃&#10;significant adj. 重要的；显著的&#10;consequence 结果；后果"></textarea>
@@ -564,6 +583,15 @@
           <select id="pasteRootSelect" class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none"><option value="">选择目标词根...</option></select>
         </div>
         <div id="pastePreview" class="max-h-[40vh] overflow-y-auto"></div>
+        <div id="pasteProgress" class="hidden space-y-1.5"></div>
+      </div>
+      <!-- Sticky confirm bar (hidden until parsed) -->
+      <div id="pasteConfirmBar" class="hidden px-5 py-3 border-t border-gray-100 bg-gray-50/80 backdrop-blur-sm flex-shrink-0 flex items-center justify-between gap-3">
+        <span id="pasteSummary" class="text-xs text-gray-600"></span>
+        <div class="flex gap-2">
+          <button id="pasteCancelBtn" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">取消</button>
+          <button id="pasteConfirmBtn" class="px-5 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 transition-colors">✅ 确认导入</button>
+        </div>
       </div>
     </div>
   </div>
@@ -711,12 +739,19 @@
     const exportBtn       = $('exportBtn');
 
     // Paste import refs
-    const pasteOverlay    = $('pasteOverlay');
-    const pasteInput      = $('pasteInput');
-    const parseBtn        = $('parseBtn');
-    const pastePreview    = $('pastePreview');
-    const pasteRootSelect = $('pasteRootSelect');
-    const closePasteBtn   = $('closePasteBtn');
+    const pasteOverlay     = $('pasteOverlay');
+    const pasteInput       = $('pasteInput');
+    const parseBtn         = $('parseBtn');
+    const pastePreview     = $('pastePreview');
+    const pasteProgress    = $('pasteProgress');
+    const pasteRootSelect  = $('pasteRootSelect');
+    const pasteConfirmBar  = $('pasteConfirmBar');
+    const pasteSummary     = $('pasteSummary');
+    const pasteConfirmBtn  = $('pasteConfirmBtn');
+    const pasteCancelBtn   = $('pasteCancelBtn');
+    const closePasteBtn    = $('closePasteBtn');
+    // Parsed data cache for confirm step
+    let pendingParsedData  = null; // { mode: 'smart'|'manual', parsed, rootMap, unknownWords }
 
     // Dictation refs
     const dictOverlay      = $('dictationOverlay');
@@ -743,6 +778,13 @@
     const tipsPanel        = $('tipsPanel');
     const tipsBody         = $('tipsBody');
     let tipsFullscreen     = false;
+
+    // Favorites refs
+    const favOverlay       = $('favOverlay');
+    const favPanel         = $('favPanel');
+    const favBody          = $('favBody');
+    const favCountLabel    = $('favCountLabel');
+    const closeFavBtn      = $('closeFavBtn');
 
     // Favorite refs
     const dictBtn          = $('dictBtn');
@@ -1480,26 +1522,37 @@
             if (entry.phonetic) html += '<span class="text-gray-400 text-xs">/' + escapeHTML(entry.phonetic) + '/</span>';
             html += '<button class="text-blue-400 hover:text-blue-600 text-xs ml-1" id="dictSpeakBtn" title="朗读">🔊</button></div>';
 
-            // Collect all definitions for batch translation
+            // Collect all definitions AND examples for batch translation
             var allDefs = [];
+            var allExamples = [];
             var cnt = 0;
             (entry.meanings || []).forEach(function(m) {
               if (cnt >= 4) return;
               (m.definitions || []).slice(0, 2).forEach(function(d) {
                 allDefs.push(d.definition);
+                allExamples.push(d.example || '');
               });
               cnt++;
             });
 
-            // Translate definitions to Chinese
+            // Translate definitions
             var zhText = '';
             if (allDefs.length > 0) {
               zhText = await translateToChinese(allDefs.join(' || '));
             }
             var zhParts = zhText ? zhText.split(' || ') : [];
 
+            // Translate examples
+            var examplesZh = '';
+            var nonEmptyExamples = allExamples.filter(function(e) { return e; });
+            if (nonEmptyExamples.length > 0) {
+              examplesZh = await translateToChinese(nonEmptyExamples.join(' || '));
+            }
+            var exZhParts = examplesZh ? examplesZh.split(' || ') : [];
+
             cnt = 0;
             var defIdx = 0;
+            var exIdx = 0;
             (entry.meanings || []).forEach(function(m) {
               if (cnt >= 4) return;
               html += '<div class="mb-1.5"><span class="text-[11px] italic text-blue-500 font-medium">' + escapeHTML(m.partOfSpeech || '') + '</span>';
@@ -1508,7 +1561,13 @@
                 var zh = zhParts[defIdx] || '';
                 if (zh) html += ' <span class="text-gray-400">' + escapeHTML(zh) + '</span>';
                 html += '</div>';
-                if (d.example) html += '<div class="text-[11px] text-gray-400 ml-4">"<i>' + escapeHTML(d.example) + '</i>"</div>';
+                if (d.example) {
+                  var exZh = exZhParts[exIdx] || '';
+                  html += '<div class="text-[11px] text-gray-400 ml-4">"<i>' + escapeHTML(d.example) + '</i>"';
+                  if (exZh) html += ' <span class="text-gray-500 text-[10px]">' + escapeHTML(exZh) + '</span>';
+                  html += '</div>';
+                  exIdx++;
+                }
                 defIdx++;
               });
               html += '</div>';
@@ -2631,14 +2690,21 @@
       }
     };
 
+    function resetPasteImport() {
+      pasteInput.value = '';
+      pastePreview.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">粘贴文本后点击"解析文本"</p>';
+      pasteProgress.classList.add('hidden');
+      pasteProgress.innerHTML = '';
+      pasteConfirmBar.classList.add('hidden');
+      pendingParsedData = null;
+    }
     function openPasteImport() {
       pasteRootSelect.innerHTML = '<option value="">选择目标词根...</option>';
       allData.forEach((r, i) => {
         pasteRootSelect.innerHTML += '<option value="' + i + '">' + escapeHTML(r.root) + '</option>';
       });
-      pasteInput.value = '';
-      pastePreview.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">粘贴文本后点击"解析文本"</p>';
       pasteRootSelect.parentElement.style.display = '';
+      resetPasteImport();
       pasteOverlay.classList.remove('hidden');
     }
     // Smart auto-detect root for a word
@@ -2679,126 +2745,88 @@
     function openSmartImport() {
       pasteRootSelect.innerHTML = '';
       pasteRootSelect.parentElement.style.display = 'none'; // hide root selector
-      pasteInput.value = '';
+      resetPasteImport();
       pastePreview.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">粘贴单词列表，点击智能解析自动归类到词根</p>';
       pasteOverlay.classList.remove('hidden');
     }
 
     function importSmartWords(rootMap, unknownWords) {
-      let totalAdded = 0;
-      var batches = []; // [{ rootIdx, words: [word, ...] }]
-      // Import words with detected roots
+      var totalAdded = 0;
+      var skipped = 0;
+      var batches = [];
+      var rootCount = Object.keys(rootMap).length;
+      var totalWords = Object.values(rootMap).reduce(function(s, a) { return s + a.length; }, 0);
+      var processed = 0;
+
+      // Show progress
+      pasteProgress.classList.remove('hidden');
+      pasteProgress.innerHTML = '<div class="flex items-center gap-2 text-xs text-indigo-600"><span class="animate-pulse">⏳</span> 正在导入 <b>' + totalWords + '</b> 个单词...</div>';
+
       Object.keys(rootMap).forEach(function(idx) {
-        const root = allData[parseInt(idx)];
-        const words = rootMap[idx];
+        var root = allData[parseInt(idx)];
+        var words = rootMap[idx];
         var batchWords = [];
         words.forEach(function(p) {
-          const exists = root.words.some(function(w) { return w.word.toLowerCase() === p.word.toLowerCase(); });
+          processed++;
+          var exists = root.words.some(function(w) { return w.word.toLowerCase() === p.word.toLowerCase(); });
           if (!exists) {
             root.words.push({
               word: p.word,
               phonetic: '',
               meaning: (p.pos ? p.pos + ' ' : '') + p.meaning,
-              inflections: [],
-              synonyms: [],
-              antonyms: [],
-              ielts_phrases: [],
-              ielts_sentences: [],
-              etymology: '',
-              mnemonic: ''
+              inflections: [], synonyms: [], antonyms: [],
+              ielts_phrases: [], ielts_sentences: [],
+              etymology: '', mnemonic: ''
             });
             batchWords.push(p.word);
             totalAdded++;
+          } else {
+            skipped++;
           }
+          // Update progress
+          pasteProgress.innerHTML = '<div class="text-xs text-indigo-600">⏳ 正在导入 <b>' + processed + '/' + totalWords + '</b>... <span class="text-gray-400">' + root.root + ' +' + batchWords.length + '</span></div>';
         });
         if (batchWords.length > 0) batches.push({ rootIdx: parseInt(idx), words: batchWords });
       });
-      // Import unknown words — prompt user to pick a root
+
       if (unknownWords.length > 0) {
-        var rootOptions = '';
-        allData.forEach(function(r, i) {
-          rootOptions += '<option value="' + i + '">' + escapeHTML(r.root) + '</option>';
-        });
-        var unknownHtml = '<div class="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">';
-        unknownHtml += '<p class="text-xs font-medium text-amber-700 mb-2">⚠ 以下 ' + unknownWords.length + ' 个单词未能自动识别词根，请手动选择：</p>';
-        unknownWords.forEach(function(p, i) {
-          unknownHtml += '<div class="flex items-center gap-2 mb-1.5 text-[11px]">';
-          unknownHtml += '<span class="font-bold text-gray-800 min-w-[90px]">' + escapeHTML(p.word) + '</span>';
-          if (p.pos) unknownHtml += '<span class="text-indigo-500 min-w-[50px]">' + escapeHTML(p.pos) + '</span>';
-          unknownHtml += '<span class="text-gray-500 flex-1 truncate">' + escapeHTML(p.meaning) + '</span>';
-          unknownHtml += '<select class="unknown-root-select text-[10px] border border-gray-200 rounded px-1 py-0.5" data-word-idx="' + i + '">';
-          unknownHtml += '<option value="">选择词根...</option>' + rootOptions + '</select>';
-          unknownHtml += '</div>';
-        });
-        unknownHtml += '<button id="importUnknownBtn" class="mt-2 w-full py-1.5 rounded-lg text-xs font-medium bg-amber-500 text-white hover:bg-amber-600 transition-colors">📥 导入未识别单词</button>';
-        unknownHtml += '</div>';
-        document.getElementById('smartPreviewArea').innerHTML += unknownHtml;
-        document.getElementById('importUnknownBtn').addEventListener('click', function() {
-          var selects = document.querySelectorAll('.unknown-root-select');
-          var addCount = 0;
-          var unknownBatches = {};
-          selects.forEach(function(sel) {
-            var idx = parseInt(sel.value);
-            var wordIdx = parseInt(sel.dataset.wordIdx);
-            if (!isNaN(idx) && idx >= 0 && idx < allData.length && wordIdx < unknownWords.length) {
-              var p = unknownWords[wordIdx];
-              var root = allData[idx];
-              var exists = root.words.some(function(w) { return w.word.toLowerCase() === p.word.toLowerCase(); });
-              if (!exists) {
-                root.words.push({
-                  word: p.word,
-                  phonetic: '',
-                  meaning: (p.pos ? p.pos + ' ' : '') + p.meaning,
-                  inflections: [], synonyms: [], antonyms: [],
-                  ielts_phrases: [], ielts_sentences: [],
-                  etymology: '', mnemonic: ''
-                });
-                if (!unknownBatches[idx]) unknownBatches[idx] = [];
-                unknownBatches[idx].push(p.word);
-                addCount++;
-              }
-            }
-          });
-          Object.keys(unknownBatches).forEach(function(idx) {
-            batches.push({ rootIdx: parseInt(idx), words: unknownBatches[idx] });
-          });
-          saveDataToStorage();
-          pasteOverlay.classList.add('hidden');
-          renderRootList(searchInput.value.trim());
-          var summary = '已智能导入 ' + (totalAdded + addCount) + ' 个单词到 ' +
-            (Object.keys(rootMap).length + Object.keys(unknownBatches).length) + ' 个词根';
-          recordImport(batches, summary);
-        });
+        pasteProgress.innerHTML += '<div class="text-xs text-amber-500 mt-1">⚠ ' + unknownWords.length + ' 个单词未识别词根，已跳过。请用"粘贴导入"模式手动选择词根后导入。</div>';
       }
+
       saveDataToStorage();
-      pasteOverlay.classList.add('hidden');
-      renderRootList(searchInput.value.trim());
-      if (unknownWords.length === 0) {
-        var summary = '已智能导入 ' + totalAdded + ' 个单词到 ' + Object.keys(rootMap).length + ' 个词根';
+
+      // Show done state
+      var statusMsg = '✅ 导入完成：新增 <b>' + totalAdded + '</b> 个单词';
+      if (skipped > 0) statusMsg += '，跳过 <b>' + skipped + '</b> 个重复';
+      pasteProgress.innerHTML = '<div class="text-xs text-green-600 font-medium">' + statusMsg + '</div>';
+
+      // Delay close for user to see result
+      setTimeout(function() {
+        pasteOverlay.classList.add('hidden');
+        pasteProgress.classList.add('hidden');
+        pasteProgress.innerHTML = '';
+        pasteConfirmBar.classList.add('hidden');
+        renderRootList(searchInput.value.trim());
+        var summary = '已智能导入 ' + totalAdded + ' 个单词到 ' + rootCount + ' 个词根';
         recordImport(batches, summary);
-      }
+      }, 1200);
     }
 
     function parsePastedText() {
       const raw = pasteInput.value.trim();
-      if (!raw) { pastePreview.innerHTML = '<p class="text-xs text-red-400 text-center py-4">请先粘贴文本</p>'; return; }
+      if (!raw) { pastePreview.innerHTML = '<p class="text-xs text-red-400 text-center py-4">请先粘贴文本</p>'; pasteConfirmBar.classList.add('hidden'); return; }
 
       const lines = raw.split(/[\n\r]+/).filter(l => l.trim());
       const parsed = [];
-      // Multiple regex patterns for common formats
       const patterns = [
-        // word — pos. meaning   OR   word — meaning
         /^(\S+)\s*[—\-]\s*(?:([a-z]+\.)\s*)?(.+)$/i,
-        // word (pos) meaning
         /^(\S+)\s*\(([a-z.]+)\)\s*(.+)$/i,
-        // word pos. meaning
         /^(\S+)\s+([a-z]+\.[\sa-z]*?)\s+(.+)$/i,
-        // word meaning (simple)
         /^(\S+)\s+(.+)$/
       ];
 
       lines.forEach(line => {
-        line = line.trim().replace(/[　]/g, ' '); // full-width spaces
+        line = line.trim().replace(/[　]/g, ' ');
         let matched = false;
         for (const pat of patterns) {
           const m = line.match(pat);
@@ -2806,11 +2834,8 @@
             const word = m[1];
             let pos = m[2] ? m[2].replace(/\s+/g, ' ').trim() : '';
             let meaning = m[3] || m[2] || '';
-            // If pattern 4 matched with just word+text
             if (!meaning && m[2]) meaning = m[2];
-            // Clean pos: ensure it looks like a POS
             if (pos && !/^[a-z]+\.[a-z.\s]*$/i.test(pos.replace(/\s/g,''))) {
-              // pos might actually be part of meaning
               meaning = pos + ' ' + meaning;
               pos = '';
             }
@@ -2826,15 +2851,15 @@
 
       if (parsed.length === 0) {
         pastePreview.innerHTML = '<p class="text-xs text-amber-500 text-center py-4">未能解析到单词，请检查格式</p>';
+        pasteConfirmBar.classList.add('hidden');
         return;
       }
 
-      // Check if smart mode (root selector hidden)
       const isSmartMode = pasteRootSelect.options.length === 0;
 
       if (isSmartMode) {
         // Auto-detect root for each word
-        const rootMap = {};   // { rootIdx: [parsedWord, ...] }
+        const rootMap = {};
         const unknownWords = [];
         parsed.forEach(function(p) {
           const rootIdx = detectRoot(p.word);
@@ -2849,7 +2874,6 @@
         let html = '<div class="text-xs text-gray-500 mb-2">解析到 <b>' + parsed.length + '</b> 个单词，智能识别到 <b>' + Object.keys(rootMap).length + '</b> 个词根</div>';
         html += '<div class="space-y-2 max-h-64 overflow-y-auto" id="smartPreviewArea">';
 
-        // Show grouped by root
         Object.keys(rootMap).forEach(function(idx) {
           const root = allData[parseInt(idx)];
           const words = rootMap[idx];
@@ -2865,12 +2889,11 @@
           html += '</div>';
         });
 
-        // Show unknown words
         if (unknownWords.length > 0) {
           html += '<div class="bg-amber-50 rounded-lg p-2 border border-amber-200">';
-          html += '<div class="text-[10px] font-semibold text-amber-600 mb-1">⚠ 未识别词根 (' + unknownWords.length + '个)</div>';
+          html += '<div class="text-[10px] font-semibold text-amber-600 mb-1">⚠ 未识别词根 (' + unknownWords.length + '个) — 将跳过，可手动选择词根后导入</div>';
           unknownWords.forEach(function(p) {
-            html += '<div class="flex items-center gap-2 text-[10px] ml-2 py-0.5">';
+            html += '<div class="flex items-center gap-2 text-[10px] ml-2 py-0.5 opacity-60">';
             html += '<span class="font-bold text-gray-800 min-w-[80px]">' + escapeHTML(p.word) + '</span>';
             if (p.pos) html += '<span class="text-indigo-400 min-w-[40px]">' + escapeHTML(p.pos) + '</span>';
             html += '<span class="text-gray-500 flex-1 truncate">' + escapeHTML(p.meaning) + '</span>';
@@ -2880,12 +2903,15 @@
         }
 
         html += '</div>';
-        html += '<button id="importSmartBtn" class="mt-3 w-full py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 transition-colors">🚀 智能导入全部</button>';
-
         pastePreview.innerHTML = html;
-        document.getElementById('importSmartBtn').addEventListener('click', function() {
-          importSmartWords(rootMap, unknownWords);
-        });
+
+        // Cache parsed data for confirm step
+        pendingParsedData = { mode: 'smart', parsed, rootMap, unknownWords };
+
+        // Show confirm bar
+        const totalImportable = Object.values(rootMap).reduce((s, a) => s + a.length, 0);
+        pasteSummary.innerHTML = '将导入 <b class="text-indigo-600">' + totalImportable + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownWords.length > 0 ? ' <span class="text-amber-500">（' + unknownWords.length + ' 个未识别将跳过）</span>' : '');
+        pasteConfirmBar.classList.remove('hidden');
       } else {
         // Manual mode — show flat list
         let html = '<div class="text-xs text-gray-500 mb-2">解析到 <b>' + parsed.length + '</b> 个单词</div>';
@@ -2898,50 +2924,71 @@
           html += '</div>';
         });
         html += '</div>';
-        html += '<button id="importParsedBtn" class="mt-3 w-full py-1.5 rounded-lg text-xs font-medium bg-green-500 text-white hover:bg-green-600 transition-colors">✅ 导入全部单词</button>';
-
         pastePreview.innerHTML = html;
-        document.getElementById('importParsedBtn').addEventListener('click', function() {
-          importParsedWords(parsed);
-        });
+
+        // Cache parsed data
+        pendingParsedData = { mode: 'manual', parsed };
+
+        // Show confirm bar
+        pasteSummary.innerHTML = '将导入 <b class="text-green-600">' + parsed.length + '</b> 个单词到所选词根';
+        pasteConfirmBar.classList.remove('hidden');
       }
     }
 
     function importParsedWords(parsed) {
-      const rootIdx = parseInt(pasteRootSelect.value);
+      var rootIdx = parseInt(pasteRootSelect.value);
       if (isNaN(rootIdx) || rootIdx < 0 || rootIdx >= allData.length) {
         alert('请先选择目标词根');
         return;
       }
       if (!parsed || parsed.length === 0) return;
-      const root = allData[rootIdx];
-      let added = 0;
-      const addedWords = [];
-      parsed.forEach(p => {
-        const exists = root.words.some(w => w.word.toLowerCase() === p.word.toLowerCase());
+      var root = allData[rootIdx];
+      var added = 0;
+      var skipped = 0;
+      var addedWords = [];
+      var total = parsed.length;
+
+      // Show progress
+      pasteProgress.classList.remove('hidden');
+      pasteProgress.innerHTML = '<div class="flex items-center gap-2 text-xs text-green-600"><span class="animate-pulse">⏳</span> 正在导入 <b>' + total + '</b> 个单词到 <b>' + escapeHTML(root.root) + '</b>...</div>';
+
+      parsed.forEach(function(p, i) {
+        var exists = root.words.some(function(w) { return w.word.toLowerCase() === p.word.toLowerCase(); });
         if (!exists) {
           root.words.push({
             word: p.word,
             phonetic: '',
             meaning: (p.pos ? p.pos + ' ' : '') + p.meaning,
-            inflections: [],
-            synonyms: [],
-            antonyms: [],
-            ielts_phrases: [],
-            ielts_sentences: [],
-            etymology: '',
-            mnemonic: ''
+            inflections: [], synonyms: [], antonyms: [],
+            ielts_phrases: [], ielts_sentences: [],
+            etymology: '', mnemonic: ''
           });
           addedWords.push(p.word);
           added++;
+        } else {
+          skipped++;
         }
+        pasteProgress.innerHTML = '<div class="text-xs text-green-600">⏳ 正在导入 <b>' + (i + 1) + '/' + total + '</b>... <span class="text-gray-400">+</span><b>' + added + '</b></div>';
       });
+
       saveDataToStorage();
-      pasteOverlay.classList.add('hidden');
-      renderRootList(searchInput.value.trim());
-      if (currentRootIndex === rootIdx) renderMindMap(allData[rootIdx], -1);
-      var summary = '已导入 ' + added + ' 个单词 → ' + root.root;
-      recordImport([{ rootIdx: rootIdx, words: addedWords }], summary);
+
+      // Show done state
+      var statusMsg = '✅ 导入完成：新增 <b>' + added + '</b> 个单词';
+      if (skipped > 0) statusMsg += '，跳过 <b>' + skipped + '</b> 个重复';
+      pasteProgress.innerHTML = '<div class="text-xs text-green-600 font-medium">' + statusMsg + '</div>';
+
+      // Delay close
+      setTimeout(function() {
+        pasteOverlay.classList.add('hidden');
+        pasteProgress.classList.add('hidden');
+        pasteProgress.innerHTML = '';
+        pasteConfirmBar.classList.add('hidden');
+        renderRootList(searchInput.value.trim());
+        if (currentRootIndex === rootIdx) renderMindMap(allData[rootIdx], -1);
+        var summary = '已导入 ' + added + ' 个单词 → ' + root.root;
+        recordImport([{ rootIdx: rootIdx, words: addedWords }], summary);
+      }, 1200);
     }
 
     function collectRowData(row) {
@@ -3145,9 +3192,30 @@
 
     // Paste import
     pasteImportBtn.addEventListener('click', openPasteImport);
-    closePasteBtn.addEventListener('click', () => pasteOverlay.classList.add('hidden'));
-    pasteOverlay.addEventListener('click', e => { if (e.target === pasteOverlay) pasteOverlay.classList.add('hidden'); });
+    function closePasteOverlay() {
+      pasteOverlay.classList.add('hidden');
+      pasteConfirmBar.classList.add('hidden');
+      pasteProgress.classList.add('hidden');
+      pasteProgress.innerHTML = '';
+      pendingParsedData = null;
+    }
+    closePasteBtn.addEventListener('click', closePasteOverlay);
+    pasteOverlay.addEventListener('click', e => { if (e.target === pasteOverlay) closePasteOverlay(); });
     parseBtn.addEventListener('click', parsePastedText);
+    // Paste confirm / cancel
+    pasteConfirmBtn.addEventListener('click', function() {
+      if (!pendingParsedData) return;
+      pasteConfirmBar.classList.add('hidden');
+      if (pendingParsedData.mode === 'smart') {
+        importSmartWords(pendingParsedData.rootMap, pendingParsedData.unknownWords);
+      } else {
+        importParsedWords(pendingParsedData.parsed);
+      }
+    });
+    pasteCancelBtn.addEventListener('click', function() {
+      pasteConfirmBar.classList.add('hidden');
+      pendingParsedData = null;
+    });
 
     // Sidebar collapse/expand
     var sidebar = document.getElementById('sidebar');
@@ -3200,16 +3268,7 @@
       openTips();
     });
     $('iconFav').addEventListener('click', function() {
-      if (isMobile()) closeSidebarMobile(); else expandSidebar();
-      showFavoritesOnly = true;
-      updateFavCount();
-      renderRootList(searchInput.value.trim());
-      if (showFavoritesOnly && currentRootIndex >= 0) {
-        const w = allData[currentRootIndex].words[currentWordIndex];
-        if (w && !favorites.words.has(w.word)) {
-          hideDetailPanel();
-        }
-      }
+      openFavorites();
     });
     $('iconAccent').addEventListener('click', function() {
       // Toggle accent between US and UK
@@ -3296,6 +3355,9 @@
     $('errNbBtn').addEventListener('click', openErrorNotebook);
     $('closeTipsBtn').addEventListener('click', closeTips);
     $('fullscreenTipsBtn').addEventListener('click', toggleTipsFullscreen);
+    // Favorites overlay
+    $('closeFavBtn').addEventListener('click', closeFavorites);
+    favOverlay.addEventListener('click', function(e) { if (e.target === favOverlay) closeFavorites(); });
 
     // Export — generate standalone HTML (kept for future use)
     function exportStandalone() {
@@ -3514,6 +3576,128 @@
       }
     }
 
+    function openFavorites() {
+      var totalItems = favorites.words.size + Object.keys(favorites.items).length;
+      favCountLabel.textContent = '共 ' + totalItems + ' 项';
+
+      if (totalItems === 0) {
+        favBody.innerHTML = '<div class="text-center py-16 text-gray-400"><div class="text-5xl mb-4">⭐</div><p class="text-sm">还没有收藏任何内容</p><p class="text-xs mt-1">点击单词旁的 ★ 按钮收藏单词、近义词、反义词和词组</p></div>';
+        favOverlay.classList.remove('hidden');
+        return;
+      }
+
+      var html = '';
+
+      // Section 1: Favorited words
+      if (favorites.words.size > 0) {
+        html += '<div class="mb-4"><h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">📚 收藏的单词 (' + favorites.words.size + ')</h4><div class="space-y-1.5">';
+        // Group by root
+        var rootGroups = {};
+        favorites.words.forEach(function(w) {
+          for (var ri = 0; ri < allData.length; ri++) {
+            var r = allData[ri];
+            var wordObj = r.words.find(function(x) { return x.word === w; });
+            if (wordObj) {
+              if (!rootGroups[ri]) rootGroups[ri] = [];
+              rootGroups[ri].push(wordObj);
+              break;
+            }
+          }
+        });
+        Object.keys(rootGroups).forEach(function(ri) {
+          var r = allData[parseInt(ri)];
+          var words = rootGroups[ri];
+          html += '<div class="bg-amber-50/60 rounded-lg p-2.5"><div class="text-[10px] font-semibold text-amber-700 mb-1.5">📌 ' + escapeHTML(r.root) + '</div>';
+          words.forEach(function(w) {
+            html += '<div class="flex items-center gap-2 text-sm bg-white rounded-lg px-3 py-1.5 ml-1 mb-1 border border-amber-100 cursor-pointer hover:shadow-sm transition-shadow" data-fav-word="' + escapeHTML(w.word) + '" data-fav-root-idx="' + ri + '">';
+            html += '<span class="font-medium text-gray-800">' + escapeHTML(w.word) + '</span>';
+            html += '<span class="text-gray-400 text-xs flex-1 truncate">' + escapeHTML(w.meaning || '') + '</span>';
+            html += '<button class="fav-remove-btn text-xs text-gray-300 hover:text-red-400 transition-colors p-1" data-remove-word="' + escapeHTML(w.word) + '" title="取消收藏">✕</button>';
+            html += '<span class="speaker-placeholder" data-speak-text="' + escapeHTML(w.word) + '"></span>';
+            html += '</div>';
+          });
+          html += '</div>';
+        });
+        html += '</div></div>';
+      }
+
+      // Section 2: Favorited items (phrases, synonyms, antonyms)
+      if (Object.keys(favorites.items).length > 0) {
+        html += '<div><h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">📎 收藏的词组/近反义词 (' + Object.keys(favorites.items).length + ')</h4><div class="space-y-1.5">';
+        Object.values(favorites.items).forEach(function(item) {
+          var bg = 'bg-gray-50', border = 'border-gray-200', color = 'text-gray-700', badge = '';
+          if (item.type === 'synonym') { bg = 'bg-violet-50'; border = 'border-violet-200'; color = 'text-violet-700'; badge = '近义'; }
+          else if (item.type === 'antonym') { bg = 'bg-red-50'; border = 'border-red-200'; color = 'text-red-700'; badge = '反义'; }
+          else if (item.type === 'phrase') { bg = 'bg-amber-50'; border = 'border-amber-200'; color = 'text-amber-700'; badge = '词组'; }
+          html += '<div class="flex items-center gap-2 text-sm ' + bg + ' rounded-lg px-3 py-1.5 border ' + border + '">';
+          if (badge) html += '<span class="text-[10px] px-1 py-0.5 rounded font-medium ' + color.replace('700','100').replace('text-','bg-') + ' ' + color + '">' + badge + '</span>';
+          html += '<span class="font-medium ' + color + '">' + escapeHTML(item.value) + '</span>';
+          if (item.pos) html += '<span class="text-gray-400 text-xs">' + escapeHTML(item.pos) + '</span>';
+          if (item.meaning) html += '<span class="text-gray-400 text-xs">' + escapeHTML(item.meaning) + '</span>';
+          if (item.parentWord) html += '<span class="text-gray-300 text-xs ml-auto">← ' + escapeHTML(item.parentWord) + '</span>';
+          html += '<button class="fav-remove-btn text-xs text-gray-300 hover:text-red-400 transition-colors p-1" data-remove-item="' + escapeHTML(item.parentWord) + '|' + escapeHTML(item.type) + '|' + escapeHTML(item.value) + '" title="取消收藏">✕</button>';
+          html += '<span class="speaker-placeholder" data-speak-text="' + escapeHTML(item.value) + '"></span>';
+          html += '</div>';
+        });
+        html += '</div></div>';
+      }
+
+      favBody.innerHTML = html;
+      favOverlay.classList.remove('hidden');
+
+      // Attach click: navigate to word
+      favBody.querySelectorAll('[data-fav-word]').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+          if (e.target.closest('.fav-remove-btn') || e.target.closest('.speaker-btn')) return;
+          var ri = parseInt(this.dataset.favRootIdx);
+          var w = this.dataset.favWord;
+          var wordObj = allData[ri].words.find(function(x) { return x.word === w; });
+          if (wordObj) {
+            currentRootIndex = ri;
+            currentWordIndex = allData[ri].words.indexOf(wordObj);
+            renderRootList(searchInput.value.trim());
+            renderMindMap(allData[ri], currentWordIndex);
+            showDetailPanel(wordObj);
+            expandSidebar();
+            favOverlay.classList.add('hidden');
+          }
+        });
+      });
+
+      // Attach remove buttons
+      favBody.querySelectorAll('.fav-remove-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var word = this.dataset.removeWord;
+          var item = this.dataset.removeItem;
+          if (word) {
+            favorites.words.delete(word);
+            saveFavorites();
+            updateFavCount();
+            updateFavStar();
+            openFavorites(); // refresh
+          } else if (item) {
+            if (favorites.items[item]) delete favorites.items[item];
+            saveFavorites();
+            updateFavCount();
+            openFavorites(); // refresh
+          }
+        });
+      });
+
+      // Attach speaker buttons
+      setTimeout(function() {
+        favBody.querySelectorAll('.speaker-placeholder').forEach(function(ph) {
+          var btn = makeSpeakerBtn(ph.dataset.speakText);
+          ph.replaceWith(btn);
+        });
+      }, 100);
+    }
+
+    function closeFavorites() {
+      favOverlay.classList.add('hidden');
+    }
+
     // Override renderRootList to support favorites filter
     const originalRenderRootList = renderRootList;
     renderRootList = function(filterText) {
@@ -3700,7 +3884,12 @@
         html += '<span class="opacity-70 font-normal ml-auto text-xs">点击放大 →</span>';
         html += '</div>';
         html += '<div class="px-4 py-3 max-h-[260px] overflow-y-auto bg-white text-sm">';
-        html += renderTipsCard(card.key, content, card.color);
+        try {
+          html += renderTipsCard(card.key, content, card.color);
+        } catch (e) {
+          console.error('Error rendering tips card ' + card.key + ':', e);
+          html += '<span class="text-red-400 text-xs">渲染出错，请刷新重试</span>';
+        }
         html += '</div></div>';
       });
 
@@ -3730,7 +3919,12 @@
       html += '<div><h3 class="text-base font-bold">' + cardDef.title + '</h3><p class="text-xs opacity-70">' + cardDef.desc + '</p></div>';
       html += '</div>';
       html += '<div class="px-5 py-4 bg-white text-sm max-h-[58vh] overflow-y-auto">';
-      html += renderTipsCard(key, content, color);
+      try {
+        html += renderTipsCard(key, content, color);
+      } catch (e) {
+        console.error('Error rendering tips detail ' + key + ':', e);
+        html += '<span class="text-red-400 text-xs">渲染出错，请刷新重试</span>';
+      }
       html += '</div></div>';
 
       tipsBody.innerHTML = html;
@@ -3793,13 +3987,36 @@
 
         case 'confused_roots':
           content.forEach(group => {
-            html += '<div class="mb-3 last:mb-0 p-3 bg-amber-50/60 rounded-xl"><div class="font-bold text-amber-700 mb-2 text-sm">' + escapeHTML(group.group) + '</div>';
-            html += '<div class="grid grid-cols-2 gap-2 text-xs">';
-            group.words.forEach(w => {
-              html += '<div class="bg-white rounded-lg p-2.5"><span class="font-semibold text-gray-800">' + escapeHTML(w.word) + '</span><span class="text-gray-400 ml-1">' + escapeHTML(w.meaning) + '</span>';
-              html += '<div class="text-gray-400 mt-0.5">' + escapeHTML(w.note || '') + '</div></div>';
-            });
-            html += '</div></div>';
+            // Format 1: single-root group with words array
+            if (group.group && group.words) {
+              html += '<div class="mb-3 last:mb-0 p-3 bg-amber-50/60 rounded-xl"><div class="font-bold text-amber-700 mb-2 text-sm">' + escapeHTML(group.group) + '</div>';
+              html += '<div class="grid grid-cols-2 gap-2 text-xs">';
+              group.words.forEach(w => {
+                html += '<div class="bg-white rounded-lg p-2.5"><span class="font-semibold text-gray-800">' + escapeHTML(w.word) + '</span><span class="text-gray-400 ml-1">' + escapeHTML(w.meaning) + '</span>';
+                html += '<div class="text-gray-400 mt-0.5">' + escapeHTML(w.note || '') + '</div></div>';
+              });
+              html += '</div></div>';
+            }
+            // Format 2: root-pair comparison (root1 vs root2)
+            else if (group.root1 && group.root2) {
+              html += '<div class="mb-3 last:mb-0 p-3 bg-amber-50/60 rounded-xl">';
+              html += '<div class="font-bold text-amber-700 mb-2 text-sm">' + escapeHTML(group.root1) + ' vs ' + escapeHTML(group.root2) + '</div>';
+              html += '<div class="grid grid-cols-2 gap-2 text-xs mb-2">';
+              // Root 1 column
+              html += '<div class="bg-white rounded-lg p-2.5"><div class="font-semibold text-amber-600 mb-1">' + escapeHTML(group.root1) + ' <span class="text-gray-400">' + escapeHTML(group.root1_meaning || '') + '</span></div>';
+              (group.examples1 || []).forEach(ex => {
+                html += '<div class="text-gray-700">' + escapeHTML(typeof ex === 'string' ? ex : (ex.word || '')) + '</div>';
+              });
+              html += '</div>';
+              // Root 2 column
+              html += '<div class="bg-white rounded-lg p-2.5"><div class="font-semibold text-amber-600 mb-1">' + escapeHTML(group.root2) + ' <span class="text-gray-400">' + escapeHTML(group.root2_meaning || '') + '</span></div>';
+              (group.examples2 || []).forEach(ex => {
+                html += '<div class="text-gray-700">' + escapeHTML(typeof ex === 'string' ? ex : (ex.word || '')) + '</div>';
+              });
+              html += '</div></div>';
+              if (group.note) html += '<div class="text-xs text-gray-500 leading-relaxed">' + escapeHTML(group.note) + '</div>';
+              html += '</div>';
+            }
           });
           break;
 
