@@ -1523,6 +1523,86 @@
         }
       });
 
+      // Long-press handler — collapse/expand node
+      var longPressTimer = null;
+      var longPressStartPos = null;
+      var longPressNode = null;
+      var LONG_PRESS_DURATION = 600;
+
+      function clearLongPress() {
+        if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+        longPressStartPos = null;
+        longPressNode = null;
+      }
+
+      function getLongPressTarget(e) {
+        var el = chartContainer;
+        // Check if chart container or any descendant is the target
+        var target = e.target || e.srcElement;
+        while (target) {
+          if (target === el) return true;
+          target = target.parentElement;
+        }
+        return false;
+      }
+
+      chartContainer.addEventListener('mousedown', function(e) {
+        if (!getLongPressTarget(e)) return;
+        longPressStartPos = { x: e.clientX, y: e.clientY };
+        // Find the node under cursor via ECharts click simulation
+        longPressTimer = setTimeout(function() {
+          // Dispatch expandAndCollapse for the nearest ancestor node
+          if (chart && !chart.isDisposed()) {
+            // Get the zrender handler to find elements at this position
+            var zr = chart.getZr();
+            // Use the tree data to toggle root collapse
+            if (currentRootIndex >= 0 && allData[currentRootIndex]) {
+              // Toggle the root node's collapsed state
+              chart.dispatchAction({
+                type: 'treeExpandAndCollapse',
+                seriesIndex: 0,
+                dataIndex: 0
+              });
+            }
+          }
+          clearLongPress();
+        }, LONG_PRESS_DURATION);
+      }, { passive: true });
+
+      chartContainer.addEventListener('mouseup', clearLongPress);
+      chartContainer.addEventListener('mouseleave', clearLongPress);
+      chartContainer.addEventListener('mousemove', function(e) {
+        if (!longPressStartPos) return;
+        var dx = e.clientX - longPressStartPos.x;
+        var dy = e.clientY - longPressStartPos.y;
+        if (Math.abs(dx) > 8 || Math.abs(dy) > 8) clearLongPress();
+      });
+
+      // Touch events for mobile
+      chartContainer.addEventListener('touchstart', function(e) {
+        if (e.touches.length !== 1) { clearLongPress(); return; }
+        longPressStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        longPressTimer = setTimeout(function() {
+          if (chart && !chart.isDisposed() && currentRootIndex >= 0) {
+            chart.dispatchAction({
+              type: 'treeExpandAndCollapse',
+              seriesIndex: 0,
+              dataIndex: 0
+            });
+          }
+          clearLongPress();
+        }, LONG_PRESS_DURATION);
+      }, { passive: true });
+
+      chartContainer.addEventListener('touchend', clearLongPress);
+      chartContainer.addEventListener('touchmove', function(e) {
+        if (!longPressStartPos || !e.touches.length) return;
+        var dx = e.touches[0].clientX - longPressStartPos.x;
+        var dy = e.touches[0].clientY - longPressStartPos.y;
+        if (Math.abs(dx) > 8 || Math.abs(dy) > 8) clearLongPress();
+      });
+      chartContainer.addEventListener('touchcancel', clearLongPress);
+
       // Resize after animation
       setTimeout(() => { if (chart && !chart.isDisposed()) chart.resize(); }, 600);
     }
