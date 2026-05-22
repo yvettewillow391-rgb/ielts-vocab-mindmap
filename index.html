@@ -112,6 +112,19 @@
 </head>
 <body class="h-screen overflow-hidden bg-gray-100 flex">
 
+  <!-- Password Gate -->
+  <div id="pwGate" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);display:none;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif">
+    <div style="background:#fff;border-radius:1.25rem;padding:2.5rem 2rem;text-align:center;max-width:380px;width:90%;box-shadow:0 25px 50px rgba(0,0,0,0.3)">
+      <div style="font-size:3rem;margin-bottom:0.5rem">🧠</div>
+      <h2 style="font-size:1.4rem;font-weight:700;color:#1a1a2e;margin-bottom:0.25rem">IELTS 词根脑图</h2>
+      <p style="font-size:0.8rem;color:#94a3b8;margin-bottom:1.5rem">输入密码以访问</p>
+      <input id="pwInput" type="password" placeholder="请输入密码" style="width:100%;padding:0.8rem 1rem;border:2px solid #e2e8f0;border-radius:0.75rem;font-size:1rem;text-align:center;outline:none;box-sizing:border-box" autofocus>
+      <p id="pwError" style="color:#ef4444;font-size:0.75rem;margin-top:0.5rem;display:none">密码错误，请重试</p>
+      <button id="pwSubmit" style="width:100%;margin-top:1rem;padding:0.8rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:0.75rem;font-size:0.95rem;font-weight:600;cursor:pointer;transition:opacity 0.2s">进入应用</button>
+      <p style="font-size:0.7rem;color:#cbd5e1;margin-top:1.25rem">提示：编辑密码 <b>01021130</b> · 查看密码 <b>123456</b></p>
+    </div>
+  </div>
+
   <!-- ===== LEFT SIDEBAR ===== -->
   <aside class="w-80 flex-shrink-0 bg-white shadow-lg z-20 flex flex-col">
     <div class="px-5 py-4 border-b border-gray-200">
@@ -445,6 +458,28 @@
 
   <script>
   (function() {
+    /* ================================================================
+       PASSWORD GATE (deployed site only)
+       ================================================================ */
+    var isDeployed = location.hostname.endsWith('github.io');
+    var gate = document.getElementById('pwGate');
+    var editAuthenticated = false;
+    if (isDeployed) {
+      gate.style.display = 'flex';
+      document.getElementById('pwSubmit').onclick = function() {
+        var p = document.getElementById('pwInput').value;
+        if (p === '01021130') { gate.remove(); editAuthenticated = true; }
+        else if (p === '123456') { gate.remove(); }
+        else { document.getElementById('pwError').style.display = 'block'; }
+      };
+      document.getElementById('pwInput').onkeydown = function(e) {
+        if (e.key === 'Enter') document.getElementById('pwSubmit').click();
+      };
+    } else {
+      gate.remove();
+      editAuthenticated = true;
+    }
+
     /* ================================================================
        STATE
        ================================================================ */
@@ -1626,8 +1661,6 @@
     function escapeAttr(str) {
       return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
-
-    let editAuthenticated = false;
 
     function toggleEditMode() {
       editMode = !editMode;
