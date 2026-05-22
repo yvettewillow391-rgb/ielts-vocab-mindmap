@@ -772,6 +772,74 @@ window.__TIPS__ = {
           "note": "intro(入)+duce→引入→介绍"
         }
       ]
+    },
+    {
+      "root1": "spect",
+      "root1_meaning": "看",
+      "examples1": [
+        "inspect 检查",
+        "spectacle 景象",
+        "prospect 前景"
+      ],
+      "root2": "spic",
+      "root2_meaning": "看（变体）",
+      "examples2": [
+        "conspicuous 显眼的",
+        "despise 鄙视",
+        "suspicious 怀疑的"
+      ],
+      "note": "spect 和 spic 是同一个词根的两种形式，spect 更常见。despise 来自 de(下)+spic(看) → 向下看 → 鄙视。"
+    },
+    {
+      "root1": "duc/duct",
+      "root1_meaning": "引导",
+      "examples1": [
+        "conduct 引导；行为",
+        "produce 生产",
+        "educate 教育"
+      ],
+      "root2": "dict",
+      "root2_meaning": "说",
+      "examples2": [
+        "predict 预测",
+        "dictate 口述；命令",
+        "contradict 反驳"
+      ],
+      "note": "duct 引导 vs dict 说。produce(pro+duc) 向前引导→生产；predict(pre+dict) 提前说→预测。"
+    },
+    {
+      "root1": "scrib/script",
+      "root1_meaning": "写",
+      "examples1": [
+        "describe 描述",
+        "prescribe 规定；开药方",
+        "manuscript 手稿"
+      ],
+      "root2": "scrip",
+      "root2_meaning": "写（变体）",
+      "examples2": [
+        "scripture 经文",
+        "conscription 征兵",
+        "transcript 抄本"
+      ],
+      "note": "scrib 是动词形式，script 更多用于名词。subscribe(sub+scribe) 在下面写→订阅；prescribe(pre+scribe) 提前写→开处方。"
+    },
+    {
+      "root1": "pel/puls",
+      "root1_meaning": "推动",
+      "examples1": [
+        "compel 强迫",
+        "expel 驱逐",
+        "impulse 冲动"
+      ],
+      "root2": "pell",
+      "root2_meaning": "推（变体）",
+      "examples2": [
+        "repel 排斥",
+        "propeller 螺旋桨",
+        "compelling 引人入胜的"
+      ],
+      "note": "pel/puls/pell 是同一词根的变体。compel(com+pel) 一起推→强迫；repel(re+pel) 往回推→排斥。"
     }
   ],
   "common_prefixes": [
@@ -1977,6 +2045,176 @@ window.__TIPS__ = {
           "example": "The results suggest that the method is effective."
         }
       ]
+    },
+    {
+      "topic": "增加/增长",
+      "synonyms": [
+        {
+          "word": "increase",
+          "meaning": "增加",
+          "example": "The population has increased dramatically over the past decade."
+        },
+        {
+          "word": "escalate",
+          "meaning": "逐步升级",
+          "example": "The conflict could escalate into a full-scale war."
+        },
+        {
+          "word": "surge",
+          "meaning": "急剧上升",
+          "example": "Demand for electric vehicles has surged in recent years."
+        },
+        {
+          "word": "soar",
+          "meaning": "猛增",
+          "example": "Property prices have soared in many major cities."
+        },
+        {
+          "word": "multiply",
+          "meaning": "成倍增加",
+          "example": "Online learning platforms have multiplied since the pandemic."
+        },
+        {
+          "word": "accelerate",
+          "meaning": "加速增长",
+          "example": "The pace of technological innovation continues to accelerate."
+        }
+      ]
+    },
+    {
+      "topic": "减少/下降",
+      "synonyms": [
+        {
+          "word": "decrease",
+          "meaning": "减少",
+          "example": "Carbon emissions have decreased significantly in some regions."
+        },
+        {
+          "word": "decline",
+          "meaning": "下降",
+          "example": "The population of rural areas has been declining steadily."
+        },
+        {
+          "word": "plummet",
+          "meaning": "暴跌",
+          "example": "Stock prices plummeted following the unexpected announcement."
+        },
+        {
+          "word": "diminish",
+          "meaning": "减少，削弱",
+          "example": "The impact of the policy has diminished over time."
+        },
+        {
+          "word": "dwindle",
+          "meaning": "逐渐减少",
+          "example": "Natural resources are dwindling at an alarming rate."
+        },
+        {
+          "word": "subside",
+          "meaning": "平息，减退",
+          "example": "After the storm, the flood waters gradually subsided."
+        }
+      ]
+    },
+    {
+      "topic": "认为/主张",
+      "synonyms": [
+        {
+          "word": "argue",
+          "meaning": "论证，主张",
+          "example": "Many experts argue that early intervention is key."
+        },
+        {
+          "word": "contend",
+          "meaning": "主张，争辩",
+          "example": "Some scholars contend that the evidence is inconclusive."
+        },
+        {
+          "word": "assert",
+          "meaning": "断言，坚称",
+          "example": "The author asserts that technology is reshaping society."
+        },
+        {
+          "word": "maintain",
+          "meaning": "坚持认为",
+          "example": "The company maintains that its products are safe."
+        },
+        {
+          "word": "advocate",
+          "meaning": "提倡，拥护",
+          "example": "Environmental groups advocate stricter regulations."
+        },
+        {
+          "word": "postulate",
+          "meaning": "假定，假设",
+          "example": "Einstein postulated that the speed of light is constant."
+        }
+      ]
+    },
+    {
+      "topic": "表明/显示",
+      "synonyms": [
+        {
+          "word": "indicate",
+          "meaning": "表明",
+          "example": "Research indicates a strong link between diet and health."
+        },
+        {
+          "word": "demonstrate",
+          "meaning": "证明，展示",
+          "example": "The experiment demonstrates the effectiveness of the vaccine."
+        },
+        {
+          "word": "reveal",
+          "meaning": "揭示",
+          "example": "The survey reveals widespread dissatisfaction among workers."
+        },
+        {
+          "word": "illustrate",
+          "meaning": "说明，阐明",
+          "example": "This case illustrates the complexity of the legal system."
+        },
+        {
+          "word": "manifest",
+          "meaning": "显现，表明",
+          "example": "The symptoms manifest themselves within 48 hours."
+        },
+        {
+          "word": "signify",
+          "meaning": "意味着，表示",
+          "example": "A fall in GDP signifies a contracting economy."
+        }
+      ]
+    },
+    {
+      "topic": "强调/突出",
+      "synonyms": [
+        {
+          "word": "emphasize",
+          "meaning": "强调",
+          "example": "The report emphasizes the need for urgent action."
+        },
+        {
+          "word": "highlight",
+          "meaning": "突出，强调",
+          "example": "The study highlights the importance of early childhood education."
+        },
+        {
+          "word": "underscore",
+          "meaning": "强调，突出",
+          "example": "This incident underscores the importance of cybersecurity."
+        },
+        {
+          "word": "stress",
+          "meaning": "强调",
+          "example": "Health officials stress the importance of vaccination."
+        },
+        {
+          "word": "accentuate",
+          "meaning": "强调，使突出",
+          "example": "The lighting accentuates the architectural details of the building."
+        }
+      ]
     }
   ],
   "academic_words": [
@@ -2154,6 +2392,96 @@ window.__TIPS__ = {
           "example": "This is arguably the most effective solution."
         }
       ]
+    },
+    {
+      "word": "paradigm",
+      "meaning": "范式，典范",
+      "example": "The discovery led to a paradigm shift in scientific thinking.",
+      "zh_example": "这一发现导致了科学思维的范式转变。"
+    },
+    {
+      "word": "empirical",
+      "meaning": "以经验为依据的，实证的",
+      "example": "The theory must be supported by empirical evidence.",
+      "zh_example": "这一理论必须有实证证据支持。"
+    },
+    {
+      "word": "hypothesis",
+      "meaning": "假设，假说",
+      "example": "The researchers tested the hypothesis through a series of experiments.",
+      "zh_example": "研究人员通过一系列实验验证了这一假设。"
+    },
+    {
+      "word": "methodology",
+      "meaning": "方法论",
+      "example": "The methodology employed in this study has been widely adopted.",
+      "zh_example": "本研究采用的方法论已被广泛采用。"
+    },
+    {
+      "word": "correlation",
+      "meaning": "相关性，关联",
+      "example": "There is a strong correlation between education levels and income.",
+      "zh_example": "教育水平与收入之间存在很强的相关性。"
+    },
+    {
+      "word": "synthesis",
+      "meaning": "综合，合成",
+      "example": "The essay provides a synthesis of different theoretical perspectives.",
+      "zh_example": "这篇文章综合了不同的理论视角。"
+    },
+    {
+      "word": "implication",
+      "meaning": "含义，影响，暗示",
+      "example": "The findings have significant implications for public policy.",
+      "zh_example": "这些发现对公共政策有重大影响。"
+    },
+    {
+      "word": "disparity",
+      "meaning": "差异，不平等",
+      "example": "There is a growing disparity between urban and rural incomes.",
+      "zh_example": "城乡收入差距日益扩大。"
+    },
+    {
+      "word": "consensus",
+      "meaning": "共识，一致意见",
+      "example": "There is a scientific consensus on the reality of climate change.",
+      "zh_example": "科学界对气候变化的现实存在共识。"
+    },
+    {
+      "word": "rationale",
+      "meaning": "基本原理，理由",
+      "example": "The rationale behind the policy is to reduce carbon emissions.",
+      "zh_example": "该政策背后的基本原理是减少碳排放。"
+    },
+    {
+      "word": "prevalent",
+      "meaning": "普遍的，盛行的",
+      "example": "Obesity is becoming increasingly prevalent in developed countries.",
+      "zh_example": "肥胖在发达国家变得越来越普遍。"
+    },
+    {
+      "word": "mitigate",
+      "meaning": "减轻，缓解",
+      "example": "Planting trees can help mitigate the effects of climate change.",
+      "zh_example": "植树有助于减轻气候变化的影响。"
+    },
+    {
+      "word": "substantiate",
+      "meaning": "证实，证明",
+      "example": "Further research is needed to substantiate these claims.",
+      "zh_example": "需要进一步的研究来证实这些说法。"
+    },
+    {
+      "word": "discrepancy",
+      "meaning": "差异，不一致",
+      "example": "The auditors found a discrepancy in the financial records.",
+      "zh_example": "审计人员在财务记录中发现了一处差异。"
+    },
+    {
+      "word": "cumulative",
+      "meaning": "累积的",
+      "example": "The cumulative effect of pollution has caused irreversible damage.",
+      "zh_example": "污染的累积效应已造成了不可逆转的损害。"
     }
   ],
   "misspelled": [
@@ -2325,6 +2653,76 @@ window.__TIPS__ = {
           "memory_tip": "bureau中有eau，cracy后缀"
         }
       ]
+    },
+    {
+      "word": "accommodation",
+      "correct": "accommodation",
+      "common_mistake": "accomodation",
+      "tip": "两个c，两个m — a+cc+o+mm+odation",
+      "meaning": "住宿"
+    },
+    {
+      "word": "separate",
+      "correct": "separate",
+      "common_mistake": "seperate",
+      "tip": "中间是par，不是per — sep+a+rate",
+      "meaning": "分开"
+    },
+    {
+      "word": "definitely",
+      "correct": "definitely",
+      "common_mistake": "definately / definetly",
+      "tip": "来自finite，中间是nite不是nate — de+finite+ly",
+      "meaning": "肯定地"
+    },
+    {
+      "word": "necessary",
+      "correct": "necessary",
+      "common_mistake": "neccessary / necesary",
+      "tip": "一个c，两个s — ne+c+e+ss+ary（衬衫一个领子两个袖子）",
+      "meaning": "必要的"
+    },
+    {
+      "word": "environment",
+      "correct": "environment",
+      "common_mistake": "enviroment / enviroment",
+      "tip": "不要忘记中间的n — environ+ment",
+      "meaning": "环境"
+    },
+    {
+      "word": "occurred",
+      "correct": "occurred",
+      "common_mistake": "occured / ocurred",
+      "tip": "两个c，两个r — o+cc+u+rr+ed",
+      "meaning": "发生"
+    },
+    {
+      "word": "embarrass",
+      "correct": "embarrass",
+      "common_mistake": "embarass / embarass",
+      "tip": "两个r，两个s — em+ba+rr+a+ss",
+      "meaning": "尴尬"
+    },
+    {
+      "word": "possession",
+      "correct": "possession",
+      "common_mistake": "posession / possesion",
+      "tip": "两个s在前，两个s在后 — po+ss+e+ss+ion",
+      "meaning": "拥有"
+    },
+    {
+      "word": "receive",
+      "correct": "receive",
+      "common_mistake": "recieve",
+      "tip": "i before e except after c — re+c+ei+ve",
+      "meaning": "收到"
+    },
+    {
+      "word": "pronunciation",
+      "correct": "pronunciation",
+      "common_mistake": "pronounciation",
+      "tip": "是nunciation，没有noun — pro+nun+ci+a+tion（不是pronounce+iation）",
+      "meaning": "发音"
     }
   ],
   "polysemous": [
@@ -2495,6 +2893,211 @@ window.__TIPS__ = {
         {
           "chinese_meaning": "受...支配的",
           "example": "The schedule is subject to change."
+        }
+      ]
+    },
+    {
+      "word": "address",
+      "meanings": [
+        {
+          "pos": "n.",
+          "meaning": "地址",
+          "example": "Please write your full address on the form."
+        },
+        {
+          "pos": "vt.",
+          "meaning": "处理，应对",
+          "example": "The government must address the issue of rising unemployment."
+        },
+        {
+          "pos": "vt.",
+          "meaning": "向...讲话",
+          "example": "The CEO addressed the shareholders at the annual meeting."
+        }
+      ]
+    },
+    {
+      "word": "engage",
+      "meanings": [
+        {
+          "pos": "vt.",
+          "meaning": "吸引，使参与",
+          "example": "The teacher used games to engage the students."
+        },
+        {
+          "pos": "vi.",
+          "meaning": "从事，参与",
+          "example": "The company engages in sustainable business practices."
+        },
+        {
+          "pos": "vt.",
+          "meaning": "雇用",
+          "example": "The law firm engaged a new consultant."
+        }
+      ]
+    },
+    {
+      "word": "maintain",
+      "meanings": [
+        {
+          "pos": "vt.",
+          "meaning": "维持，保持",
+          "example": "It is important to maintain a healthy work-life balance."
+        },
+        {
+          "pos": "vt.",
+          "meaning": "坚持认为",
+          "example": "The defendant maintained his innocence throughout the trial."
+        },
+        {
+          "pos": "vt.",
+          "meaning": "维护，保养",
+          "example": "The building is expensive to maintain."
+        }
+      ]
+    },
+    {
+      "word": "discipline",
+      "meanings": [
+        {
+          "pos": "n.",
+          "meaning": "纪律，自律",
+          "example": "Self-discipline is essential for academic success."
+        },
+        {
+          "pos": "n.",
+          "meaning": "学科，领域",
+          "example": "Psychology is a relatively young academic discipline."
+        },
+        {
+          "pos": "vt.",
+          "meaning": "惩罚，管教",
+          "example": "Parents should discipline their children with consistency."
+        }
+      ]
+    },
+    {
+      "word": "feature",
+      "meanings": [
+        {
+          "pos": "n.",
+          "meaning": "特征，特点",
+          "example": "The smartphone's most notable feature is its camera."
+        },
+        {
+          "pos": "n.",
+          "meaning": "面貌，容貌",
+          "example": "She has delicate facial features."
+        },
+        {
+          "pos": "vt.",
+          "meaning": "以...为特色，突出展示",
+          "example": "The exhibition features works by local artists."
+        }
+      ]
+    },
+    {
+      "word": "figure",
+      "meanings": [
+        {
+          "pos": "n.",
+          "meaning": "数字，数据",
+          "example": "The unemployment figures were released yesterday."
+        },
+        {
+          "pos": "n.",
+          "meaning": "人物，人物形象",
+          "example": "Einstein is a prominent historical figure."
+        },
+        {
+          "pos": "n.",
+          "meaning": "身材，体形",
+          "example": "She has maintained a slender figure through regular exercise."
+        },
+        {
+          "pos": "vt.",
+          "meaning": "认为，推测",
+          "example": "I figure that we will need at least three weeks to complete the project."
+        }
+      ]
+    },
+    {
+      "word": "sustain",
+      "meanings": [
+        {
+          "pos": "vt.",
+          "meaning": "维持，持续",
+          "example": "Can the economy sustain this rate of growth?"
+        },
+        {
+          "pos": "vt.",
+          "meaning": "承受，支撑",
+          "example": "The bridge cannot sustain the weight of heavy trucks."
+        },
+        {
+          "pos": "vt.",
+          "meaning": "遭受，蒙受",
+          "example": "The company sustained heavy losses during the recession."
+        }
+      ]
+    },
+    {
+      "word": "yield",
+      "meanings": [
+        {
+          "pos": "vt.",
+          "meaning": "产出，产生",
+          "example": "The investment yielded a 10% return."
+        },
+        {
+          "pos": "vi.",
+          "meaning": "屈服，让步",
+          "example": "The government refused to yield to the protesters' demands."
+        },
+        {
+          "pos": "n.",
+          "meaning": "产量，收益",
+          "example": "The crop yield this year was exceptionally high."
+        }
+      ]
+    },
+    {
+      "word": "account",
+      "meanings": [
+        {
+          "pos": "n.",
+          "meaning": "账户，账号",
+          "example": "I opened a bank account online."
+        },
+        {
+          "pos": "n.",
+          "meaning": "描述，叙述",
+          "example": "She gave a detailed account of the incident."
+        },
+        {
+          "pos": "vi.",
+          "meaning": "解释，说明（account for）",
+          "example": "How do you account for the missing funds?"
+        },
+        {
+          "pos": "vi.",
+          "meaning": "占（比例）(account for)",
+          "example": "Cars account for 80% of all commuter traffic."
+        }
+      ]
+    },
+    {
+      "word": "dispose",
+      "meanings": [
+        {
+          "pos": "vt.",
+          "meaning": "处理，处置（dispose of）",
+          "example": "Hazardous waste must be disposed of safely."
+        },
+        {
+          "pos": "vt.",
+          "meaning": "使倾向于",
+          "example": "The evidence disposed the jury to believe the defendant."
         }
       ]
     }
