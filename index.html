@@ -1939,7 +1939,12 @@
       html += '<div class="flex gap-1.5 mb-4"><input id="detailDictInput" type="text" value="' + escapeHTML(wordData.word) + '" class="flex-1 py-2 px-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors" placeholder="输入单词查词典...">';
       html += '<button id="detailDictBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap">📖 查词</button>';
       html += '<button id="detailSpeakBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors">🔊</button>';
-      html += '<button id="detailSmartImportBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 hover:from-indigo-100 hover:to-purple-100 border border-indigo-200 transition-colors whitespace-nowrap" title="导入相关词">📋 导入</button></div>';
+      html += '<button id="detailSmartImportBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 hover:from-indigo-100 hover:to-purple-100 border border-indigo-200 transition-colors whitespace-nowrap" title="导入相关词">📋 导入</button>';
+      var hasAIKey = !!(localStorage.getItem('ielts_gemini_key') || localStorage.getItem('ielts_anthropic_key'));
+      if (hasAIKey) {
+        html += '<button id="detailAIEnrichBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-colors whitespace-nowrap" title="AI 补全词根拆解、记忆、例句等">🤖 AI 补全</button>';
+      }
+      html += '</div>';
 
       // Etymology / root breakdown — show FIRST
       if (wordData.etymology) {
@@ -2090,6 +2095,13 @@
             if (currentRootIndex >= 0) {
               pasteRootSelect.value = currentRootIndex;
             }
+          });
+        }
+        var aiEnrichBtnEl = document.getElementById('detailAIEnrichBtn');
+        if (aiEnrichBtnEl) {
+          aiEnrichBtnEl.addEventListener('click', function(e) {
+            e.stopPropagation();
+            enrichCurrentWord(wordData);
           });
         }
       }, 50);
@@ -3875,6 +3887,34 @@
             });
           }
         }, 50);
+      }
+    }
+
+    // AI enrich the current word in detail panel
+    async function enrichCurrentWord(wordData) {
+      if (!wordData || currentRootIndex < 0 || currentWordIndex < 0) return;
+      var btn = document.getElementById('detailAIEnrichBtn');
+      if (btn) { btn.disabled = true; btn.textContent = '⏳ 生成中...'; }
+
+      try {
+        var enriched = await enrichWordWithAI(wordData.word, wordData.meaning, '');
+        var w = allData[currentRootIndex].words[currentWordIndex];
+        // Merge: only overwrite fields that are empty
+        if (!w.phonetic && enriched.phonetic) w.phonetic = enriched.phonetic;
+        if (!w.etymology && enriched.etymology) w.etymology = enriched.etymology;
+        if (!w.mnemonic && enriched.mnemonic) w.mnemonic = enriched.mnemonic;
+        if ((!w.inflections || w.inflections.length === 0) && enriched.inflections && enriched.inflections.length > 0) w.inflections = enriched.inflections;
+        if ((!w.synonyms || w.synonyms.length === 0) && enriched.synonyms && enriched.synonyms.length > 0) w.synonyms = enriched.synonyms;
+        if ((!w.antonyms || w.antonyms.length === 0) && enriched.antonyms && enriched.antonyms.length > 0) w.antonyms = enriched.antonyms;
+        if ((!w.ielts_phrases || w.ielts_phrases.length === 0) && enriched.phrases && enriched.phrases.length > 0) w.ielts_phrases = enriched.phrases;
+        if ((!w.ielts_sentences || w.ielts_sentences.length === 0) && enriched.sentences && enriched.sentences.length > 0) w.ielts_sentences = enriched.sentences;
+        try { localStorage.setItem('ielts_data', JSON.stringify(allData)); } catch(e) {}
+        showDetailPanel(w);
+        if (btn) { btn.textContent = '✅ 完成'; }
+        setTimeout(function() { if (btn) { btn.disabled = false; btn.textContent = '🤖 AI 补全'; } }, 1500);
+      } catch (err) {
+        if (btn) { btn.disabled = false; btn.textContent = '🤖 AI 补全'; }
+        alert('AI 生成失败: ' + err.message);
       }
     }
 
