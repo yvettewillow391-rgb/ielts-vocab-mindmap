@@ -2601,19 +2601,24 @@
       // Group roots by first letter
       var groups = {};
       var lettersUsed = {};
-      roots.forEach(function(r, i) {
-        var letter = r.root.charAt(0).toUpperCase();
-        if (!groups[letter]) groups[letter] = [];
-        groups[letter].push({ root: r, realIndex: allData.indexOf(r) });
-        lettersUsed[letter] = true;
-      });
+      try {
+        roots.forEach(function(r, i) {
+          if (!r.root) return;
+          var letter = r.root.charAt(0).toUpperCase();
+          if (!groups[letter]) groups[letter] = [];
+          groups[letter].push({ root: r, realIndex: allData.indexOf(r) });
+          lettersUsed[letter] = true;
+        });
+      } catch(e) { console.warn('A-Z grouping error:', e); }
 
       // Render A-Z nav
-      var allLettersUsed = {};
-      allData.forEach(function(r) {
-        allLettersUsed[r.root.charAt(0).toUpperCase()] = true;
-      });
-      renderAZNav(Object.keys(allLettersUsed).sort(), isFiltered ? Object.keys(lettersUsed) : null);
+      try {
+        var allLettersUsed = {};
+        allData.forEach(function(r) {
+          if (r.root) allLettersUsed[r.root.charAt(0).toUpperCase()] = true;
+        });
+        renderAZNav(Object.keys(allLettersUsed).sort(), isFiltered ? Object.keys(lettersUsed) : null);
+      } catch(e) { console.warn('A-Z nav render error:', e); }
 
       // Render grouped root list
       var html = '';
@@ -3578,13 +3583,151 @@
       }
     };
 
-    function resetPasteImport() {
-      pasteInput.value = '';
-      pastePreview.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">粘贴文本后点击"解析文本"</p>';
-      pasteProgress.classList.add('hidden');
-      pasteProgress.innerHTML = '';
-      pasteConfirmBar.classList.add('hidden');
-      pendingParsedData = null;
+    var _pastePidCounter = 0;
+    function buildRootSelectHTML(selectedIdx, placeholder) {
+      var h = '';
+      if (placeholder) h += '<option value=""' + (selectedIdx === null || selectedIdx < 0 ? ' selected' : '') + '>选词根...</option>';
+      allData.forEach(function(r, i) {
+        h += '<option value="' + i + '"' + (i === selectedIdx ? ' selected' : '') + '>' + escapeHTML(r.root) + (r.root_meaning ? ' (' + escapeHTML(r.root_meaning) + ')' : '') + '</option>';
+      });
+      h += '<option value="-1">➕ 新建词根...</option>';
+      return h;
+    }
+    // Move a word between roots in paste preview via DOM + data update
+    window.movePasteWordRoot = function(selectEl) {
+      var pid = parseInt(selectEl.dataset.pid);
+      var toRootIdx = selectEl.value;
+      if (toRootIdx === '') return; // placeholder, ignore
+      toRootIdx = toRootIdx === '-1' ? -1 : parseInt(toRootIdx);
+
+      var pd = pendingParsedData;
+      if (!pd) return;
+      var rootMap = pd.rootMap || {};
+      var unknownList = pd.unknownEntries || pd.unknownWords || [];
+
+      // Handle new root creation
+      if (toRootIdx === -1) {
+        var newName = prompt('请输入新词根名称:');
+        if (!newName || !newName.trim()) return;
+        var newMeaning = (prompt('新词根含义（可选）:') || '').trim();
+        allData.push({ root: newName.trim(), root_meaning: newMeaning, words: [] });
+        toRootIdx = allData.length - 1;
+        try { localStorage.setItem('ielts_data', JSON.stringify(allData)); } catch(e) {}
+        // Select needs to be rebuilt — just reset via select change
+      }
+
+      // Find and remove word from current location in data
+      var entry = null;
+      var fromRootIdx = null;
+      Object.keys(rootMap).forEach(function(idx) {
+        for (var i = 0; i < (rootMap[idx] || []).length; i++) {
+          if (rootMap[idx][i]._pid === pid) {
+            entry = rootMap[idx].splice(i, 1)[0];
+            fromRootIdx = parseInt(idx);
+            if (rootMap[idx].length === 0) delete rootMap[idx];
+            return;
+          }
+        }
+      });
+      if (!entry) {
+        for (var j = 0; j < unknownList.length; j++) {
+          if (unknownList[j]._pid === pid) {
+            entry = unknownList.splice(j, 1)[0];
+            fromRootIdx = null;
+            break;
+          }
+        }
+      }
+      if (!entry) return;
+
+      // Add to new location in data
+      if (toRootIdx >= 0) {
+        if (!rootMap[toRootIdx]) rootMap[toRootIdx] = [];
+        rootMap[toRootIdx].push(entry);
+      } else {
+        unknownList.push(entry);
+      }
+
+      // Move DOM element
+      var wordRow = selectEl.closest('.paste-word-row');
+      if (!wordRow) return;
+      var currentGroup = wordRow.closest('.paste-root-group');
+      var prevUnknownSection = wordRow.closest('#unknownWordsSection');
+
+      // Remove from current group
+      wordRow.remove();
+
+      // Update or remove old group
+      if (currentGroup) {
+        var curCount = currentGroup.querySelectorAll('.paste-word-row').length;
+        var curCountEl = currentGroup.querySelector('.paste-root-count');
+        if (curCountEl) curCountEl.textContent = '— ' + curCount + '个词';
+        if (curCount === 0) currentGroup.remove();
+      }
+
+      // Update or remove old unknown section count
+      if (prevUnknownSection) {
+        var unkCount = prevUnknownSection.querySelectorAll('.paste-word-row').length;
+        var unkHeader = prevUnknownSection.querySelector('.text-amber-600');
+        if (unkHeader && !unkHeader.classList.contains('flex')) {
+          unkHeader.textContent = '⚠ 未识别词根 (' + unkCount + '个) — 手动选择目标词根';
+        }
+      }
+
+      // Add to new group
+      if (toRootIdx >= 0) {
+        var targetGroup = document.querySelector('.paste-root-group[data-root-idx="' + toRootIdx + '"]');
+        if (!targetGroup) {
+          // Create new group card
+          var root = allData[toRootIdx];
+          targetGroup = document.createElement('div');
+          targetGroup.className = 'bg-indigo-50 rounded-lg p-2 border border-indigo-100 paste-root-group';
+          targetGroup.setAttribute('data-root-idx', toRootIdx);
+          targetGroup.innerHTML = '<div class="text-[10px] font-semibold text-indigo-600 mb-1">📌 ' + escapeHTML(root.root) + (root.root_meaning ? ' (' + escapeHTML(root.root_meaning) + ')' : '') + ' <span class="text-gray-400 font-normal paste-root-count">— 0个词</span></div>';
+          var previewArea = document.getElementById('smartPreviewArea');
+          if (previewArea) previewArea.insertBefore(targetGroup, previewArea.firstChild);
+        }
+        targetGroup.appendChild(wordRow);
+        var tgtCount = targetGroup.querySelectorAll('.paste-word-row').length;
+        var tgtCountEl = targetGroup.querySelector('.paste-root-count');
+        if (tgtCountEl) tgtCountEl.textContent = '— ' + tgtCount + '个词';
+      } else {
+        // Add to unknown section
+        var unknownSection = document.getElementById('unknownWordsSection');
+        if (unknownSection) {
+          unknownSection.appendChild(wordRow);
+          var unkCount2 = unknownSection.querySelectorAll('.paste-word-row').length;
+          var unkHeader2 = unknownSection.querySelector('.text-amber-600');
+          if (unkHeader2 && !unkHeader2.classList.contains('flex')) {
+            unkHeader2.textContent = '⚠ 未识别词根 (' + unkCount2 + '个) — 手动选择目标词根';
+          }
+        }
+      }
+
+      // Update the select value and rebuild options for new root
+      var newSelectHTML = buildRootSelectHTML(toRootIdx, false);
+      selectEl.outerHTML = selectEl.outerHTML.replace(/<select[\s\S]*?<\/select>/, '<select class="paste-word-root-sel text-[9px] border border-gray-200 rounded px-1 py-0.5 flex-shrink-0" data-pid="' + pid + '" onchange="window.movePasteWordRoot(this)">' + newSelectHTML + '</select>');
+
+      // Update confirm bar summary
+      updatePasteConfirmSummary();
+    };
+    function updatePasteConfirmSummary() {
+      var pd = pendingParsedData;
+      if (!pd) return;
+      var rootMap = pd.rootMap || {};
+      var unknownList = pd.unknownEntries || pd.unknownWords || [];
+      var totalCount = 0;
+      Object.keys(rootMap).forEach(function(idx) { totalCount += rootMap[idx].length; });
+      // Update sticky bar
+      var stickyMsg = '将导入 <b class="text-indigo-600">' + totalCount + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根';
+      if (unknownList.length > 0) stickyMsg += ' <span class="text-amber-500">（' + unknownList.length + ' 个未识别将跳过）</span>';
+      pasteSummary.innerHTML = stickyMsg;
+      // Update inline summary if visible
+      var inlineSummary = document.getElementById('inlineConfirmSummary');
+      if (inlineSummary) {
+        var hasAIKey = !!(localStorage.getItem(GEMINI_KEY_KEY) || localStorage.getItem(ANTHROPIC_KEY_KEY));
+        inlineSummary.innerHTML = '将导入 <b class="text-indigo-600">' + totalCount + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownList.length > 0 ? ' <span class="text-amber-500">（' + unknownList.length + ' 个' + (hasAIKey ? 'AI 将自动生成并导入' : '未识别将跳过') + '）</span>' : '');
+      }
     }
     function openPasteImport() {
       pasteRootSelect.innerHTML = '<option value="">选择目标词根...</option>';
@@ -4436,10 +4579,11 @@
       try {
         var enriched = await enrichWordWithAI(wordData.word, wordData.meaning, '');
         var w = allData[currentRootIndex].words[currentWordIndex];
-        // Merge: only overwrite fields that are empty
-        if (!w.phonetic && enriched.phonetic) w.phonetic = enriched.phonetic;
-        if (!w.etymology && enriched.etymology) w.etymology = enriched.etymology;
-        if (!w.mnemonic && enriched.mnemonic) w.mnemonic = enriched.mnemonic;
+        // Always update etymology & mnemonic with AI versions (better than auto-generated)
+        if (enriched.phonetic) w.phonetic = enriched.phonetic;
+        if (enriched.etymology) w.etymology = enriched.etymology;
+        if (enriched.mnemonic) w.mnemonic = enriched.mnemonic;
+        // Only fill inflections/synonyms/antonyms/phrases/sentences if empty
         if ((!w.inflections || w.inflections.length === 0) && enriched.inflections && enriched.inflections.length > 0) w.inflections = enriched.inflections;
         if ((!w.synonyms || w.synonyms.length === 0) && enriched.synonyms && enriched.synonyms.length > 0) w.synonyms = enriched.synonyms;
         if ((!w.antonyms || w.antonyms.length === 0) && enriched.antonyms && enriched.antonyms.length > 0) w.antonyms = enriched.antonyms;
@@ -4481,7 +4625,9 @@
         // Auto-detect roots for each entry
         var rootMap = {};
         var unknownEntries = [];
+        _pastePidCounter = 0;
         fullEntries.forEach(function(entry) {
+          entry._pid = ++_pastePidCounter;
           var rootIdx = detectRoot(entry.word);
           if (rootIdx !== null && rootIdx >= 0) {
             if (!rootMap[rootIdx]) rootMap[rootIdx] = [];
@@ -4498,12 +4644,12 @@
         Object.keys(rootMap).forEach(function(idx) {
           var root = allData[parseInt(idx)];
           var entries = rootMap[idx];
-          html += '<div class="bg-indigo-50 rounded-lg p-2 border border-indigo-100">';
-          html += '<div class="text-[10px] font-semibold text-indigo-600 mb-1">📌 ' + escapeHTML(root.root) + (root.root_meaning ? ' (' + escapeHTML(root.root_meaning) + ')' : '') + ' <span class="text-gray-400 font-normal">— ' + entries.length + '个词</span></div>';
+          html += '<div class="bg-indigo-50 rounded-lg p-2 border border-indigo-100 paste-root-group" data-root-idx="' + idx + '">';
+          html += '<div class="text-[10px] font-semibold text-indigo-600 mb-1">📌 ' + escapeHTML(root.root) + (root.root_meaning ? ' (' + escapeHTML(root.root_meaning) + ')' : '') + ' <span class="text-gray-400 font-normal paste-root-count">— ' + entries.length + '个词</span></div>';
           entries.forEach(function(entry) {
             var status = checkWordStatus(entry.word);
-            html += '<div class="ml-2 py-1 border-b border-indigo-100 last:border-0">';
-            html += '<div class="flex items-center gap-2 text-[10px]"><span class="font-bold text-gray-800">' + escapeHTML(entry.word) + '</span><span class="text-gray-500 text-[10px]">' + escapeHTML(entry.meaning) + '</span>' + statusBadge(status) + '</div>';
+            html += '<div class="ml-2 py-1 border-b border-indigo-100 last:border-0 paste-word-row" data-pid="' + entry._pid + '">';
+            html += '<div class="flex items-center gap-1 text-[10px]"><span class="font-bold text-gray-800">' + escapeHTML(entry.word) + '</span><span class="text-gray-500 text-[10px] flex-1">' + escapeHTML(entry.meaning) + '</span>' + statusBadge(status) + '<select class="paste-word-root-sel text-[9px] border border-gray-200 rounded px-1 py-0.5 flex-shrink-0" data-pid="' + entry._pid + '" onchange="window.movePasteWordRoot(this)">' + buildRootSelectHTML(parseInt(idx), false) + '</select></div>';
             if (entry.etymology) html += '<div class="text-[10px] text-gray-400 ml-1 mt-0.5">🔍 ' + escapeHTML(entry.etymology) + '</div>';
             if (entry.inflections.length > 0) html += '<div class="text-[10px] text-gray-400 ml-1">📎 ' + entry.inflections.length + ' 个变形态</div>';
             if (entry.synonyms.length > 0) html += '<div class="text-[10px] text-gray-400 ml-1">≈ ' + entry.synonyms.length + ' 个近义词</div>';
@@ -4515,13 +4661,16 @@
 
         if (unknownEntries.length > 0) {
           html += '<div class="bg-amber-50 rounded-lg p-2 border border-amber-200" id="unknownWordsSection">';
-          html += '<div class="text-[10px] font-semibold text-amber-600 mb-1">⚠ 未识别词根 (' + unknownEntries.length + '个) — 将跳过</div>';
+          html += '<div class="text-[10px] font-semibold text-amber-600 mb-1">⚠ 未识别词根 (' + unknownEntries.length + '个) — 手动选择目标词根</div>';
           unknownEntries.forEach(function(entry) {
             var status = checkWordStatus(entry.word);
-            html += '<div class="text-[10px] text-gray-400 ml-2">' + escapeHTML(entry.word) + ' — ' + escapeHTML(entry.meaning.substring(0, 30)) + ' ' + statusBadge(status) + '</div>';
+            html += '<div class="text-[10px] text-gray-400 ml-2 paste-word-row" data-pid="' + entry._pid + '">';
+            html += '<span>' + escapeHTML(entry.word) + ' — ' + escapeHTML(entry.meaning.substring(0, 30)) + ' ' + statusBadge(status) + '</span>';
+            html += ' <select class="paste-word-root-sel text-[9px] border border-gray-200 rounded px-1 py-0.5" data-pid="' + entry._pid + '" onchange="window.movePasteWordRoot(this)">' + buildRootSelectHTML(null, true) + '</select>';
+            html += '</div>';
           });
           html += '<div class="mt-2 pt-2 border-t border-amber-200 flex items-center gap-1.5 flex-wrap">';
-          html += '<span class="text-[10px] text-amber-600 flex-shrink-0">手动创建词根：</span>';
+          html += '<span class="text-[10px] text-amber-600 flex-shrink-0">批量创建词根：</span>';
           html += '<input id="manualRootName" class="text-[10px] px-2 py-0.5 rounded border border-amber-300 w-16 flex-shrink-0" placeholder="词根名">';
           html += '<input id="manualRootMeaning" class="text-[10px] px-2 py-0.5 rounded border border-amber-300 flex-1 min-w-[80px]" placeholder="词根含义（可选）">';
           html += '<button id="manualCreateRootBtn" class="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500 text-white hover:bg-amber-600 transition-colors flex-shrink-0">➕ 创建并分配</button>';
@@ -4589,7 +4738,7 @@
               pasteSummary.innerHTML = '将导入 <b class="text-indigo-600">' + newTotal + '</b> 个完整单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根';
               var summaryEl = document.getElementById('inlineConfirmSummary');
               if (summaryEl) summaryEl.innerHTML = '将导入 <b class="text-indigo-600">' + newTotal + '</b> 个完整单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根';
-              saveLocalData();
+              try { localStorage.setItem('ielts_data', JSON.stringify(allData)); } catch(e) {}
             });
           }
         }, 50);
@@ -4642,7 +4791,9 @@
         // Auto-detect root for each word
         const rootMap = {};
         const unknownWords = [];
+        _pastePidCounter = 0;
         parsed.forEach(function(p) {
+          p._pid = ++_pastePidCounter;
           const rootIdx = detectRoot(p.word);
           if (rootIdx !== null && rootIdx >= 0) {
             if (!rootMap[rootIdx]) rootMap[rootIdx] = [];
@@ -4658,15 +4809,16 @@
         Object.keys(rootMap).forEach(function(idx) {
           const root = allData[parseInt(idx)];
           const words = rootMap[idx];
-          html += '<div class="bg-indigo-50 rounded-lg p-2 border border-indigo-100">';
-          html += '<div class="text-[10px] font-semibold text-indigo-600 mb-1">📌 ' + escapeHTML(root.root) + (root.root_meaning ? ' (' + escapeHTML(root.root_meaning) + ')' : '') + ' <span class="text-gray-400 font-normal">— ' + words.length + '个词</span></div>';
+          html += '<div class="bg-indigo-50 rounded-lg p-2 border border-indigo-100 paste-root-group" data-root-idx="' + idx + '">';
+          html += '<div class="text-[10px] font-semibold text-indigo-600 mb-1">📌 ' + escapeHTML(root.root) + (root.root_meaning ? ' (' + escapeHTML(root.root_meaning) + ')' : '') + ' <span class="text-gray-400 font-normal paste-root-count">— ' + words.length + '个词</span></div>';
           words.forEach(function(p) {
             var status = checkWordStatus(p.word);
-            html += '<div class="flex items-center gap-2 text-[10px] ml-2 py-0.5">';
-            html += '<span class="font-bold text-gray-800 min-w-[80px]">' + escapeHTML(p.word) + '</span>';
-            if (p.pos) html += '<span class="text-indigo-400 min-w-[40px]">' + escapeHTML(p.pos) + '</span>';
+            html += '<div class="flex items-center gap-1 text-[10px] ml-2 py-0.5 paste-word-row" data-pid="' + p._pid + '">';
+            html += '<span class="font-bold text-gray-800 min-w-[70px]">' + escapeHTML(p.word) + '</span>';
+            if (p.pos) html += '<span class="text-indigo-400 min-w-[35px]">' + escapeHTML(p.pos) + '</span>';
             html += '<span class="text-gray-500 flex-1 truncate">' + escapeHTML(p.meaning) + '</span>';
             html += statusBadge(status);
+            html += '<select class="paste-word-root-sel text-[9px] border border-gray-200 rounded px-1 py-0.5 flex-shrink-0" data-pid="' + p._pid + '" onchange="window.movePasteWordRoot(this)">' + buildRootSelectHTML(parseInt(idx), false) + '</select>';
             html += '</div>';
           });
           html += '</div>';
@@ -4682,11 +4834,12 @@
           html += '</div>';
           unknownWords.forEach(function(p, i) {
             var status = checkWordStatus(p.word);
-            html += '<div class="flex items-center gap-2 text-[10px] ml-2 py-0.5 opacity-60" id="unknownWordRow' + i + '">';
-            html += '<span class="font-bold text-gray-800 min-w-[80px]">' + escapeHTML(p.word) + '</span>';
-            if (p.pos) html += '<span class="text-indigo-400 min-w-[40px]">' + escapeHTML(p.pos) + '</span>';
+            html += '<div class="flex items-center gap-1 text-[10px] ml-2 py-0.5 opacity-60 paste-word-row" id="unknownWordRow' + i + '" data-pid="' + p._pid + '">';
+            html += '<span class="font-bold text-gray-800 min-w-[70px]">' + escapeHTML(p.word) + '</span>';
+            if (p.pos) html += '<span class="text-indigo-400 min-w-[35px]">' + escapeHTML(p.pos) + '</span>';
             html += '<span class="text-gray-500 flex-1 truncate">' + escapeHTML(p.meaning) + '</span>';
             html += statusBadge(status);
+            html += '<select class="paste-word-root-sel text-[9px] border border-gray-200 rounded px-1 py-0.5 flex-shrink-0" data-pid="' + p._pid + '" onchange="window.movePasteWordRoot(this)">' + buildRootSelectHTML(null, true) + '</select>';
             html += '</div>';
           });
           html += '<div class="mt-2 pt-2 border-t border-amber-200 flex items-center gap-1.5 flex-wrap">';
@@ -4814,7 +4967,7 @@
       }
     }
 
-    function importParsedWords(parsed) {
+    async function importParsedWords(parsed) {
       var selVal = pasteRootSelect.value;
       var rootIdx;
       if (selVal === '-1') {
@@ -4838,23 +4991,40 @@
       var skipped = 0;
       var addedWords = [];
       var total = parsed.length;
+      var hasAI = !!(localStorage.getItem(GEMINI_KEY_KEY) || localStorage.getItem(ANTHROPIC_KEY_KEY));
 
       // Show progress
       pasteProgress.classList.remove('hidden');
-      pasteProgress.innerHTML = '<div class="flex items-center gap-2 text-xs text-green-600"><span class="animate-pulse">⏳</span> 正在导入 <b>' + total + '</b> 个单词到 <b>' + escapeHTML(root.root) + '</b>...</div>';
+      pasteProgress.innerHTML = '<div class="flex items-center gap-2 text-xs text-green-600"><span class="animate-pulse">⏳</span> 正在导入 <b>' + total + '</b> 个单词到 <b>' + escapeHTML(root.root) + '</b>' + (hasAI ? ' 🤖 AI 补全中...' : '') + '</div>';
 
-      parsed.forEach(function(p, i) {
+      for (var i = 0; i < parsed.length; i++) {
+        var p = parsed[i];
         var exists = root.words.some(function(w) { return w.word.toLowerCase() === p.word.toLowerCase(); });
         if (!exists) {
-          var wObj = {
-            word: p.word,
-            phonetic: '',
-            meaning: (p.pos ? p.pos + ' ' : '') + p.meaning,
-            inflections: [], synonyms: [], antonyms: [],
-            ielts_phrases: [], ielts_sentences: [],
-            etymology: '', mnemonic: ''
-          };
-          autoEnrichWord(wObj, rootIdx);
+          var wObj;
+          if (hasAI) {
+            try {
+              var enriched = await enrichWordWithAI(p.word, p.meaning, p.pos);
+              wObj = {
+                word: enriched.word,
+                phonetic: enriched.phonetic || '',
+                meaning: (enriched.pos ? enriched.pos + ' ' : '') + (enriched.meaning || p.meaning || ''),
+                inflections: enriched.inflections || [],
+                synonyms: enriched.synonyms || [],
+                antonyms: enriched.antonyms || [],
+                ielts_phrases: enriched.phrases || [],
+                ielts_sentences: enriched.sentences || [],
+                etymology: enriched.etymology || '',
+                mnemonic: enriched.mnemonic || ''
+              };
+            } catch(e) {
+              wObj = { word: p.word, phonetic: '', meaning: (p.pos ? p.pos + ' ' : '') + p.meaning, inflections: [], synonyms: [], antonyms: [], ielts_phrases: [], ielts_sentences: [], etymology: '', mnemonic: '' };
+              autoEnrichWord(wObj, rootIdx);
+            }
+          } else {
+            wObj = { word: p.word, phonetic: '', meaning: (p.pos ? p.pos + ' ' : '') + p.meaning, inflections: [], synonyms: [], antonyms: [], ielts_phrases: [], ielts_sentences: [], etymology: '', mnemonic: '' };
+            autoEnrichWord(wObj, rootIdx);
+          }
           root.words.push(wObj);
           addedWords.push(p.word);
           added++;
@@ -4862,26 +5032,50 @@
           skipped++;
         }
         pasteProgress.innerHTML = '<div class="text-xs text-green-600">⏳ 正在导入 <b>' + (i + 1) + '/' + total + '</b>... <span class="text-gray-400">+</span><b>' + added + '</b></div>';
-      });
+      }
 
       saveDataToStorage();
 
-      // Show done state
+      // Show done state with navigation button
       var statusMsg = '✅ 导入完成：新增 <b>' + added + '</b> 个单词';
       if (skipped > 0) statusMsg += '，跳过 <b>' + skipped + '</b> 个重复';
-      pasteProgress.innerHTML = '<div class="text-xs text-green-600 font-medium">' + statusMsg + '</div>';
+      pasteProgress.innerHTML = '<div class="text-xs text-green-600 font-medium flex items-center gap-3 flex-wrap">' +
+        '<span>' + statusMsg + '</span>' +
+        (added > 0 ? '<button id="gotoNewWordBtn" class="px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">📌 查看这组词根</button>' : '') +
+        '</div>';
+
+      // Attach navigation handler
+      if (added > 0) {
+        setTimeout(function() {
+          var gotoBtn = document.getElementById('gotoNewWordBtn');
+          if (gotoBtn) gotoBtn.addEventListener('click', function() {
+            pasteOverlay.classList.add('hidden');
+            pasteProgress.classList.add('hidden');
+            pasteProgress.innerHTML = '';
+            pasteConfirmBar.classList.add('hidden');
+            currentRootIndex = rootIdx;
+            renderRootList(searchInput.value.trim());
+            showDetailPanel(allData[rootIdx].words[allData[rootIdx].words.length - 1]);
+            renderMindMap(allData[rootIdx], allData[rootIdx].words.length - 1);
+            var summary = '已导入 ' + added + ' 个单词 → ' + root.root;
+            recordImport([{ rootIdx: rootIdx, words: addedWords }], summary);
+          });
+        }, 50);
+      }
 
       // Delay close
       setTimeout(function() {
-        pasteOverlay.classList.add('hidden');
-        pasteProgress.classList.add('hidden');
-        pasteProgress.innerHTML = '';
-        pasteConfirmBar.classList.add('hidden');
-        renderRootList(searchInput.value.trim());
-        if (currentRootIndex === rootIdx) renderMindMap(allData[rootIdx], -1);
-        var summary = '已导入 ' + added + ' 个单词 → ' + root.root;
-        recordImport([{ rootIdx: rootIdx, words: addedWords }], summary);
-      }, 1200);
+        if (!document.getElementById('gotoNewWordBtn')) {
+          pasteOverlay.classList.add('hidden');
+          pasteProgress.classList.add('hidden');
+          pasteProgress.innerHTML = '';
+          pasteConfirmBar.classList.add('hidden');
+          renderRootList(searchInput.value.trim());
+          if (currentRootIndex === rootIdx) renderMindMap(allData[rootIdx], -1);
+          var summary = '已导入 ' + added + ' 个单词 → ' + root.root;
+          recordImport([{ rootIdx: rootIdx, words: addedWords }], summary);
+        }
+      }, 3000);
     }
 
     function collectRowData(row) {
