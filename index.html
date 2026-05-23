@@ -3818,6 +3818,14 @@
         inlineSummary.innerHTML = '将导入 <b class="text-indigo-600">' + totalCount + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownList.length > 0 ? ' <span class="text-amber-500">（' + unknownList.length + ' 个' + (hasAIKey ? 'AI 将自动生成并导入' : '未识别将跳过') + '）</span>' : '');
       }
     }
+    function resetPasteImport() {
+      pasteInput.value = '';
+      pastePreview.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">粘贴文本后点击"解析文本"</p>';
+      pasteProgress.classList.add('hidden');
+      pasteProgress.innerHTML = '';
+      pasteConfirmBar.classList.add('hidden');
+      pendingParsedData = null;
+    }
     function openPasteImport() {
       pasteRootSelect.innerHTML = '<option value="">选择目标词根...</option>';
       allData.forEach(function(r, i) {
