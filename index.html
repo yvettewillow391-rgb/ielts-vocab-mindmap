@@ -9,6 +9,8 @@
   <script src="tips-data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
+    /* Ensure Tailwind hidden+flex doesn't conflict (fixes tap on mobile) */
+    .hidden.fixed, .fixed.hidden { display: none !important; }
     #sidebar { overflow: hidden; }
     #sidebarInner::-webkit-scrollbar { width: 12px; }
     #sidebarInner::-webkit-scrollbar-track { background: #e5e7eb; border-radius: 6px; }
