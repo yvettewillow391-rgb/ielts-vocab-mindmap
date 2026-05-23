@@ -988,10 +988,31 @@
         var entry = errorNotebook[word];
         var latestErr = entry.errors[entry.errors.length - 1];
         var timeStr = new Date(latestErr.time).toLocaleString('zh-CN');
+        // Look up word POS and meaning from allData
+        var wordPos = '', wordMeaning = '';
+        for (var ri = 0; ri < allData.length; ri++) {
+          for (var wi = 0; wi < allData[ri].words.length; wi++) {
+            if (allData[ri].words[wi].word.toLowerCase() === word.toLowerCase()) {
+              var wd = allData[ri].words[wi];
+              var m = wd.meaning || '';
+              var spaceIdx = m.indexOf(' ');
+              if (spaceIdx > 0 && /^[a-z]+\.?$/i.test(m.substring(0, spaceIdx))) {
+                wordPos = m.substring(0, spaceIdx);
+                wordMeaning = m.substring(spaceIdx + 1);
+              } else {
+                wordMeaning = m;
+              }
+              break;
+            }
+          }
+          if (wordMeaning) break;
+        }
         html += '<div class="border border-red-100 rounded-xl overflow-hidden">';
         html += '<div class="flex items-center gap-2 px-3 py-2.5 bg-red-50 cursor-pointer err-nb-header" data-word="' + escapeHTML(word) + '">';
         html += '<span class="text-[10px] text-red-300 err-nb-arrow">▶</span>';
         html += '<span class="text-sm font-bold text-red-600">' + escapeHTML(word) + '</span>';
+        if (wordPos) html += '<span class="text-[11px] text-red-400 font-medium">' + escapeHTML(wordPos) + '</span>';
+        if (wordMeaning) html += '<span class="text-[11px] text-gray-500 truncate max-w-[180px]">' + escapeHTML(wordMeaning) + '</span>';
         html += '<span class="text-[10px] text-red-400">错误 ' + entry.count + ' 次</span>';
         html += '<span class="text-[10px] text-gray-400 ml-auto">最近: ' + timeStr + '</span>';
         html += '</div>';
