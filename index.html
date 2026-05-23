@@ -693,7 +693,12 @@
         </div>
         <div class="flex gap-2">
           <button id="parseBtn" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-amber-500 text-white hover:bg-amber-600 transition-colors">🔍 解析文本</button>
-          <select id="pasteRootSelect" class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none"><option value="">选择目标词根...</option></select>
+          <div class="flex-1 min-w-0 space-y-1">
+            <input id="pasteRootFilter" type="text" placeholder="筛选词根..." class="w-full text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none focus:border-amber-400" autocomplete="off">
+            <select id="pasteRootSelect" size="4" class="w-full text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none" style="height:auto;overflow-y:auto"><option value="">选择目标词根...</option></select>
+            <input id="pasteNewRootName" type="text" placeholder="新词根名" class="w-full text-xs border border-amber-300 rounded-lg px-2 py-1 outline-none hidden">
+            <input id="pasteNewRootMeaning" type="text" placeholder="新词根含义" class="w-full text-xs border border-amber-300 rounded-lg px-2 py-1 outline-none hidden">
+          </div>
         </div>
         <div id="pastePreview" class="max-h-[40vh] overflow-y-auto"></div>
         <div id="pasteProgress" class="hidden space-y-1.5"></div>
@@ -3560,10 +3565,46 @@
     }
     function openPasteImport() {
       pasteRootSelect.innerHTML = '<option value="">选择目标词根...</option>';
-      allData.forEach((r, i) => {
-        pasteRootSelect.innerHTML += '<option value="' + i + '">' + escapeHTML(r.root) + '</option>';
+      allData.forEach(function(r, i) {
+        pasteRootSelect.innerHTML += '<option value="' + i + '">' + escapeHTML(r.root) + (r.root_meaning ? ' (' + escapeHTML(r.root_meaning) + ')' : '') + '</option>';
       });
+      pasteRootSelect.innerHTML += '<option value="-1">➕ 新建词根...</option>';
       pasteRootSelect.style.display = '';
+      var filterEl2 = document.getElementById('pasteRootFilter');
+      if (filterEl2) filterEl2.style.display = '';
+      // Hide new root inputs
+      var newNameEl = document.getElementById('pasteNewRootName');
+      var newMeaningEl = document.getElementById('pasteNewRootMeaning');
+      if (newNameEl) newNameEl.classList.add('hidden');
+      if (newMeaningEl) newMeaningEl.classList.add('hidden');
+      // Setup filter for root select
+      var filterEl = document.getElementById('pasteRootFilter');
+      if (filterEl) {
+        filterEl.value = '';
+        filterEl.oninput = function() {
+          var ft = this.value.toLowerCase();
+          var opts = pasteRootSelect.options;
+          for (var oi = 0; oi < opts.length; oi++) {
+            if (opts[oi].value === '' || opts[oi].value === '-1') continue;
+            var visible = ft === '' || opts[oi].textContent.toLowerCase().indexOf(ft) >= 0;
+            opts[oi].style.display = visible ? '' : 'none';
+          }
+          if (ft) {
+            for (var oi2 = 0; oi2 < opts.length; oi2++) {
+              if (opts[oi2].style.display !== 'none' && opts[oi2].value !== '' && opts[oi2].value !== '-1') {
+                pasteRootSelect.value = opts[oi2].value;
+                break;
+              }
+            }
+          }
+        };
+      }
+      // Show/hide new root inputs on select change
+      pasteRootSelect.onchange = function() {
+        var showNew = this.value === '-1';
+        if (newNameEl) newNameEl.classList.toggle('hidden', !showNew);
+        if (newMeaningEl) newMeaningEl.classList.toggle('hidden', !showNew);
+      };
       parseBtn.textContent = '🔍 解析文本';
       resetPasteImport();
       pasteOverlay.classList.remove('hidden');
@@ -3692,7 +3733,13 @@
 
     function openSmartImport() {
       pasteRootSelect.innerHTML = '';
-      pasteRootSelect.style.display = 'none'; // hide root selector only
+      pasteRootSelect.style.display = 'none';
+      var filterEl = document.getElementById('pasteRootFilter');
+      if (filterEl) filterEl.style.display = 'none';
+      var newNameEl = document.getElementById('pasteNewRootName');
+      var newMeaningEl = document.getElementById('pasteNewRootMeaning');
+      if (newNameEl) newNameEl.classList.add('hidden');
+      if (newMeaningEl) newMeaningEl.classList.add('hidden');
       resetPasteImport();
       parseBtn.textContent = '🔍 智能解析';
       pastePreview.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">粘贴单词列表，点击智能解析自动归类到词根</p>';
@@ -4745,10 +4792,22 @@
     }
 
     function importParsedWords(parsed) {
-      var rootIdx = parseInt(pasteRootSelect.value);
-      if (isNaN(rootIdx) || rootIdx < 0 || rootIdx >= allData.length) {
-        alert('请先选择目标词根');
-        return;
+      var selVal = pasteRootSelect.value;
+      var rootIdx;
+      if (selVal === '-1') {
+        var newName = (document.getElementById('pasteNewRootName') || {}).value;
+        if (!newName || !newName.trim()) { alert('请输入新词根名称'); return; }
+        var newMeaning = (document.getElementById('pasteNewRootMeaning') || {}).value || '';
+        allData.push({ root: newName.trim(), root_meaning: newMeaning.trim(), words: [] });
+        rootIdx = allData.length - 1;
+        try { localStorage.setItem('ielts_data', JSON.stringify(allData)); } catch(e) {}
+        renderRootList(searchInput.value.trim());
+      } else {
+        rootIdx = parseInt(selVal);
+        if (isNaN(rootIdx) || rootIdx < 0 || rootIdx >= allData.length) {
+          alert('请先选择目标词根');
+          return;
+        }
       }
       if (!parsed || parsed.length === 0) return;
       var root = allData[rootIdx];
