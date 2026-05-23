@@ -1759,11 +1759,12 @@
       if (existing) existing.remove();
 
       var hasSuggestion = suggestedIdx >= 0;
-      var pickerHtml = '<div id="inlineRootPicker" class="inline-flex items-center gap-1.5 bg-white border border-amber-300 rounded-lg p-2 shadow-lg flex-wrap" style="margin-left:4px">';
+      var pickerHtml = '<div id="inlineRootPicker" class="inline-flex flex-col gap-1 bg-white border border-amber-300 rounded-lg p-2 shadow-lg" style="margin-left:4px;min-width:200px">';
       if (hasSuggestion) {
-        pickerHtml += '<span class="text-[9px] text-purple-500 font-medium">🤖 AI推荐</span>';
+        pickerHtml += '<span class="text-[9px] text-purple-500 font-medium">🤖 AI推荐 · 输入筛选词根</span>';
       }
-      pickerHtml += '<select id="inlineRootSelect" class="text-[10px] border border-gray-200 rounded px-1.5 py-0.5 outline-none">';
+      pickerHtml += '<input id="inlineRootFilter" type="text" placeholder="输入筛选词根..." class="text-[10px] border border-gray-200 rounded px-1.5 py-0.5 outline-none w-full">';
+      pickerHtml += '<select id="inlineRootSelect" class="text-[10px] border border-gray-200 rounded px-1.5 py-0.5 outline-none" size="5">';
       pickerHtml += '<option value="">选词根...</option>';
       allData.forEach(function(r, ri) {
         if (ri !== currentRootIndex) {
@@ -1772,10 +1773,12 @@
       });
       pickerHtml += '<option value="-1">➕ 新建词根...</option>';
       pickerHtml += '</select>';
-      pickerHtml += '<input id="inlineNewRootName" type="text" placeholder="词根名" class="text-[10px] border border-amber-300 rounded px-1.5 py-0.5 w-16 outline-none hidden">';
-      pickerHtml += '<input id="inlineNewRootMeaning" type="text" placeholder="含义" class="text-[10px] border border-amber-300 rounded px-1.5 py-0.5 w-16 outline-none hidden">';
-      pickerHtml += '<button id="inlineRootGoBtn" class="text-[10px] px-2 py-0.5 rounded bg-amber-500 text-white hover:bg-amber-600">导入</button>';
+      pickerHtml += '<input id="inlineNewRootName" type="text" placeholder="词根名" class="text-[10px] border border-amber-300 rounded px-1.5 py-0.5 w-full outline-none hidden">';
+      pickerHtml += '<input id="inlineNewRootMeaning" type="text" placeholder="含义" class="text-[10px] border border-amber-300 rounded px-1.5 py-0.5 w-full outline-none hidden">';
+      pickerHtml += '<div class="flex gap-1">';
+      pickerHtml += '<button id="inlineRootGoBtn" class="text-[10px] px-2 py-0.5 rounded bg-amber-500 text-white hover:bg-amber-600 flex-1">导入</button>';
       pickerHtml += '<button id="inlineRootCancelBtn" class="text-[10px] px-1.5 py-0.5 rounded text-gray-400 hover:text-gray-600">×</button>';
+      pickerHtml += '</div>';
       pickerHtml += '</div>';
 
       if (btnEl) {
@@ -1787,6 +1790,7 @@
       }
 
       var selectEl = document.getElementById('inlineRootSelect');
+      var filterEl = document.getElementById('inlineRootFilter');
       var newNameEl = document.getElementById('inlineNewRootName');
       var newMeaningEl = document.getElementById('inlineNewRootMeaning');
       var goBtn = document.getElementById('inlineRootGoBtn');
@@ -1795,6 +1799,18 @@
 
       // Pre-select AI-suggested root
       if (suggestedIdx >= 0) { selectEl.value = suggestedIdx; }
+
+      // Filter roots as user types
+      filterEl.addEventListener('input', function() {
+        var ft = this.value.toLowerCase();
+        var opts = selectEl.options;
+        for (var oi = 0; oi < opts.length; oi++) {
+          var opt = opts[oi];
+          if (opt.value === '' || opt.value === '-1') continue; // always show placeholder & new root
+          var visible = ft === '' || opt.textContent.toLowerCase().indexOf(ft) >= 0;
+          opt.style.display = visible ? '' : 'none';
+        }
+      });
 
       selectEl.addEventListener('change', function() {
         var showNew = selectEl.value === '-1';
@@ -2884,6 +2900,16 @@
 
       // Word + Meaning + Phonetic
       html += '<div class="space-y-3 mb-4 p-3 bg-indigo-50 rounded-lg">';
+      html += '<div><label class="text-[10px] text-gray-400 uppercase tracking-wider">所属词根</label>';
+      html += '<div class="root-search-wrap relative">';
+      html += '<input id="ed-root-search" type="text" class="edit-input font-medium text-indigo-700 bg-white pr-7" placeholder="搜索词根..." autocomplete="off" value="' + escapeAttr(allData[currentRootIndex] ? allData[currentRootIndex].root + (allData[currentRootIndex].root_meaning ? ' (' + allData[currentRootIndex].root_meaning + ')' : '') : '') + '">';
+      html += '<span id="ed-root-clear" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 cursor-pointer text-xs" style="display:none">✕</span>';
+      html += '<input type="hidden" id="ed-root" value="' + currentRootIndex + '">';
+      html += '<div id="ed-root-dropdown" class="absolute left-0 right-0 top-full mt-0.5 bg-white border border-gray-200 rounded-lg shadow-lg z-30 max-h-48 overflow-y-auto hidden"></div>';
+      html += '</div>';
+      html += '<input id="ed-new-root-name" type="text" placeholder="新词根名" class="edit-input mt-1 hidden" style="font-size:11px">';
+      html += '<input id="ed-new-root-meaning" type="text" placeholder="新词根含义" class="edit-input mt-1 hidden" style="font-size:11px">';
+      html += '</div>';
       html += '<div><label class="text-[10px] text-gray-400 uppercase tracking-wider">单词</label>';
       html += '<input class="edit-input font-bold" id="ed-word" value="' + escapeAttr(w.word) + '"></div>';
       html += '<div><label class="text-[10px] text-gray-400 uppercase tracking-wider">音标</label>';
@@ -2959,6 +2985,115 @@
         '</div>';
 
       detailBody.innerHTML = html;
+
+      // Setup searchable root picker
+      setTimeout(function() {
+        var searchEl = document.getElementById('ed-root-search');
+        var dropdownEl = document.getElementById('ed-root-dropdown');
+        var hiddenEl = document.getElementById('ed-root');
+        var clearEl = document.getElementById('ed-root-clear');
+        var newNameEl = document.getElementById('ed-new-root-name');
+        var newMeaningEl = document.getElementById('ed-new-root-meaning');
+        if (!searchEl || !dropdownEl || !hiddenEl) return;
+
+        function renderDropdown(filter) {
+          var html = '';
+          var count = 0;
+          var ft = (filter || '').toLowerCase();
+          allData.forEach(function(r, ri) {
+            var label = r.root + (r.root_meaning ? ' (' + r.root_meaning + ')' : '');
+            if (ft && label.toLowerCase().indexOf(ft) === -1) return;
+            var sel = parseInt(hiddenEl.value) === ri ? ' bg-indigo-50 font-semibold' : '';
+            html += '<div class="root-drop-item px-3 py-1.5 text-xs cursor-pointer hover:bg-gray-100' + sel + '" data-idx="' + ri + '">' + escapeHTML(label) + '</div>';
+            count++;
+          });
+          html += '<div class="root-drop-item px-3 py-1.5 text-xs cursor-pointer hover:bg-amber-50 text-amber-600 border-t border-gray-100" data-idx="-1">➕ 新建词根...</div>';
+          dropdownEl.innerHTML = html;
+          dropdownEl.classList.toggle('hidden', false);
+
+          // Click handlers
+          dropdownEl.querySelectorAll('.root-drop-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+              var idx = parseInt(this.dataset.idx);
+              hiddenEl.value = idx;
+              if (idx === -1) {
+                searchEl.value = '新建词根';
+                newNameEl.classList.remove('hidden');
+                newMeaningEl.classList.remove('hidden');
+                newNameEl.focus();
+              } else {
+                searchEl.value = this.textContent.trim();
+                newNameEl.classList.add('hidden');
+                newMeaningEl.classList.add('hidden');
+              }
+              dropdownEl.classList.add('hidden');
+              clearEl.style.display = 'block';
+            });
+          });
+        }
+
+        searchEl.addEventListener('focus', function() {
+          renderDropdown(searchEl.value);
+          clearEl.style.display = searchEl.value ? 'block' : 'none';
+        });
+
+        searchEl.addEventListener('input', function() {
+          renderDropdown(this.value);
+          clearEl.style.display = this.value ? 'block' : 'none';
+          // Reset hidden value when user types
+          hiddenEl.value = '';
+          newNameEl.classList.add('hidden');
+          newMeaningEl.classList.add('hidden');
+        });
+
+        searchEl.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') { dropdownEl.classList.add('hidden'); return; }
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            var first = dropdownEl.querySelector('.root-drop-item');
+            if (first) { first.focus(); first.classList.add('bg-gray-100'); }
+          }
+        });
+
+        clearEl.addEventListener('click', function() {
+          searchEl.value = '';
+          hiddenEl.value = '';
+          clearEl.style.display = 'none';
+          newNameEl.classList.add('hidden');
+          newMeaningEl.classList.add('hidden');
+          searchEl.focus();
+        });
+
+        dropdownEl.addEventListener('keydown', function(e) {
+          if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            var items = dropdownEl.querySelectorAll('.root-drop-item');
+            var focused = dropdownEl.querySelector('.root-drop-item:focus, .root-drop-item.bg-gray-100');
+            var idx = Array.from(items).indexOf(focused);
+            if (focused) focused.classList.remove('bg-gray-100');
+            if (e.key === 'ArrowDown') idx = (idx + 1) % items.length;
+            else idx = (idx - 1 + items.length) % items.length;
+            items[idx].focus();
+            items[idx].classList.add('bg-gray-100');
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            var f = dropdownEl.querySelector('.root-drop-item:focus, .root-drop-item.bg-gray-100');
+            if (f) f.click();
+          } else if (e.key === 'Escape') {
+            dropdownEl.classList.add('hidden');
+            searchEl.focus();
+          }
+        });
+
+        document.addEventListener('click', function closeDropdown(e) {
+          var wrap = document.querySelector('.root-search-wrap');
+          if (wrap && !wrap.contains(e.target)) {
+            dropdownEl.classList.add('hidden');
+          }
+        });
+
+        clearEl.style.display = searchEl.value ? 'block' : 'none';
+      }, 50);
     }
 
     // Add row helpers (exposed globally for onclick)
@@ -3328,20 +3463,31 @@
     function detectRoot(word) {
       var best = null;
       var bestLen = 0;
+      var wl = word.toLowerCase();
       allData.forEach(function(r, idx) {
         var rt = r.root.toLowerCase();
         // Check if the root text appears in the word (e.g., "mit" in "submit")
-        if (word.toLowerCase().includes(rt) && rt.length > bestLen) {
-          best = idx;
-          bestLen = rt.length;
+        var pos = wl.indexOf(rt);
+        if (pos >= 0) {
+          // For short roots (≤4 chars), require position at start or end to avoid false positives
+          // e.g. "mit" in "submit" (end) is valid, "mit" in "indomitable" (middle) is not
+          var atBoundary = (pos === 0 || pos + rt.length === wl.length);
+          if (rt.length > 4 || atBoundary) {
+            if (rt.length > bestLen) { best = idx; bestLen = rt.length; }
+          }
         }
         // Also check root variants (split by /)
         var parts = rt.split('/');
         parts.forEach(function(p) {
           p = p.trim();
-          if (p.length > 1 && word.toLowerCase().includes(p) && p.length > bestLen) {
-            best = idx;
-            bestLen = p.length;
+          if (p.length > 1) {
+            var ppos = wl.indexOf(p);
+            if (ppos >= 0) {
+              var pAtBoundary = (ppos === 0 || ppos + p.length === wl.length);
+              if (p.length > 4 || pAtBoundary) {
+                if (p.length > bestLen) { best = idx; bestLen = p.length; }
+              }
+            }
           }
         });
         // Check if any word under this root shares a substring
@@ -4558,8 +4704,33 @@
 
     window.saveEdit = function() {
       if (currentRootIndex < 0 || currentWordIndex < 0) return;
-      const w = allData[currentRootIndex].words[currentWordIndex];
+      var w = allData[currentRootIndex].words[currentWordIndex];
       if (!w) return;
+
+      // Handle root change
+      var edRoot = document.getElementById('ed-root');
+      var targetRootIdx = currentRootIndex;
+      if (edRoot) {
+        var selVal = edRoot.value;
+        if (selVal === '-1') {
+          // Create new root
+          var newName = (document.getElementById('ed-new-root-name') || {}).value;
+          if (!newName || !newName.trim()) { alert('请输入新词根名称'); return; }
+          var newMeaning = (document.getElementById('ed-new-root-meaning') || {}).value || '';
+          allData.push({ root: newName.trim(), root_meaning: newMeaning.trim(), words: [] });
+          targetRootIdx = allData.length - 1;
+        } else if (selVal !== '' && selVal !== null && !isNaN(parseInt(selVal))) {
+          targetRootIdx = parseInt(selVal);
+        }
+      }
+
+      // If root changed, move word to new root
+      if (targetRootIdx !== currentRootIndex) {
+        allData[currentRootIndex].words.splice(currentWordIndex, 1);
+        allData[targetRootIdx].words.push(w);
+        currentRootIndex = targetRootIdx;
+        currentWordIndex = allData[targetRootIdx].words.length - 1;
+      }
 
       // Save basic fields
       const edWord = document.getElementById('ed-word');
@@ -4634,6 +4805,7 @@
       editToggleBtn.classList.add('hover:bg-indigo-50', 'text-gray-400', 'hover:text-indigo-500');
       exportBtn.style.display = 'none';
       showDetailPanel(w);
+      renderRootList(searchInput.value.trim());
       renderMindMap(allData[currentRootIndex], currentWordIndex);
     };
 
