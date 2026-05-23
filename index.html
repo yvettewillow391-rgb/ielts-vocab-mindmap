@@ -1739,23 +1739,50 @@
     }
 
     // Import a synonym/antonym as a full word entry with AI enrichment
+    // Common Latin/Greek root meanings (Chinese)
+    var ROOT_MEANINGS = {
+      'act':'做，行动','ag':'做，驱动','am':'爱','anim':'生命，精神','ann':'年','anthrop':'人类','apt':'适合','arch':'统治，首领','arm':'武器','art':'技艺',
+      'aud':'听','aug':'增加','auto':'自己','bat':'打','bell':'战争','bene':'好','bio':'生命','brev':'短','cad':'落下','cap':'头，取',
+      'ced':'走，行','ceed':'走，行','cent':'百','cept':'拿，取','cert':'确定','chron':'时间','cid':'切，杀','circ':'环','cit':'唤起','claim':'喊',
+      'clar':'清','clin':'倾','clud':'关闭','cogn':'知','cord':'心','corp':'体','cosm':'宇宙','crat':'统治','cre':'生长','cred':'相信',
+      'crit':'判断','cruc':'十字','cult':'耕种','cur':'关心','curs':'跑','cycl':'圆','demo':'人民','dent':'牙','dict':'说','doc':'教',
+      'dom':'统治，房屋','domin':'统治','don':'给予','dorm':'睡','dox':'观点','duc':'引导','dur':'持久','dyn':'力','ego':'自我','equ':'相等',
+      'ess':'存在','fact':'做','fer':'携带','fess':'说','fid':'信任','fin':'结束','firm':'坚固','flect':'弯曲','flict':'打击','flu':'流',
+      'form':'形','fort':'强','frag':'破碎','fug':'逃','fus':'融','gam':'婚姻','gen':'生','geo':'地','grad':'步','gram':'写',
+      'graph':'写','grat':'喜悦','grav':'重','greg':'群','hab':'拥有','her':'继承','hes':'粘','horr':'颤抖','hum':'土','hydr':'水',
+      'ject':'投掷','jud':'判断','junct':'连接','jur':'发誓','just':'正义','labor':'劳动','lat':'携带','lect':'选，读','leg':'法律','lev':'轻，升',
+      'liber':'自由','lig':'绑','lingu':'语言','liter':'文字','lith':'石','loc':'地方','log':'言说','luc':'光','lumin':'光','magn':'大',
+      'man':'手','mand':'命令','mar':'海','mater':'母','med':'中间','memor':'记','ment':'心','merg':'沉','meter':'测量','migr':'迁移',
+      'miss':'送','mit':'送','mob':'动','mon':'警告','morph':'形','mort':'死','mov':'动','mut':'变化','nat':'生','nau':'船',
+      'neg':'否定','neur':'神经','noc':'伤害','nom':'名','norm':'规则','not':'标记','nov':'新','null':'无','ocul':'眼','onym':'名',
+      'opt':'选择','ord':'秩序','orn':'装饰','pac':'和平','par':'准备','pass':'感觉','path':'感受','patr':'父','ped':'脚','pel':'驱动',
+      'pend':'悬挂','pet':'追求','phil':'爱','phon':'声音','phot':'光','plac':'取悦','plen':'满','plic':'折叠','plor':'呼喊','polis':'城市',
+      'pon':'放','popul':'人民','port':'携带','pos':'放','poten':'能力','preci':'价值','press':'压','prim':'第一','priv':'私人','prob':'测试',
+      'psych':'心灵','puls':'驱动','punct':'点','pur':'纯','put':'思考','quir':'寻求','radi':'射线','rect':'直','reg':'统治','rid':'笑',
+      'rog':'问','rupt':'破','sacr':'神圣','sal':'盐，跳','sanct':'神圣','sat':'满足','sci':'知','scrib':'写','script':'写','sect':'切',
+      'sens':'感觉','sequ':'跟随','serv':'服务','sid':'坐','sign':'标记','simil':'相似','sist':'站立','soci':'同伴','sol':'太阳，单独','solv':'解',
+      'somn':'睡','son':'声音','soph':'智慧','spec':'看','spher':'球','spir':'呼吸','stas':'站立','stell':'星','strict':'拉紧','struct':'建造',
+      'sume':'拿取','surge':'升起','tact':'触','tang':'触','techn':'技艺','tempor':'时间','tend':'伸展','tenu':'薄','term':'界限','terr':'地',
+      'test':'见证','text':'编织','theo':'神','therm':'热','tom':'切','tort':'扭曲','tract':'拉','trib':'给予','turb':'扰乱','typ':'类型',
+      'ultim':'最后','umbr':'阴影','un':'单一','urb':'城市','vac':'空','vad':'走','val':'价值','var':'变化','ven':'来','ver':'真实',
+      'verb':'词','vers':'转','vest':'穿衣','vid':'看','vis':'看','vit':'生命','viv':'活','voc':'呼唤','vol':'意愿','vor':'吃',
+      'vot':'发誓','vulg':'大众','zo':'动物'
+    };
+
     // Heuristic root extraction: strip prefixes/suffixes to guess the root
     function guessRootFromWord(word) {
       var w = word.toLowerCase();
       var prefixes = ['ante','anti','auto','circum','com','con','contra','de','dis','dys','em','en','epi','ex','extra','fore','hyper','hypo','il','im','in','inter','intra','ir','macro','mal','micro','mid','mis','mono','multi','non','ob','omni','out','over','para','per','peri','poly','post','pre','pro','re','retro','semi','sub','super','syn','tele','trans','tri','ultra','un','under','uni','up','a','be','bi','co','e'];
       var suffixes = ['able','ible','al','ance','ence','ant','ent','ary','ate','ation','cy','ed','ee','er','est','ful','fy','hood','ic','ical','ify','ing','ion','ish','ism','ist','ity','ive','ize','less','like','logy','ly','ment','ness','or','ory','ous','ship','sion','tion','ure','y','es','s'];
-      // Sort by length descending to match longest first
       prefixes.sort(function(a,b){return b.length-a.length;});
       suffixes.sort(function(a,b){return b.length-a.length;});
       var stripped = w;
-      // Strip one prefix
       for (var pi = 0; pi < prefixes.length; pi++) {
         if (stripped.indexOf(prefixes[pi]) === 0 && stripped.length - prefixes[pi].length >= 3) {
           stripped = stripped.substring(prefixes[pi].length);
           break;
         }
       }
-      // Strip one suffix
       for (var si = 0; si < suffixes.length; si++) {
         if (stripped.endsWith(suffixes[si]) && stripped.length - suffixes[si].length >= 2) {
           stripped = stripped.substring(0, stripped.length - suffixes[si].length);
@@ -1770,9 +1797,20 @@
           if (parts[pi2].trim() === stripped) return { exists: true, rootIdx: ri, rootName: stripped };
         }
       }
-      // Doesn't exist - suggest as new root
+      // Doesn't exist - suggest as new root with Chinese meaning if known
       if (stripped.length >= 2 && stripped !== w) {
-        return { exists: false, suggestedRoot: stripped };
+        var zh = ROOT_MEANINGS[stripped] || '';
+        // Fuzzy match: if no exact meaning, try to find a known root that contains or is contained by stripped
+        if (!zh) {
+          var rootKeys = Object.keys(ROOT_MEANINGS);
+          for (var ki = 0; ki < rootKeys.length; ki++) {
+            if (stripped.indexOf(rootKeys[ki]) >= 0 || rootKeys[ki].indexOf(stripped) >= 0) {
+              zh = ROOT_MEANINGS[rootKeys[ki]] + '?';
+              break;
+            }
+          }
+        }
+        return { exists: false, suggestedRoot: stripped, suggestedMeaning: zh };
       }
       return null;
     }
@@ -1790,19 +1828,21 @@
       // Heuristic: guess root even if not in DB (for suggesting new roots)
       var guessedRoot = (suggestedIdx < 0) ? guessRootFromWord(wordText) : null;
       var suggestedNewRoot = null;
+      var suggestedNewMeaning = '';
       if (guessedRoot) {
         if (guessedRoot.exists) {
-          suggestedIdx = guessedRoot.rootIdx; // Use heuristic match as confirmed suggestion
+          suggestedIdx = guessedRoot.rootIdx;
         } else if (guessedRoot.suggestedRoot) {
           suggestedNewRoot = guessedRoot.suggestedRoot;
+          suggestedNewMeaning = guessedRoot.suggestedMeaning || '';
         }
       }
 
-      showInlineRootPicker(wordText, pos, meaning, event ? event.target : null, suggestedIdx, suggestedNewRoot);
+      showInlineRootPicker(wordText, pos, meaning, event ? event.target : null, suggestedIdx, suggestedNewRoot, suggestedNewMeaning);
     };
 
     // Show a quick inline root picker for single-word import
-    function showInlineRootPicker(wordText, pos, meaning, btnEl, suggestedIdx, suggestedNewRoot) {
+    function showInlineRootPicker(wordText, pos, meaning, btnEl, suggestedIdx, suggestedNewRoot, suggestedNewMeaning) {
       // Remove any existing picker
       var existing = document.getElementById('inlineRootPicker');
       if (existing) existing.remove();
@@ -1810,7 +1850,7 @@
       var hasSuggestion = suggestedIdx >= 0 || suggestedNewRoot;
       var pickerHtml = '<div id="inlineRootPicker" class="inline-flex flex-col gap-1 bg-white border border-amber-300 rounded-lg p-2 shadow-lg" style="margin-left:4px;min-width:200px">';
       if (suggestedNewRoot) {
-        pickerHtml += '<span class="text-[9px] text-purple-500 font-medium">🤖 AI推测新词根: <b>' + escapeHTML(suggestedNewRoot) + '</b> · 可修改</span>';
+        pickerHtml += '<span class="text-[9px] text-purple-500 font-medium">🤖 AI推测新词根: <b>' + escapeHTML(suggestedNewRoot) + '</b>' + (suggestedNewMeaning ? ' (' + escapeHTML(suggestedNewMeaning) + ')' : '') + ' · 可修改</span>';
       } else if (hasSuggestion) {
         pickerHtml += '<span class="text-[9px] text-purple-500 font-medium">🤖 AI推荐 · 输入筛选词根</span>';
       }
@@ -1854,8 +1894,10 @@
         newNameEl.classList.remove('hidden');
         newMeaningEl.classList.remove('hidden');
         newNameEl.value = suggestedNewRoot;
+        newMeaningEl.value = suggestedNewMeaning || '';
         newNameEl.placeholder = '词根名 (AI推测)';
-        filterEl.placeholder = 'AI推测新词根: ' + suggestedNewRoot;
+        newMeaningEl.placeholder = suggestedNewMeaning ? '含义 (AI推测)' : '含义';
+        filterEl.placeholder = 'AI推测新词根: ' + suggestedNewRoot + (suggestedNewMeaning ? ' (' + suggestedNewMeaning + ')' : '');
       } else if (suggestedIdx >= 0) {
         selectEl.value = suggestedIdx;
       }
