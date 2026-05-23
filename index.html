@@ -1721,6 +1721,74 @@
       }
     };
 
+    // Import a synonym/antonym as a full word entry with AI enrichment
+    window.importSynonymWord = async function(wordText, pos, meaning) {
+      var hasAIKey = !!(localStorage.getItem(GEMINI_KEY_KEY) || localStorage.getItem(ANTHROPIC_KEY_KEY));
+      if (!hasAIKey) { alert('请先在云同步面板配置 AI API Key'); return; }
+
+      // Try to detect root
+      var detectedIdx = detectRoot(wordText);
+      var rootIdx = (detectedIdx !== null && detectedIdx >= 0) ? detectedIdx : null;
+
+      if (rootIdx === null) {
+        alert('未识别到词根，请在智能导入中手动导入 "' + wordText + '"');
+        return;
+      }
+
+      var root = allData[rootIdx];
+      // Check if word already exists in this root
+      var exists = root.words.some(function(w) { return w.word.toLowerCase() === wordText.toLowerCase(); });
+      if (exists) {
+        alert('"' + wordText + '" 已存在于词根 ' + root.root);
+        // Navigate to it anyway
+        for (var wi = 0; wi < root.words.length; wi++) {
+          if (root.words[wi].word.toLowerCase() === wordText.toLowerCase()) {
+            currentRootIndex = rootIdx; currentWordIndex = wi;
+            showDetailPanel(root.words[wi]);
+            renderMindMap(root, wi);
+            return;
+          }
+        }
+        return;
+      }
+
+      // Show brief progress
+      var statusEl = document.createElement('span');
+      statusEl.className = 'text-[10px] text-purple-500 ml-1';
+      statusEl.textContent = '⏳ AI 生成中...';
+      // Find the button that was clicked and insert status after it
+      if (event && event.target) { event.target.insertAdjacentElement('afterend', statusEl); }
+
+      try {
+        var enriched = await enrichWordWithAI(wordText, meaning, pos);
+        var wObj = {
+          word: enriched.word,
+          phonetic: enriched.phonetic || '',
+          meaning: (enriched.pos ? enriched.pos + ' ' : '') + (enriched.meaning || meaning || ''),
+          inflections: enriched.inflections || [],
+          synonyms: enriched.synonyms || [],
+          antonyms: enriched.antonyms || [],
+          ielts_phrases: enriched.phrases || [],
+          ielts_sentences: enriched.sentences || [],
+          etymology: enriched.etymology || '',
+          mnemonic: enriched.mnemonic || ''
+        };
+        root.words.push(wObj);
+        var newWi = root.words.length - 1;
+        try { localStorage.setItem('ielts_data', JSON.stringify(allData)); } catch(e) {}
+        if (statusEl) { statusEl.textContent = '✅ 已导入'; statusEl.className = 'text-[10px] text-green-500 ml-1'; }
+        // Navigate to the new word
+        currentRootIndex = rootIdx; currentWordIndex = newWi;
+        renderRootList(searchInput.value.trim());
+        showDetailPanel(wObj);
+        renderMindMap(root, newWi);
+        setTimeout(function() { if (statusEl) statusEl.remove(); }, 2000);
+      } catch (err) {
+        if (statusEl) { statusEl.textContent = '❌ 失败'; statusEl.className = 'text-[10px] text-red-500 ml-1'; }
+        setTimeout(function() { if (statusEl) statusEl.remove(); }, 3000);
+      }
+    };
+
     // Check if a word exists in the database
     function wordInDB(wordText) {
       for (var ri = 0; ri < allData.length; ri++) {
@@ -1995,6 +2063,7 @@
               ? '<a class="font-medium text-indigo-600 hover:text-indigo-800 underline cursor-pointer" onclick="navigateToWord(\'' + escapeAttr(w) + '\')" title="点击跳转到 ' + escapeHTML(w) + ' 详情">' + escapeHTML(w) + '</a>'
               : '<span class="font-medium text-violet-800">' + escapeHTML(w) + '</span>') +
             (m ? '<span class="text-violet-500 text-xs">' + escapeHTML(m) + '</span>' : '') +
+            (!inDB ? '<button class="text-[10px] px-1.5 py-0.5 rounded bg-violet-200 text-violet-600 hover:bg-violet-300 transition-colors flex-shrink-0" onclick="event.stopPropagation();importSynonymWord(\'' + escapeAttr(w) + '\',\'' + escapeAttr(p) + '\',\'' + escapeAttr(m) + '\')" title="AI 导入此词">➕</button>' : '') +
             '<span class="flex-1 min-w-[24px]"></span>' +
             '<button id="fav-syn-' + si + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
             '<span id="spk-syn-' + si + '" class="flex-shrink-0"></span></div>';
@@ -2017,6 +2086,7 @@
               ? '<a class="font-medium text-indigo-600 hover:text-indigo-800 underline cursor-pointer" onclick="navigateToWord(\'' + escapeAttr(w) + '\')" title="点击跳转到 ' + escapeHTML(w) + ' 详情">' + escapeHTML(w) + '</a>'
               : '<span class="font-medium text-red-800">' + escapeHTML(w) + '</span>') +
             (m ? '<span class="text-red-500 text-xs">' + escapeHTML(m) + '</span>' : '') +
+            (!inDB ? '<button class="text-[10px] px-1.5 py-0.5 rounded bg-red-200 text-red-600 hover:bg-red-300 transition-colors flex-shrink-0" onclick="event.stopPropagation();importSynonymWord(\'' + escapeAttr(w) + '\',\'' + escapeAttr(p) + '\',\'' + escapeAttr(m) + '\')" title="AI 导入此词">➕</button>' : '') +
             '<span class="flex-1 min-w-[24px]"></span>' +
             '<button id="fav-ant-' + ai + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
             '<span id="spk-ant-' + ai + '" class="flex-shrink-0"></span></div>';
