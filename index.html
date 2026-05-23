@@ -51,7 +51,7 @@
     .az-btn:hover { background: #eef2ff; color: #6366f1; }
     .az-btn.active-letter { background: #6366f1; color: #fff; }
     .az-btn:disabled { opacity: 0.3; cursor: default; background: #f3f4f6; color: #d1d5db; }
-    .az-section-header { font-size: 11px; font-weight: 700; color: #6366f1; padding: 4px 10px; margin: 4px 2px 2px; background: #eef2ff; border-radius: 4px; letter-spacing: 0.5px; }
+    .az-section-header { font-size: 11px; font-weight: 700; color: #4f46e5; padding: 5px 10px; margin: 6px 2px 2px; background: #e0e7ff; border-radius: 4px; letter-spacing: 0.5px; position: sticky; top: 0; z-index: 5; }
     /* Tips responsive grid */
     @media (min-width: 600px) {
       .tips-card-grid { grid-template-columns: repeat(2, 1fr) !important; }
@@ -300,7 +300,7 @@
     </div>
 
     <!-- A-Z quick nav -->
-    <div id="azNav" class="px-2 pb-2 flex gap-[2px] overflow-x-auto" style="scrollbar-width:none;-ms-overflow-style:none;flex-wrap:nowrap"></div>
+    <div id="azNav" class="px-2 pb-2" style="display:flex;gap:2px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;-ms-overflow-style:none"></div>
 
     <!-- Root list -->
     <nav id="rootList" class="px-2 pb-1" style="min-height:0">
