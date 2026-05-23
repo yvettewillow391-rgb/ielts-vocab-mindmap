@@ -5562,11 +5562,9 @@
     function openAIPanel() {
       var overlay = $('aiOverlay');
       if (!overlay) return;
-      // Load existing keys
+      // Load existing Gemini key only
       var gk = localStorage.getItem(GEMINI_KEY_KEY);
       if (gk) { $('aiGeminiKeyInput').value = gk; $('aiKeyStatus').classList.remove('hidden'); }
-      var ak = localStorage.getItem(ANTHROPIC_KEY_KEY);
-      if (ak) $('aiAnthropicKeyInput').value = ak;
       $('aiKeyError').classList.add('hidden');
       overlay.classList.remove('hidden');
     }
