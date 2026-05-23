@@ -32,7 +32,10 @@
     #sidebar.collapsed #collapseBtn { transform: rotate(180deg); }
     /* Icon bar (shown when collapsed) */
     #iconBar { display: none; }
-    #sidebar.collapsed #iconBar { display: flex !important; flex-direction: column; align-items: center; gap: 12px; padding: 10px 4px; }
+    #sidebar.collapsed #iconBar { display: flex !important; flex-direction: column; align-items: center; gap: 12px; padding: 10px 4px; overflow-y: auto; height: 100%; }
+    #sidebar.collapsed #iconBar::-webkit-scrollbar { width: 6px; }
+    #sidebar.collapsed #iconBar::-webkit-scrollbar-track { background: transparent; }
+    #sidebar.collapsed #iconBar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
     #sidebar.collapsed #sidebarInner { display: none; }
     #sidebar.collapsed #sidebarScrollBtns { display: none; }
     .icon-bar-btn { width: 40px; height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; border-radius: 10px; cursor: pointer; transition: all 0.15s; background: transparent; flex-shrink: 0; }
@@ -1714,33 +1717,116 @@
             renderRootList(searchInput.value.trim());
             renderMindMap(allData[ri], wi);
             showDetailPanel(allData[ri].words[wi]);
-            expandSidebar();
             return;
           }
         }
       }
     };
 
+    // Detect root for a word, excluding a specific root index
+    function detectRootExcluding(word, excludeIdx) {
+      var best = null;
+      var bestLen = 0;
+      allData.forEach(function(r, idx) {
+        if (idx === excludeIdx) return;
+        var rt = r.root.toLowerCase();
+        if (word.toLowerCase().includes(rt) && rt.length > bestLen) {
+          best = idx;
+          bestLen = rt.length;
+        }
+      });
+      return best;
+    }
+
     // Import a synonym/antonym as a full word entry with AI enrichment
     window.importSynonymWord = async function(wordText, pos, meaning) {
       var hasAIKey = !!(localStorage.getItem(GEMINI_KEY_KEY) || localStorage.getItem(ANTHROPIC_KEY_KEY));
       if (!hasAIKey) { alert('请先在云同步面板配置 AI API Key'); return; }
 
-      // Try to detect root
-      var detectedIdx = detectRoot(wordText);
+      // Try to detect root, excluding the current word's root
+      var detectedIdx = detectRootExcluding(wordText, currentRootIndex);
+      if (detectedIdx === null) detectedIdx = detectRoot(wordText); // fallback to any match
       var rootIdx = (detectedIdx !== null && detectedIdx >= 0) ? detectedIdx : null;
 
-      if (rootIdx === null) {
-        alert('未识别到词根，请在智能导入中手动导入 "' + wordText + '"');
+      // If no root auto-detected or only match is current root, show inline picker
+      if (rootIdx === null || rootIdx === currentRootIndex) {
+        showInlineRootPicker(wordText, pos, meaning, event ? event.target : null);
         return;
       }
 
+      await doImportSynonym(wordText, pos, meaning, rootIdx, event ? event.target : null);
+    };
+
+    // Show a quick inline root picker for single-word import
+    function showInlineRootPicker(wordText, pos, meaning, btnEl) {
+      // Remove any existing picker
+      var existing = document.getElementById('inlineRootPicker');
+      if (existing) existing.remove();
+
+      var pickerHtml = '<div id="inlineRootPicker" class="inline-flex items-center gap-1.5 bg-white border border-amber-300 rounded-lg p-2 shadow-lg" style="margin-left:4px">';
+      pickerHtml += '<select id="inlineRootSelect" class="text-[10px] border border-gray-200 rounded px-1.5 py-0.5 outline-none">';
+      pickerHtml += '<option value="">选词根...</option>';
+      allData.forEach(function(r, ri) {
+        if (ri !== currentRootIndex) {
+          pickerHtml += '<option value="' + ri + '">' + escapeHTML(r.root) + (r.root_meaning ? ' (' + escapeHTML(r.root_meaning) + ')' : '') + '</option>';
+        }
+      });
+      pickerHtml += '<option value="-1">➕ 新建词根...</option>';
+      pickerHtml += '</select>';
+      pickerHtml += '<input id="inlineNewRootName" type="text" placeholder="词根名" class="text-[10px] border border-amber-300 rounded px-1.5 py-0.5 w-16 outline-none hidden">';
+      pickerHtml += '<input id="inlineNewRootMeaning" type="text" placeholder="含义" class="text-[10px] border border-amber-300 rounded px-1.5 py-0.5 w-16 outline-none hidden">';
+      pickerHtml += '<button id="inlineRootGoBtn" class="text-[10px] px-2 py-0.5 rounded bg-amber-500 text-white hover:bg-amber-600">导入</button>';
+      pickerHtml += '<button id="inlineRootCancelBtn" class="text-[10px] px-1.5 py-0.5 rounded text-gray-400 hover:text-gray-600">×</button>';
+      pickerHtml += '</div>';
+
+      if (btnEl) {
+        btnEl.insertAdjacentHTML('afterend', pickerHtml);
+      } else {
+        // Fallback: alert
+        alert('请通过智能导入手动导入 "' + wordText + '"');
+        return;
+      }
+
+      var selectEl = document.getElementById('inlineRootSelect');
+      var newNameEl = document.getElementById('inlineNewRootName');
+      var newMeaningEl = document.getElementById('inlineNewRootMeaning');
+      var goBtn = document.getElementById('inlineRootGoBtn');
+      var cancelBtn = document.getElementById('inlineRootCancelBtn');
+      var pickerEl = document.getElementById('inlineRootPicker');
+
+      selectEl.addEventListener('change', function() {
+        var showNew = selectEl.value === '-1';
+        newNameEl.classList.toggle('hidden', !showNew);
+        newMeaningEl.classList.toggle('hidden', !showNew);
+      });
+
+      cancelBtn.addEventListener('click', function() { pickerEl.remove(); });
+
+      goBtn.addEventListener('click', async function() {
+        var selVal = selectEl.value;
+        var finalRootIdx;
+        if (selVal === '-1') {
+          var name = newNameEl.value.trim();
+          if (!name) { alert('请输入词根名称'); return; }
+          var meaning = newMeaningEl.value.trim();
+          allData.push({ root: name, root_meaning: meaning, words: [] });
+          finalRootIdx = allData.length - 1;
+          try { localStorage.setItem('ielts_data', JSON.stringify(allData)); } catch(e) {}
+          renderRootList(searchInput.value.trim());
+        } else if (selVal === '') {
+          return; // no selection yet
+        } else {
+          finalRootIdx = parseInt(selVal);
+        }
+        pickerEl.remove();
+        await doImportSynonym(wordText, pos, meaning, finalRootIdx, btnEl);
+      });
+    }
+
+    async function doImportSynonym(wordText, pos, meaning, rootIdx, btnEl) {
       var root = allData[rootIdx];
-      // Check if word already exists in this root
       var exists = root.words.some(function(w) { return w.word.toLowerCase() === wordText.toLowerCase(); });
       if (exists) {
-        alert('"' + wordText + '" 已存在于词根 ' + root.root);
-        // Navigate to it anyway
         for (var wi = 0; wi < root.words.length; wi++) {
           if (root.words[wi].word.toLowerCase() === wordText.toLowerCase()) {
             currentRootIndex = rootIdx; currentWordIndex = wi;
@@ -1752,12 +1838,10 @@
         return;
       }
 
-      // Show brief progress
       var statusEl = document.createElement('span');
       statusEl.className = 'text-[10px] text-purple-500 ml-1';
       statusEl.textContent = '⏳ AI 生成中...';
-      // Find the button that was clicked and insert status after it
-      if (event && event.target) { event.target.insertAdjacentElement('afterend', statusEl); }
+      if (btnEl) { btnEl.insertAdjacentElement('afterend', statusEl); }
 
       try {
         var enriched = await enrichWordWithAI(wordText, meaning, pos);
@@ -1777,7 +1861,6 @@
         var newWi = root.words.length - 1;
         try { localStorage.setItem('ielts_data', JSON.stringify(allData)); } catch(e) {}
         if (statusEl) { statusEl.textContent = '✅ 已导入'; statusEl.className = 'text-[10px] text-green-500 ml-1'; }
-        // Navigate to the new word
         currentRootIndex = rootIdx; currentWordIndex = newWi;
         renderRootList(searchInput.value.trim());
         showDetailPanel(wObj);
@@ -1787,7 +1870,7 @@
         if (statusEl) { statusEl.textContent = '❌ 失败'; statusEl.className = 'text-[10px] text-red-500 ml-1'; }
         setTimeout(function() { if (statusEl) statusEl.remove(); }, 3000);
       }
-    };
+    }
 
     // Check if a word exists in the database
     function wordInDB(wordText) {
