@@ -1743,27 +1743,26 @@
       var hasAIKey = !!(localStorage.getItem(GEMINI_KEY_KEY) || localStorage.getItem(ANTHROPIC_KEY_KEY));
       if (!hasAIKey) { alert('请先在云同步面板配置 AI API Key'); return; }
 
-      // Try to detect root, excluding the current word's root
+      // AI-detect root (excluding current root), but always show picker for confirmation
       var detectedIdx = detectRootExcluding(wordText, currentRootIndex);
-      if (detectedIdx === null) detectedIdx = detectRoot(wordText); // fallback to any match
-      var rootIdx = (detectedIdx !== null && detectedIdx >= 0) ? detectedIdx : null;
+      if (detectedIdx === null) detectedIdx = detectRoot(wordText);
+      if (detectedIdx !== null && detectedIdx === currentRootIndex) detectedIdx = null;
+      var suggestedIdx = (detectedIdx !== null && detectedIdx >= 0) ? detectedIdx : -1; // -1 = no suggestion
 
-      // If no root auto-detected or only match is current root, show inline picker
-      if (rootIdx === null || rootIdx === currentRootIndex) {
-        showInlineRootPicker(wordText, pos, meaning, event ? event.target : null);
-        return;
-      }
-
-      await doImportSynonym(wordText, pos, meaning, rootIdx, event ? event.target : null);
+      showInlineRootPicker(wordText, pos, meaning, event ? event.target : null, suggestedIdx);
     };
 
     // Show a quick inline root picker for single-word import
-    function showInlineRootPicker(wordText, pos, meaning, btnEl) {
+    function showInlineRootPicker(wordText, pos, meaning, btnEl, suggestedIdx) {
       // Remove any existing picker
       var existing = document.getElementById('inlineRootPicker');
       if (existing) existing.remove();
 
-      var pickerHtml = '<div id="inlineRootPicker" class="inline-flex items-center gap-1.5 bg-white border border-amber-300 rounded-lg p-2 shadow-lg" style="margin-left:4px">';
+      var hasSuggestion = suggestedIdx >= 0;
+      var pickerHtml = '<div id="inlineRootPicker" class="inline-flex items-center gap-1.5 bg-white border border-amber-300 rounded-lg p-2 shadow-lg flex-wrap" style="margin-left:4px">';
+      if (hasSuggestion) {
+        pickerHtml += '<span class="text-[9px] text-purple-500 font-medium">🤖 AI推荐</span>';
+      }
       pickerHtml += '<select id="inlineRootSelect" class="text-[10px] border border-gray-200 rounded px-1.5 py-0.5 outline-none">';
       pickerHtml += '<option value="">选词根...</option>';
       allData.forEach(function(r, ri) {
@@ -1793,6 +1792,9 @@
       var goBtn = document.getElementById('inlineRootGoBtn');
       var cancelBtn = document.getElementById('inlineRootCancelBtn');
       var pickerEl = document.getElementById('inlineRootPicker');
+
+      // Pre-select AI-suggested root
+      if (suggestedIdx >= 0) { selectEl.value = suggestedIdx; }
 
       selectEl.addEventListener('change', function() {
         var showNew = selectEl.value === '-1';
