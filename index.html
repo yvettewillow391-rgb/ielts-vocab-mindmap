@@ -1882,6 +1882,61 @@
       return false;
     }
 
+    // Check if a word exists in the database and in what form
+    // Returns: { exists: false } or { exists: true, type: 'word'|'inflection'|'synonym'|'antonym', ... }
+    function checkWordStatus(wordText) {
+      var wl = wordText.toLowerCase();
+      // Check as main word
+      for (var ri = 0; ri < allData.length; ri++) {
+        for (var wi = 0; wi < allData[ri].words.length; wi++) {
+          var w = allData[ri].words[wi];
+          if (w.word.toLowerCase() === wl) {
+            return { exists: true, type: 'word', rootName: allData[ri].root, rootIdx: ri, wordIdx: wi };
+          }
+          // Check inflections
+          if (w.inflections) {
+            for (var ii = 0; ii < w.inflections.length; ii++) {
+              var inf = typeof w.inflections[ii] === 'object' ? w.inflections[ii].word : w.inflections[ii];
+              if (inf && inf.toLowerCase() === wl) {
+                return { exists: true, type: 'inflection', parentWord: w.word, rootName: allData[ri].root };
+              }
+            }
+          }
+          // Check synonyms
+          if (w.synonyms) {
+            for (var si = 0; si < w.synonyms.length; si++) {
+              var syn = typeof w.synonyms[si] === 'object' ? w.synonyms[si].word : w.synonyms[si];
+              if (syn && syn.toLowerCase() === wl) {
+                return { exists: true, type: 'synonym', parentWord: w.word, rootName: allData[ri].root };
+              }
+            }
+          }
+          // Check antonyms
+          if (w.antonyms) {
+            for (var ai = 0; ai < w.antonyms.length; ai++) {
+              var ant = typeof w.antonyms[ai] === 'object' ? w.antonyms[ai].word : w.antonyms[ai];
+              if (ant && ant.toLowerCase() === wl) {
+                return { exists: true, type: 'antonym', parentWord: w.word, rootName: allData[ri].root };
+              }
+            }
+          }
+        }
+      }
+      return { exists: false };
+    }
+
+    // Generate a compact status badge for a word
+    function statusBadge(status) {
+      if (!status.exists) return '<span class="text-[9px] text-green-500 font-medium">✅ 新词</span>';
+      switch (status.type) {
+        case 'word': return '<span class="text-[9px] text-indigo-500 font-medium" title="已在词根 ' + escapeHTML(status.rootName) + ' 中">📌 ' + escapeHTML(status.rootName) + '</span>';
+        case 'inflection': return '<span class="text-[9px] text-blue-400 font-medium" title="' + escapeHTML(status.parentWord) + ' 的变形态">📎 ' + escapeHTML(status.parentWord) + '</span>';
+        case 'synonym': return '<span class="text-[9px] text-violet-400 font-medium" title="' + escapeHTML(status.parentWord) + ' 的近义词">≈ ' + escapeHTML(status.parentWord) + '</span>';
+        case 'antonym': return '<span class="text-[9px] text-red-400 font-medium" title="' + escapeHTML(status.parentWord) + ' 的反义词">≠ ' + escapeHTML(status.parentWord) + '</span>';
+      }
+      return '';
+    }
+
     function posBadge(pos) {
       if (!pos) return '';
       const colorMap = {
@@ -4119,8 +4174,9 @@
           html += '<div class="bg-indigo-50 rounded-lg p-2 border border-indigo-100">';
           html += '<div class="text-[10px] font-semibold text-indigo-600 mb-1">📌 ' + escapeHTML(root.root) + (root.root_meaning ? ' (' + escapeHTML(root.root_meaning) + ')' : '') + ' <span class="text-gray-400 font-normal">— ' + entries.length + '个词</span></div>';
           entries.forEach(function(entry) {
+            var status = checkWordStatus(entry.word);
             html += '<div class="ml-2 py-1 border-b border-indigo-100 last:border-0">';
-            html += '<div class="flex items-center gap-2 text-[10px]"><span class="font-bold text-gray-800">' + escapeHTML(entry.word) + '</span><span class="text-gray-500 text-[10px]">' + escapeHTML(entry.meaning) + '</span></div>';
+            html += '<div class="flex items-center gap-2 text-[10px]"><span class="font-bold text-gray-800">' + escapeHTML(entry.word) + '</span><span class="text-gray-500 text-[10px]">' + escapeHTML(entry.meaning) + '</span>' + statusBadge(status) + '</div>';
             if (entry.etymology) html += '<div class="text-[10px] text-gray-400 ml-1 mt-0.5">🔍 ' + escapeHTML(entry.etymology) + '</div>';
             if (entry.inflections.length > 0) html += '<div class="text-[10px] text-gray-400 ml-1">📎 ' + entry.inflections.length + ' 个变形态</div>';
             if (entry.synonyms.length > 0) html += '<div class="text-[10px] text-gray-400 ml-1">≈ ' + entry.synonyms.length + ' 个近义词</div>';
@@ -4134,7 +4190,8 @@
           html += '<div class="bg-amber-50 rounded-lg p-2 border border-amber-200" id="unknownWordsSection">';
           html += '<div class="text-[10px] font-semibold text-amber-600 mb-1">⚠ 未识别词根 (' + unknownEntries.length + '个) — 将跳过</div>';
           unknownEntries.forEach(function(entry) {
-            html += '<div class="text-[10px] text-gray-400 ml-2">' + escapeHTML(entry.word) + ' — ' + escapeHTML(entry.meaning.substring(0, 30)) + '</div>';
+            var status = checkWordStatus(entry.word);
+            html += '<div class="text-[10px] text-gray-400 ml-2">' + escapeHTML(entry.word) + ' — ' + escapeHTML(entry.meaning.substring(0, 30)) + ' ' + statusBadge(status) + '</div>';
           });
           html += '<div class="mt-2 pt-2 border-t border-amber-200 flex items-center gap-1.5 flex-wrap">';
           html += '<span class="text-[10px] text-amber-600 flex-shrink-0">手动创建词根：</span>';
@@ -4277,10 +4334,12 @@
           html += '<div class="bg-indigo-50 rounded-lg p-2 border border-indigo-100">';
           html += '<div class="text-[10px] font-semibold text-indigo-600 mb-1">📌 ' + escapeHTML(root.root) + (root.root_meaning ? ' (' + escapeHTML(root.root_meaning) + ')' : '') + ' <span class="text-gray-400 font-normal">— ' + words.length + '个词</span></div>';
           words.forEach(function(p) {
+            var status = checkWordStatus(p.word);
             html += '<div class="flex items-center gap-2 text-[10px] ml-2 py-0.5">';
             html += '<span class="font-bold text-gray-800 min-w-[80px]">' + escapeHTML(p.word) + '</span>';
             if (p.pos) html += '<span class="text-indigo-400 min-w-[40px]">' + escapeHTML(p.pos) + '</span>';
             html += '<span class="text-gray-500 flex-1 truncate">' + escapeHTML(p.meaning) + '</span>';
+            html += statusBadge(status);
             html += '</div>';
           });
           html += '</div>';
@@ -4295,10 +4354,12 @@
           }
           html += '</div>';
           unknownWords.forEach(function(p, i) {
+            var status = checkWordStatus(p.word);
             html += '<div class="flex items-center gap-2 text-[10px] ml-2 py-0.5 opacity-60" id="unknownWordRow' + i + '">';
             html += '<span class="font-bold text-gray-800 min-w-[80px]">' + escapeHTML(p.word) + '</span>';
             if (p.pos) html += '<span class="text-indigo-400 min-w-[40px]">' + escapeHTML(p.pos) + '</span>';
             html += '<span class="text-gray-500 flex-1 truncate">' + escapeHTML(p.meaning) + '</span>';
+            html += statusBadge(status);
             html += '</div>';
           });
           html += '<div class="mt-2 pt-2 border-t border-amber-200 flex items-center gap-1.5 flex-wrap">';
