@@ -3003,12 +3003,13 @@
       // Word + Meaning + Phonetic
       html += '<div class="space-y-3 mb-4 p-3 bg-indigo-50 rounded-lg">';
       html += '<div><label class="text-[10px] text-gray-400 uppercase tracking-wider">所属词根</label>';
-      html += '<div class="root-search-wrap relative">';
-      html += '<input id="ed-root-search" type="text" class="edit-input font-medium text-indigo-700 bg-white pr-7" placeholder="搜索词根..." autocomplete="off" value="' + escapeAttr(allData[currentRootIndex] ? allData[currentRootIndex].root + (allData[currentRootIndex].root_meaning ? ' (' + allData[currentRootIndex].root_meaning + ')' : '') : '') + '">';
-      html += '<span id="ed-root-clear" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 cursor-pointer text-xs" style="display:none">✕</span>';
-      html += '<input type="hidden" id="ed-root" value="' + currentRootIndex + '">';
-      html += '<div id="ed-root-dropdown" class="absolute left-0 right-0 top-full mt-0.5 bg-white border border-gray-200 rounded-lg shadow-lg z-30 max-h-48 overflow-y-auto hidden"></div>';
-      html += '</div>';
+      html += '<input id="ed-root-filter" type="text" class="edit-input text-[11px]" placeholder="输入筛选词根..." autocomplete="off">';
+      html += '<select id="ed-root" class="edit-input text-[11px] mt-1" size="6" style="height:auto;overflow-y:auto">';
+      allData.forEach(function(r, ri) {
+        html += '<option value="' + ri + '"' + (ri === currentRootIndex ? ' selected' : '') + '>' + escapeHTML(r.root) + (r.root_meaning ? ' (' + escapeHTML(r.root_meaning) + ')' : '') + '</option>';
+      });
+      html += '<option value="-1">➕ 新建词根...</option>';
+      html += '</select>';
       html += '<input id="ed-new-root-name" type="text" placeholder="新词根名" class="edit-input mt-1 hidden" style="font-size:11px">';
       html += '<input id="ed-new-root-meaning" type="text" placeholder="新词根含义" class="edit-input mt-1 hidden" style="font-size:11px">';
       html += '</div>';
@@ -3088,127 +3089,39 @@
 
       detailBody.innerHTML = html;
 
-      // Setup searchable root picker
+      // Setup root filter + select
       setTimeout(function() {
-        var searchEl = document.getElementById('ed-root-search');
-        var hiddenEl = document.getElementById('ed-root');
-        var clearEl = document.getElementById('ed-root-clear');
+        var filterEl = document.getElementById('ed-root-filter');
+        var selectEl = document.getElementById('ed-root');
         var newNameEl = document.getElementById('ed-new-root-name');
         var newMeaningEl = document.getElementById('ed-new-root-meaning');
-        if (!searchEl || !hiddenEl) return;
+        if (!filterEl || !selectEl) return;
 
-        // Create dropdown on body to avoid overflow clipping
-        var dropdownEl = document.createElement('div');
-        dropdownEl.id = 'ed-root-dropdown';
-        dropdownEl.className = 'fixed bg-white border border-gray-200 rounded-lg shadow-lg z-[9999] max-h-48 overflow-y-auto hidden';
-        dropdownEl.style.minWidth = '200px';
-        document.body.appendChild(dropdownEl);
-
-        function positionDropdown() {
-          var rect = searchEl.getBoundingClientRect();
-          dropdownEl.style.top = (rect.bottom + 2) + 'px';
-          dropdownEl.style.left = rect.left + 'px';
-          dropdownEl.style.width = rect.width + 'px';
-        }
-
-        function renderDropdown(filter) {
-          var html = '';
-          var ft = (filter || '').toLowerCase();
-          allData.forEach(function(r, ri) {
-            var label = r.root + (r.root_meaning ? ' (' + r.root_meaning + ')' : '');
-            if (ft && label.toLowerCase().indexOf(ft) === -1) return;
-            var sel = parseInt(hiddenEl.value) === ri ? ' bg-indigo-50 font-semibold' : '';
-            html += '<div class="root-drop-item px-3 py-1.5 text-xs cursor-pointer hover:bg-gray-100' + sel + '" data-idx="' + ri + '">' + escapeHTML(label) + '</div>';
-          });
-          html += '<div class="root-drop-item px-3 py-1.5 text-xs cursor-pointer hover:bg-amber-50 text-amber-600 border-t border-gray-100" data-idx="-1">➕ 新建词根...</div>';
-          dropdownEl.innerHTML = html;
-          dropdownEl.classList.remove('hidden');
-          positionDropdown();
-
-          dropdownEl.querySelectorAll('.root-drop-item').forEach(function(item) {
-            item.addEventListener('click', function() {
-              var idx = parseInt(this.dataset.idx);
-              hiddenEl.value = idx;
-              if (idx === -1) {
-                searchEl.value = '新建词根';
-                newNameEl.classList.remove('hidden');
-                newMeaningEl.classList.remove('hidden');
-                newNameEl.focus();
-              } else {
-                searchEl.value = this.textContent.trim();
-                newNameEl.classList.add('hidden');
-                newMeaningEl.classList.add('hidden');
+        filterEl.addEventListener('input', function() {
+          var ft = this.value.toLowerCase();
+          var opts = selectEl.options;
+          for (var oi = 0; oi < opts.length; oi++) {
+            if (opts[oi].value === '' || opts[oi].value === '-1') continue;
+            var visible = ft === '' || opts[oi].textContent.toLowerCase().indexOf(ft) >= 0;
+            opts[oi].style.display = visible ? '' : 'none';
+          }
+          // Auto-select first visible option when filtering
+          if (ft) {
+            for (var oi2 = 0; oi2 < opts.length; oi2++) {
+              if (opts[oi2].style.display !== 'none' && opts[oi2].value !== '' && opts[oi2].value !== '-1') {
+                selectEl.value = opts[oi2].value;
+                break;
               }
-              dropdownEl.classList.add('hidden');
-              clearEl.style.display = 'block';
-            });
-          });
-        }
-
-        searchEl.addEventListener('focus', function() {
-          renderDropdown(searchEl.value);
-          clearEl.style.display = searchEl.value ? 'block' : 'none';
-        });
-
-        searchEl.addEventListener('input', function() {
-          renderDropdown(this.value);
-          clearEl.style.display = this.value ? 'block' : 'none';
-          hiddenEl.value = '';
-          newNameEl.classList.add('hidden');
-          newMeaningEl.classList.add('hidden');
-        });
-
-        searchEl.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape') { dropdownEl.classList.add('hidden'); return; }
-          if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            var first = dropdownEl.querySelector('.root-drop-item');
-            if (first) { first.focus(); first.classList.add('bg-gray-100'); }
+            }
           }
         });
 
-        clearEl.addEventListener('click', function() {
-          searchEl.value = '';
-          hiddenEl.value = '';
-          clearEl.style.display = 'none';
-          newNameEl.classList.add('hidden');
-          newMeaningEl.classList.add('hidden');
-          searchEl.focus();
+        selectEl.addEventListener('change', function() {
+          var showNew = this.value === '-1';
+          newNameEl.classList.toggle('hidden', !showNew);
+          newMeaningEl.classList.toggle('hidden', !showNew);
+          if (showNew) newNameEl.focus();
         });
-
-        dropdownEl.addEventListener('keydown', function(e) {
-          if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-            e.preventDefault();
-            var items = dropdownEl.querySelectorAll('.root-drop-item');
-            var focused = dropdownEl.querySelector('.root-drop-item:focus, .root-drop-item.bg-gray-100');
-            var idx = Array.from(items).indexOf(focused);
-            if (focused) focused.classList.remove('bg-gray-100');
-            if (e.key === 'ArrowDown') idx = (idx + 1) % items.length;
-            else idx = (idx - 1 + items.length) % items.length;
-            items[idx].focus();
-            items[idx].classList.add('bg-gray-100');
-          } else if (e.key === 'Enter') {
-            e.preventDefault();
-            var f = dropdownEl.querySelector('.root-drop-item:focus, .root-drop-item.bg-gray-100');
-            if (f) f.click();
-          } else if (e.key === 'Escape') {
-            dropdownEl.classList.add('hidden');
-            searchEl.focus();
-          }
-        });
-
-        document.addEventListener('click', function closeDropdown(e) {
-          var wrap = document.querySelector('.root-search-wrap');
-          if (wrap && !wrap.contains(e.target) && !dropdownEl.contains(e.target)) {
-            dropdownEl.classList.add('hidden');
-          }
-        });
-
-        // Reposition on scroll/resize
-        window.addEventListener('scroll', function() { if (!dropdownEl.classList.contains('hidden')) positionDropdown(); }, true);
-        window.addEventListener('resize', function() { if (!dropdownEl.classList.contains('hidden')) positionDropdown(); });
-
-        clearEl.style.display = searchEl.value ? 'block' : 'none';
       }, 50);
     }
 
