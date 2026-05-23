@@ -46,7 +46,8 @@
     #scrollToTopBtn:hover, #scrollToBottomBtn:hover { background: #f3f4f6; color: #6366f1; border-color: #c7d2fe; }
     .icon-bar-btn.primary:hover { background: #e0e7ff; }
     /* A-Z quick nav */
-    .az-btn { width: 22px; height: 22px; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: 600; color: #9ca3af; background: #f3f4f6; transition: all 0.15s; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    #azNav::-webkit-scrollbar { display: none; }
+    .az-btn { min-width: 22px; width: 22px; height: 22px; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: 600; color: #9ca3af; background: #f3f4f6; transition: all 0.15s; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .az-btn:hover { background: #eef2ff; color: #6366f1; }
     .az-btn.active-letter { background: #6366f1; color: #fff; }
     .az-btn:disabled { opacity: 0.3; cursor: default; background: #f3f4f6; color: #d1d5db; }
@@ -299,7 +300,7 @@
     </div>
 
     <!-- A-Z quick nav -->
-    <div id="azNav" class="px-2 pb-2 flex flex-wrap gap-[2px] justify-center"></div>
+    <div id="azNav" class="px-2 pb-2 flex gap-[2px] overflow-x-auto" style="scrollbar-width:none;-ms-overflow-style:none;flex-wrap:nowrap"></div>
 
     <!-- Root list -->
     <nav id="rootList" class="px-2 pb-1" style="min-height:0">
@@ -2643,12 +2644,16 @@
       if (header) {
         header.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-      // Highlight active letter in nav
       var azEl = document.getElementById('azNav');
       if (azEl) {
         azEl.querySelectorAll('.az-btn').forEach(function(b) {
           b.classList.toggle('active-letter', b.dataset.letter === letter);
         });
+        // Scroll nav to keep active button visible
+        var activeBtn = azEl.querySelector('.az-btn[data-letter="' + letter + '"]');
+        if (activeBtn) {
+          activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
         setTimeout(function() {
           azEl.querySelectorAll('.az-btn').forEach(function(b) { b.classList.remove('active-letter'); });
         }, 2000);
