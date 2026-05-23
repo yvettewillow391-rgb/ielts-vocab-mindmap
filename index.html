@@ -45,6 +45,12 @@
     .icon-bar-btn.primary { background: #eef2ff; }
     #scrollToTopBtn:hover, #scrollToBottomBtn:hover { background: #f3f4f6; color: #6366f1; border-color: #c7d2fe; }
     .icon-bar-btn.primary:hover { background: #e0e7ff; }
+    /* A-Z quick nav */
+    .az-btn { width: 22px; height: 22px; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: 600; color: #9ca3af; background: #f3f4f6; transition: all 0.15s; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .az-btn:hover { background: #eef2ff; color: #6366f1; }
+    .az-btn.active-letter { background: #6366f1; color: #fff; }
+    .az-btn:disabled { opacity: 0.3; cursor: default; background: #f3f4f6; color: #d1d5db; }
+    .az-section-header { font-size: 11px; font-weight: 700; color: #6366f1; padding: 4px 10px; margin: 4px 2px 2px; background: #eef2ff; border-radius: 4px; letter-spacing: 0.5px; }
     /* Tips responsive grid */
     @media (min-width: 600px) {
       .tips-card-grid { grid-template-columns: repeat(2, 1fr) !important; }
@@ -291,6 +297,9 @@
         <span>我的收藏 (<span id="favCount">0</span>)</span>
       </button>
     </div>
+
+    <!-- A-Z quick nav -->
+    <div id="azNav" class="px-2 pb-2 flex flex-wrap gap-[2px] justify-center"></div>
 
     <!-- Root list -->
     <nav id="rootList" class="px-2 pb-1" style="min-height:0">
@@ -2539,49 +2548,112 @@
        ROOT LIST
        ================================================================ */
     function renderRootList(filterText) {
-      let roots = allData;
+      var roots = allData;
+      var isFiltered = false;
       if (filterText) {
-        const q = filterText.toLowerCase();
-        roots = allData.filter(r =>
-          r.root.toLowerCase().includes(q) ||
-          (r.root_meaning || '').toLowerCase().includes(q)
-        );
+        var q = filterText.toLowerCase();
+        roots = allData.filter(function(r) {
+          return r.root.toLowerCase().indexOf(q) >= 0 || (r.root_meaning || '').toLowerCase().indexOf(q) >= 0;
+        });
+        isFiltered = true;
       }
 
       if (roots.length === 0) {
         rootListInner.innerHTML = '';
         rootListEmpty.classList.remove('hidden');
+        renderAZNav([]);
         return;
       }
       rootListEmpty.classList.add('hidden');
 
-      let html = '';
-      roots.forEach((r, i) => {
-        const realIndex = allData.indexOf(r);
-        const wordCount = (r.words || []).length;
-        const isActive = realIndex === currentRootIndex;
-        html +=
-          '<div class="root-item group relative px-3 py-2.5 mb-0.5 cursor-pointer rounded-r-lg border-l-[3px] ' +
-          (isActive ? 'active border-l-indigo-500' : 'border-l-transparent') +
-          '" data-root="' + realIndex + '">' +
-          '<div class="text-sm font-medium text-gray-800">' + escapeHTML(r.root) + '</div>' +
-          '<div class="flex items-center justify-between mt-0.5">' +
-          '<span class="text-xs text-gray-400">' + escapeHTML(r.root_meaning || '') + '</span>' +
-          '<span class="text-[10px] text-gray-300 bg-gray-100 px-1.5 py-0.5 rounded-full">' + wordCount + '词</span>' +
-          '</div>' +
-          '<button class="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-100 text-gray-400 hover:bg-green-100 hover:text-green-500 transition-colors flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100" onclick="event.stopPropagation();addWordToRootAction(' + realIndex + ')" title="新增单词">+</button>' +
-          '</div>';
+      // Group roots by first letter
+      var groups = {};
+      var lettersUsed = {};
+      roots.forEach(function(r, i) {
+        var letter = r.root.charAt(0).toUpperCase();
+        if (!groups[letter]) groups[letter] = [];
+        groups[letter].push({ root: r, realIndex: allData.indexOf(r) });
+        lettersUsed[letter] = true;
+      });
+
+      // Render A-Z nav
+      var allLettersUsed = {};
+      allData.forEach(function(r) {
+        allLettersUsed[r.root.charAt(0).toUpperCase()] = true;
+      });
+      renderAZNav(Object.keys(allLettersUsed).sort(), isFiltered ? Object.keys(lettersUsed) : null);
+
+      // Render grouped root list
+      var html = '';
+      var sortedLetters = Object.keys(groups).sort();
+      sortedLetters.forEach(function(letter) {
+        html += '<div class="az-section-header" data-letter="' + letter + '">' + letter + '</div>';
+        groups[letter].forEach(function(item) {
+          var r = item.root;
+          var realIndex = item.realIndex;
+          var wordCount = (r.words || []).length;
+          var isActive = realIndex === currentRootIndex;
+          html +=
+            '<div class="root-item group relative px-3 py-2.5 mb-0.5 cursor-pointer rounded-r-lg border-l-[3px] ' +
+            (isActive ? 'active border-l-indigo-500' : 'border-l-transparent') +
+            '" data-root="' + realIndex + '">' +
+            '<div class="text-sm font-medium text-gray-800">' + escapeHTML(r.root) + '</div>' +
+            '<div class="flex items-center justify-between mt-0.5">' +
+            '<span class="text-xs text-gray-400">' + escapeHTML(r.root_meaning || '') + '</span>' +
+            '<span class="text-[10px] text-gray-300 bg-gray-100 px-1.5 py-0.5 rounded-full">' + wordCount + '词</span>' +
+            '</div>' +
+            '<button class="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-100 text-gray-400 hover:bg-green-100 hover:text-green-500 transition-colors flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100" onclick="event.stopPropagation();addWordToRootAction(' + realIndex + ')" title="新增单词">+</button>' +
+            '</div>';
+        });
       });
       rootListInner.innerHTML = html;
 
       // Click handlers
-      rootListInner.querySelectorAll('.root-item').forEach(el => {
+      rootListInner.querySelectorAll('.root-item').forEach(function(el) {
         el.addEventListener('click', function() {
-          const idx = parseInt(this.dataset.root);
+          var idx = parseInt(this.dataset.root);
           selectRoot(idx);
         });
       });
     }
+
+    function renderAZNav(letters, activeLetters) {
+      var azEl = document.getElementById('azNav');
+      if (!azEl) return;
+      var all = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      var hasMap = {};
+      letters.forEach(function(l) { hasMap[l] = true; });
+      var activeMap = {};
+      if (activeLetters) { activeLetters.forEach(function(l) { activeMap[l] = true; }); }
+
+      var html = '';
+      for (var i = 0; i < 26; i++) {
+        var ch = all.charAt(i);
+        var hasRoots = hasMap[ch];
+        var isActive = activeLetters ? activeMap[ch] : hasRoots;
+        html += '<button class="az-btn' + (isActive ? '' : '') + '" data-letter="' + ch + '"' +
+          (hasRoots ? '' : ' disabled') +
+          ' onclick="scrollToAZLetter(\'' + ch + '\')" title="' + ch + '">' + ch + '</button>';
+      }
+      azEl.innerHTML = html;
+    }
+
+    window.scrollToAZLetter = function(letter) {
+      var header = rootListInner.querySelector('.az-section-header[data-letter="' + letter + '"]');
+      if (header) {
+        header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      // Highlight active letter in nav
+      var azEl = document.getElementById('azNav');
+      if (azEl) {
+        azEl.querySelectorAll('.az-btn').forEach(function(b) {
+          b.classList.toggle('active-letter', b.dataset.letter === letter);
+        });
+        setTimeout(function() {
+          azEl.querySelectorAll('.az-btn').forEach(function(b) { b.classList.remove('active-letter'); });
+        }, 2000);
+      }
+    };
 
     function selectRoot(rootIndex) {
       if (rootIndex < 0 || rootIndex >= allData.length) return;
