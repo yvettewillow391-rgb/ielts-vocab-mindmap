@@ -3299,12 +3299,12 @@
       }
     }
 
-    // Batch management modal — bulk delete words
+    // Batch management modal — bulk delete words + root editing
     function openManageModal() {
       var html = '<div id="manageOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">';
       html += '<div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col">';
       html += '<div class="p-4 border-b border-gray-200 flex items-center justify-between">';
-      html += '<h3 class="text-base font-bold text-gray-800">📋 单词管理</h3>';
+      html += '<h3 class="text-base font-bold text-gray-800">📋 单词管理 · 词根编辑</h3>';
       html += '<div class="flex gap-2"><button id="manageSelectAll" class="text-xs text-indigo-500 hover:text-indigo-700 font-medium">全选</button>';
       html += '<button id="manageDeselectAll" class="text-xs text-gray-400 hover:text-gray-600 font-medium">取消</button></div>';
       html += '</div>';
@@ -3312,13 +3312,22 @@
       var totalWords = 0;
       allData.forEach(function(root, ri) {
         if (!root.words || root.words.length === 0) return;
-        html += '<div class="border border-gray-200 rounded-xl overflow-hidden">';
-        html += '<div class="flex items-center gap-2 px-3 py-2 bg-gray-50 cursor-pointer" onclick="var el=this.nextElementSibling;el.classList.toggle(\'hidden\')">';
-        html += '<span class="text-[10px] text-gray-300">▼</span>';
-        html += '<span class="text-xs font-semibold text-gray-700">' + escapeHTML(root.root) + '</span>';
-        html += '<span class="text-[10px] text-gray-400">(' + root.words.length + '词)</span>';
-        html += '<label class="ml-auto text-[10px] text-indigo-400 cursor-pointer" onclick="event.stopPropagation()">';
+        html += '<div class="border border-gray-200 rounded-xl overflow-hidden" data-manage-root="' + ri + '">';
+        html += '<div class="flex items-center gap-1.5 px-3 py-2 bg-gray-50 cursor-pointer" onclick="var el=this.nextElementSibling;el.classList.toggle(\'hidden\')">';
+        html += '<span class="text-[10px] text-gray-300 flex-shrink-0">▼</span>';
+        html += '<span class="text-xs font-semibold text-gray-700 root-display-name" id="mrn' + ri + '">' + escapeHTML(root.root) + '</span>';
+        html += '<span class="text-[10px] text-gray-400 root-display-meaning" id="mrm' + ri + '">' + (root.root_meaning ? escapeHTML(root.root_meaning) : '') + '</span>';
+        html += '<span class="text-[10px] text-gray-400 flex-shrink-0">(' + root.words.length + '词)</span>';
+        html += '<input id="mrei' + ri + '" value="' + escapeHTML(root.root) + '" class="hidden text-[11px] font-semibold px-1.5 py-0.5 border border-indigo-300 rounded w-20 flex-shrink-0 outline-none focus:border-indigo-500">';
+        html += '<input id="mrmi' + ri + '" value="' + escapeHTML(root.root_meaning || '') + '" placeholder="含义" class="hidden text-[10px] px-1.5 py-0.5 border border-indigo-300 rounded w-24 flex-shrink-0 outline-none focus:border-indigo-500">';
+        html += '<button id="mrs' + ri + '" class="hidden flex-shrink-0 px-2 py-0.5 text-[10px] bg-indigo-500 text-white rounded hover:bg-indigo-600" onclick="event.stopPropagation();window.saveManageRoot(' + ri + ')">✓</button>';
+        html += '<button id="mrc' + ri + '" class="hidden flex-shrink-0 px-1.5 py-0.5 text-[10px] text-gray-400 hover:text-gray-600" onclick="event.stopPropagation();window.cancelManageRoot(' + ri + ')">×</button>';
+        html += '<div class="ml-auto flex items-center gap-1 flex-shrink-0" onclick="event.stopPropagation()">';
+        html += '<button id="mreb' + ri + '" class="px-1.5 py-0.5 text-[10px] text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 rounded transition-colors" title="编辑词根" onclick="window.editManageRoot(' + ri + ')">✏️</button>';
+        html += '<button class="px-1.5 py-0.5 text-[10px] text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors" title="删除词根" onclick="window.deleteManageRoot(' + ri + ')">🗑</button>';
+        html += '<label class="text-[10px] text-indigo-400 cursor-pointer ml-1">';
         html += '<input type="checkbox" class="manage-root-check" data-root="' + ri + '" onchange="var cbs=this.closest(\'.border\').querySelectorAll(\'.manage-word-check\');cbs.forEach(function(cb){cb.checked=this.checked}.bind(this))"> 全选</label>';
+        html += '</div>';
         html += '</div>';
         html += '<div class="divide-y divide-gray-100">';
         root.words.forEach(function(w, wi) {
@@ -3409,6 +3418,86 @@
         setTimeout(function() { if (toast.parentNode) toast.remove(); }, 4000);
       });
     }
+
+    // ---- Manage modal: root edit helpers ----
+    window.editManageRoot = function(ri) {
+      document.getElementById('mrn' + ri).classList.add('hidden');
+      document.getElementById('mrm' + ri).classList.add('hidden');
+      document.getElementById('mrei' + ri).classList.remove('hidden');
+      document.getElementById('mrmi' + ri).classList.remove('hidden');
+      document.getElementById('mrs' + ri).classList.remove('hidden');
+      document.getElementById('mrc' + ri).classList.remove('hidden');
+      document.getElementById('mreb' + ri).classList.add('hidden');
+      document.getElementById('mrei' + ri).focus();
+    };
+    window.cancelManageRoot = function(ri) {
+      var nameInput = document.getElementById('mrei' + ri);
+      var meaningInput = document.getElementById('mrmi' + ri);
+      nameInput.value = allData[ri].root;
+      meaningInput.value = allData[ri].root_meaning || '';
+      nameInput.classList.add('hidden');
+      meaningInput.classList.add('hidden');
+      document.getElementById('mrs' + ri).classList.add('hidden');
+      document.getElementById('mrc' + ri).classList.add('hidden');
+      document.getElementById('mrn' + ri).classList.remove('hidden');
+      document.getElementById('mrm' + ri).classList.remove('hidden');
+      document.getElementById('mreb' + ri).classList.remove('hidden');
+    };
+    window.saveManageRoot = function(ri) {
+      var nameInput = document.getElementById('mrei' + ri);
+      var meaningInput = document.getElementById('mrmi' + ri);
+      var newName = nameInput.value.trim();
+      if (!newName) { alert('词根名不能为空'); return; }
+      var newMeaning = meaningInput.value.trim();
+      allData[ri].root = newName;
+      allData[ri].root_meaning = newMeaning;
+      saveDataToStorage();
+      // Update display
+      document.getElementById('mrn' + ri).textContent = newName;
+      document.getElementById('mrm' + ri).textContent = newMeaning;
+      nameInput.value = newName;
+      meaningInput.value = newMeaning;
+      nameInput.classList.add('hidden');
+      meaningInput.classList.add('hidden');
+      document.getElementById('mrs' + ri).classList.add('hidden');
+      document.getElementById('mrc' + ri).classList.add('hidden');
+      document.getElementById('mrn' + ri).classList.remove('hidden');
+      document.getElementById('mrm' + ri).classList.remove('hidden');
+      document.getElementById('mreb' + ri).classList.remove('hidden');
+      // Refresh sidebar
+      renderRootList(searchInput.value.trim());
+      if (currentRootIndex === ri) renderMindMap(allData[ri], -1);
+      // Toast
+      var toast = document.createElement('div');
+      toast.className = 'toast toast-info';
+      toast.innerHTML = '<span>词根已更新: ' + escapeHTML(newName) + (newMeaning ? ' (' + escapeHTML(newMeaning) + ')' : '') + '</span><button class="toast-dismiss">&times;</button>';
+      document.getElementById('toastContainer').appendChild(toast);
+      toast.querySelector('.toast-dismiss').addEventListener('click', function() { toast.remove(); });
+      setTimeout(function() { if (toast.parentNode) toast.remove(); }, 3000);
+    };
+    window.deleteManageRoot = function(ri) {
+      var root = allData[ri];
+      var wordCount = root.words ? root.words.length : 0;
+      var msg = '确定删除词根 "' + root.root + '" 吗？';
+      if (wordCount > 0) msg += '\n\n⚠ 该词根下有 ' + wordCount + ' 个单词将被同时删除！';
+      msg += '\n\n此操作可通过侧栏「撤回」按钮恢复。';
+      if (!confirm(msg)) return;
+      allData.splice(ri, 1);
+      saveDataToStorage();
+      // Close and reopen modal to refresh indices
+      document.getElementById('manageOverlay').remove();
+      openManageModal();
+      renderRootList(searchInput.value.trim());
+      if (currentRootIndex >= allData.length) currentRootIndex = allData.length - 1;
+      if (currentRootIndex >= 0) renderMindMap(allData[currentRootIndex], -1);
+      else clearMindMap();
+      var toast = document.createElement('div');
+      toast.className = 'toast toast-info';
+      toast.innerHTML = '<span>已删除词根: ' + escapeHTML(root.root) + '</span><button class="toast-dismiss">&times;</button>';
+      document.getElementById('toastContainer').appendChild(toast);
+      toast.querySelector('.toast-dismiss').addEventListener('click', function() { toast.remove(); });
+      setTimeout(function() { if (toast.parentNode) toast.remove(); }, 3000);
+    };
 
     // Add new root
     window.addNewRoot = function() {
