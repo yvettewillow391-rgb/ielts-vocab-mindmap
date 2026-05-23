@@ -3267,8 +3267,9 @@
             totalAdded++;
           } else {
             skipped++;
+            pasteProgress.innerHTML += '<div class="text-[10px] text-amber-500">  🔄 ' + escapeHTML(entry.word) + ' — 在 ' + escapeHTML(root.root) + ' 已存在，将跳过</div>';
           }
-          pasteProgress.innerHTML = '<div class="text-xs text-indigo-600">⏳ 正在导入 <b>' + processed + '/' + totalWords + '</b>... <span class="text-gray-400">' + root.root + ' +' + batchWords.length + '</span></div>';
+          pasteProgress.innerHTML += '<div class="text-xs text-indigo-600">⏳ 正在导入 <b>' + processed + '/' + totalWords + '</b>... <span class="text-gray-400">' + root.root + ' +' + batchWords.length + '</span></div>';
         });
         if (batchWords.length > 0) batches.push({ rootIdx: parseInt(idx), words: batchWords });
       });
@@ -3515,8 +3516,9 @@
             if (hasAI) aiEnriched++;
             pasteProgress.innerHTML += '<div class="text-[10px] text-green-500">  ✅ ' + escapeHTML(wObj.word) + ' → ' + escapeHTML(root.root) + (hasAI ? ' (AI)' : '') + '</div>';
           } else {
-            skipped++;
-            pasteProgress.innerHTML += '<div class="text-[10px] text-gray-400">  ⏭ ' + escapeHTML(wObj.word) + ' 已存在，跳过</div>';
+            // Word exists in this root — let user pick a different one
+            aiUnknownWords.push(wObj);
+            pasteProgress.innerHTML += '<div class="text-[10px] text-amber-500">  🔄 ' + escapeHTML(wObj.word) + ' — 在 ' + escapeHTML(root.root) + ' 已存在，请换一个词根</div>';
           }
         } else {
           if (hasAI) {
