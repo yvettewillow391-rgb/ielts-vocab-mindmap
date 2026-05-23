@@ -1858,7 +1858,35 @@
 
     window.importSynonymWord = async function(wordText, pos, meaning) {
       var hasAIKey = !!(localStorage.getItem(GEMINI_KEY_KEY) || localStorage.getItem(ANTHROPIC_KEY_KEY));
-      if (!hasAIKey) { alert('请先在云同步面板配置 AI API Key'); return; }
+      if (!hasAIKey) {
+        // Show inline Gemini key prompt instead of blocking alert
+        var btn = event ? event.target : null;
+        if (btn) {
+          var existingPrompt = document.getElementById('inlineGeminiPrompt');
+          if (existingPrompt) existingPrompt.remove();
+          var promptHtml = '<div id="inlineGeminiPrompt" class="inline-flex flex-col gap-1.5 bg-purple-50 border border-purple-200 rounded-lg p-2 shadow-lg ml-1" style="min-width:260px">';
+          promptHtml += '<span class="text-[10px] text-purple-600 font-medium">🤖 粘贴免费 Gemini Key 即可导入</span>';
+          promptHtml += '<input id="inlineGeminiKey" type="password" placeholder="AIza... 从 aistudio.google.com/apikey 获取" class="text-[10px] border border-purple-200 rounded px-1.5 py-0.5 outline-none w-full">';
+          promptHtml += '<div class="flex gap-1">';
+          promptHtml += '<button id="inlineGeminiSave" class="text-[10px] px-2 py-0.5 rounded bg-purple-500 text-white hover:bg-purple-600 flex-1">保存并重试</button>';
+          promptHtml += '<button id="inlineGeminiCancel" class="text-[10px] px-1.5 py-0.5 rounded text-gray-400 hover:text-gray-600">×</button>';
+          promptHtml += '</div></div>';
+          btn.insertAdjacentHTML('afterend', promptHtml);
+          var promptEl = document.getElementById('inlineGeminiPrompt');
+          document.getElementById('inlineGeminiCancel').addEventListener('click', function() { promptEl.remove(); });
+          document.getElementById('inlineGeminiSave').addEventListener('click', function() {
+            var key = document.getElementById('inlineGeminiKey').value.trim();
+            if (!key || !key.startsWith('AIza')) { alert('请输入有效的 Gemini API Key（以 AIza 开头）'); return; }
+            localStorage.setItem(GEMINI_KEY_KEY, key);
+            promptEl.innerHTML = '<span class="text-[10px] text-green-600">✅ 已保存！正在重试...</span>';
+            setTimeout(function() { promptEl.remove(); window.importSynonymWord(wordText, pos, meaning); }, 500);
+          });
+          setTimeout(function() { document.getElementById('inlineGeminiKey').focus(); }, 100);
+        } else {
+          alert('请点击 ☁️ 云同步 → 粘贴免费 Gemini API Key（从 aistudio.google.com/apikey 获取）');
+        }
+        return;
+      }
 
       // Detect existing root (excluding current root)
       var detectedIdx = detectRootExcluding(wordText, currentRootIndex);
@@ -4509,9 +4537,12 @@
           if (geminiResp.ok) {
             var gData = await geminiResp.json();
             text = gData.candidates[0].content.parts[0].text;
-          } else if (!anthropicKey) {
+          } else {
             var gErr = await geminiResp.text();
-            throw new Error('Gemini: ' + gErr.substring(0, 150));
+            if (gErr.indexOf('API_KEY_INVALID') >= 0 || gErr.indexOf('API key not valid') >= 0) {
+              throw new Error('Gemini Key 无效，请到 aistudio.google.com/apikey 重新获取免费 Key');
+            }
+            if (!anthropicKey) throw new Error('Gemini 错误: ' + gErr.substring(0, 150));
           }
           // If Gemini fails and Anthropic is available, fall through to Anthropic
         } catch (e) {
@@ -4541,15 +4572,18 @@
 
         if (!resp.ok) {
           var errText = await resp.text();
+          if (errText.indexOf('insufficient') >= 0 || errText.indexOf('Insufficient') >= 0 || errText.indexOf('balance') >= 0) {
+            throw new Error('DeepSeek 余额不足！请改用免费 Gemini：点击 ☁️ 云同步 → 粘贴 Gemini Key（从 aistudio.google.com/apikey 免费获取）');
+          }
           try { var errJson = JSON.parse(errText); throw new Error(errJson.error ? errJson.error.message : errText); }
-          catch (e2) { if (e2.message && !e2.message.startsWith('{')) throw e2; throw new Error('API error ' + resp.status + ': ' + errText.substring(0, 200)); }
+          catch (e2) { if (e2.message && !e2.message.startsWith('{')) throw e2; throw new Error('API 错误 ' + resp.status + ': ' + errText.substring(0, 200)); }
         }
 
         var data = await resp.json();
         text = data.content.filter(function(c) { return c.type === 'text'; }).map(function(c) { return c.text; }).join('');
       }
 
-      if (!text) throw new Error('AI 生成失败，请检查 API Key');
+      if (!text) throw new Error('AI 生成失败。建议配置免费 Gemini Key：☁️ 云同步 → Gemini API Key');
 
       var jsonStr = text.trim();
       var fm = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
