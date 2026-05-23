@@ -686,6 +686,13 @@
           <label class="text-[11px] text-purple-600 font-semibold">Anthropic API Key <span class="text-[9px] text-purple-400 font-normal">付费 · 效果更好</span></label>
           <input id="aiAnthropicKeyInput" type="password" placeholder="sk-ant-..." class="w-full mt-1 px-3 py-2.5 text-xs border border-purple-200 rounded-lg focus:outline-none focus:border-purple-400 bg-purple-50/30">
         </div>
+        <div class="border-t border-gray-100 pt-3" id="aiPrioritySection">
+          <label class="text-[11px] text-gray-600 font-semibold block mb-2">⚡ API 优先级</label>
+          <div class="flex gap-2">
+            <button id="aiPriorityGemini" class="flex-1 py-2 rounded-lg text-xs font-medium border transition-colors">🆓 Gemini 优先</button>
+            <button id="aiPriorityAnthropic" class="flex-1 py-2 rounded-lg text-xs font-medium border transition-colors">⚡ Anthropic 优先</button>
+          </div>
+        </div>
         <button id="saveAIKeysBtn" class="w-full py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 transition-colors shadow-sm">💾 保存设置</button>
         <p id="aiKeyStatus" class="text-[11px] text-green-600 text-center font-medium hidden">✅ 已配置 · AI 生成已就绪</p>
         <p id="aiKeyError" class="text-[11px] text-red-500 text-center hidden"></p>
@@ -1903,7 +1910,7 @@
           });
           setTimeout(function() { document.getElementById('inlineGeminiKey').focus(); }, 100);
         } else {
-          alert('请点击 ☁️ 云同步 → 粘贴免费 Gemini API Key（从 aistudio.google.com/apikey 获取）');
+          alert('请点击 🤖 AI 设置 → 粘贴免费 Gemini API Key（从 aistudio.google.com/apikey 获取）');
         }
         return;
       }
@@ -4532,7 +4539,7 @@
       var geminiKey = localStorage.getItem(GEMINI_KEY_KEY);
       var anthropicKey = localStorage.getItem(ANTHROPIC_KEY_KEY);
 
-      if (!geminiKey && !anthropicKey) throw new Error('请先在云同步面板配置 AI API Key（Gemini 免费 或 Anthropic）');
+      if (!geminiKey && !anthropicKey) throw new Error('请先点 🤖 AI 设置配置 API Key（Gemini 免费）');
 
       var wordInfo = word;
       if (pos) wordInfo = word + ' ' + pos;
@@ -4541,69 +4548,83 @@
       var prompt = 'You are an IELTS vocabulary expert. For the word "' + wordInfo + '", generate ALL of the following in valid JSON format. EVERY field is REQUIRED — do not skip any:\n\n{\n  "pos": "part of speech, e.g. v. or n. or adj.",\n  "meaning": "Chinese translation, e.g. 吸收；理解",\n  "phonetic": "IPA pronunciation, e.g. /əbˈzɔːrb/",\n  "etymology": "词根拆解: Break down prefix+root+suffix in Chinese, explain how parts combine to form meaning. Example: sub(在...之下) + mit(送) → 从下面送上去 → 提交，服从",\n  "mnemonic": "一句话记忆: A vivid Chinese memory sentence using root parts, with 🔑 emoji, max 40 Chinese characters",\n  "inflections": [{"word": "derivative", "pos": "n.", "meaning": "Chinese meaning"}],\n  "synonyms": [{"word": "synonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "antonyms": [{"word": "antonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "phrases": [{"en": "English collocation", "zh": "Chinese translation"}],\n  "sentences": [{"en": "IELTS-level example sentence", "zh": "Chinese translation"}]\n}\n\nCRITICAL REQUIREMENTS:\n- pos: MUST be provided. One of n./v./adj./adv./prep./conj./pron./det./num..\n- meaning: MUST be provided. Chinese translation of the word, e.g. 吸收；全神贯注.\n- phonetic: MUST be provided. Use standard IPA notation with slashes, e.g. /əˈvɜːrt/.\n- etymology: MUST be provided. Analyze the actual word\'s prefix/root/suffix.\n- mnemonic: MUST be provided. Use creative imagery.\n- inflections: MUST provide 2-4 derivative forms (noun/adj/adv forms) with POS and Chinese meaning.\n- synonyms: MUST provide 3-5 IELTS-level synonyms with POS and Chinese meaning.\n- antonyms: MUST provide 2-3 antonyms with POS and Chinese meaning.\n- phrases: MUST provide 3-5 common IELTS collocations with Chinese translations.\n- sentences: MUST provide 1-2 IELTS-style sentences with Chinese translations.\n\nReturn ONLY the JSON object, no markdown, no code fences, no extra text.';
 
       var text;
+      var priority = localStorage.getItem('ielts_ai_priority') || 'gemini';
 
-      // Try Gemini first (free tier)
-      if (geminiKey) {
-        try {
-          var geminiResp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + geminiKey, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.3, maxOutputTokens: 4096 }
-            })
-          });
+      // Build an ordered list of providers to try: [preferred, fallback]
+      var providers = [];
+      if (priority === 'anthropic' && anthropicKey) {
+        providers.push({ name: 'anthropic', key: anthropicKey });
+        if (geminiKey) providers.push({ name: 'gemini', key: geminiKey });
+      } else {
+        if (geminiKey) providers.push({ name: 'gemini', key: geminiKey });
+        if (anthropicKey) providers.push({ name: 'anthropic', key: anthropicKey });
+      }
 
-          if (geminiResp.ok) {
-            var gData = await geminiResp.json();
-            text = gData.candidates[0].content.parts[0].text;
-          } else {
-            var gErr = await geminiResp.text();
-            if (gErr.indexOf('API_KEY_INVALID') >= 0 || gErr.indexOf('API key not valid') >= 0) {
-              throw new Error('Gemini Key 无效，请到 aistudio.google.com/apikey 重新获取免费 Key');
+      for (var pi = 0; pi < providers.length && !text; pi++) {
+        var prov = providers[pi];
+
+        if (prov.name === 'gemini') {
+          try {
+            var geminiResp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + prov.key, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { temperature: 0.3, maxOutputTokens: 4096 }
+              })
+            });
+
+            if (geminiResp.ok) {
+              var gData = await geminiResp.json();
+              text = gData.candidates[0].content.parts[0].text;
+            } else {
+              var gErr = await geminiResp.text();
+              if (gErr.indexOf('API_KEY_INVALID') >= 0 || gErr.indexOf('API key not valid') >= 0) {
+                throw new Error('Gemini Key 无效，请到 aistudio.google.com/apikey 重新获取免费 Key');
+              }
+              // Fall through to next provider
             }
-            if (!anthropicKey) throw new Error('Gemini 错误: ' + gErr.substring(0, 150));
+          } catch (e) {
+            if (pi === providers.length - 1) throw e;
+            // Fall through to next provider
           }
-          // If Gemini fails and Anthropic is available, fall through to Anthropic
-        } catch (e) {
-          if (!anthropicKey) throw e;
-          // Fall through to Anthropic
+        } else if (prov.name === 'anthropic') {
+          try {
+            var anthropicBaseUrl = localStorage.getItem(ANTHROPIC_BASE_URL_KEY) || 'https://api.anthropic.com';
+            var resp = await fetch(anthropicBaseUrl + '/v1/messages', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': prov.key,
+                'anthropic-version': '2023-06-01'
+              },
+              body: JSON.stringify({
+                model: anthropicBaseUrl.includes('deepseek') ? 'deepseek-chat' : 'claude-sonnet-4-6',
+                max_tokens: 4096,
+                temperature: 0.3,
+                system: 'You are an IELTS vocabulary expert. You MUST return ALL requested fields. Output ONLY valid JSON, no markdown, no code fences.',
+                messages: [{ role: 'user', content: prompt }]
+              })
+            });
+
+            if (resp.ok) {
+              var data = await resp.json();
+              text = data.content.filter(function(c) { return c.type === 'text'; }).map(function(c) { return c.text; }).join('');
+            } else {
+              var errText = await resp.text();
+              if (errText.indexOf('insufficient') >= 0 || errText.indexOf('Insufficient') >= 0 || errText.indexOf('balance') >= 0) {
+                throw new Error('DeepSeek 余额不足！请改用免费 Gemini：点击 🤖 AI 设置 → 粘贴 Gemini Key');
+              }
+              // Fall through to next provider
+            }
+          } catch (e) {
+            if (pi === providers.length - 1) throw e;
+            // Fall through to next provider
+          }
         }
       }
 
-      // Try Anthropic (or DeepSeek Anthropic-compatible) if Gemini not configured or failed
-      if (!text && anthropicKey) {
-        var anthropicBaseUrl = localStorage.getItem(ANTHROPIC_BASE_URL_KEY) || 'https://api.anthropic.com';
-        var resp = await fetch(anthropicBaseUrl + '/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': anthropicKey,
-            'anthropic-version': '2023-06-01'
-          },
-          body: JSON.stringify({
-            model: anthropicBaseUrl.includes('deepseek') ? 'deepseek-chat' : 'claude-sonnet-4-6',
-            max_tokens: 4096,
-            temperature: 0.3,
-            system: 'You are an IELTS vocabulary expert. You MUST return ALL requested fields. Output ONLY valid JSON, no markdown, no code fences.',
-            messages: [{ role: 'user', content: prompt }]
-          })
-        });
-
-        if (!resp.ok) {
-          var errText = await resp.text();
-          if (errText.indexOf('insufficient') >= 0 || errText.indexOf('Insufficient') >= 0 || errText.indexOf('balance') >= 0) {
-            throw new Error('DeepSeek 余额不足！请改用免费 Gemini：点击 ☁️ 云同步 → 粘贴 Gemini Key（从 aistudio.google.com/apikey 免费获取）');
-          }
-          try { var errJson = JSON.parse(errText); throw new Error(errJson.error ? errJson.error.message : errText); }
-          catch (e2) { if (e2.message && !e2.message.startsWith('{')) throw e2; throw new Error('API 错误 ' + resp.status + ': ' + errText.substring(0, 200)); }
-        }
-
-        var data = await resp.json();
-        text = data.content.filter(function(c) { return c.type === 'text'; }).map(function(c) { return c.text; }).join('');
-      }
-
-      if (!text) throw new Error('AI 生成失败。建议配置免费 Gemini Key：☁️ 云同步 → Gemini API Key');
+      if (!text) throw new Error('AI 生成失败。建议配置免费 Gemini Key：点 🤖 AI 设置');
 
       var jsonStr = text.trim();
       var fm = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
@@ -5559,6 +5580,21 @@
       cloudOverlay.classList.add('hidden');
     }
 
+    var AI_PRIORITY_KEY = 'ielts_ai_priority'; // 'gemini' or 'anthropic'
+
+    function updateAIPriorityUI() {
+      var priority = localStorage.getItem(AI_PRIORITY_KEY) || 'gemini';
+      var gBtn = $('aiPriorityGemini');
+      var aBtn = $('aiPriorityAnthropic');
+      if (priority === 'anthropic') {
+        gBtn.className = 'flex-1 py-2 rounded-lg text-xs font-medium border border-purple-200 bg-purple-50 text-purple-600 transition-colors';
+        aBtn.className = 'flex-1 py-2 rounded-lg text-xs font-medium border border-purple-300 bg-purple-500 text-white shadow-sm transition-colors';
+      } else {
+        gBtn.className = 'flex-1 py-2 rounded-lg text-xs font-medium border border-green-300 bg-green-500 text-white shadow-sm transition-colors';
+        aBtn.className = 'flex-1 py-2 rounded-lg text-xs font-medium border border-purple-200 bg-purple-50 text-purple-600 transition-colors';
+      }
+    }
+
     function openAIPanel() {
       var overlay = $('aiOverlay');
       if (!overlay) return;
@@ -5566,6 +5602,10 @@
       var gk = localStorage.getItem(GEMINI_KEY_KEY);
       if (gk) { $('aiGeminiKeyInput').value = gk; $('aiKeyStatus').classList.remove('hidden'); }
       $('aiKeyError').classList.add('hidden');
+      // Show/hide Anthropic section based on whether key exists
+      var ak = localStorage.getItem(ANTHROPIC_KEY_KEY);
+      if (ak) $('aiAnthropicKeyInput').value = ak;
+      updateAIPriorityUI();
       overlay.classList.remove('hidden');
     }
 
@@ -5601,6 +5641,14 @@
       $('closeAIBtn').addEventListener('click', closeAIPanel);
       $('aiOverlay').addEventListener('click', function(e) { if (e.target === $('aiOverlay')) closeAIPanel(); });
       $('saveAIKeysBtn').addEventListener('click', saveAIKeys);
+      $('aiPriorityGemini').addEventListener('click', function() {
+        localStorage.setItem(AI_PRIORITY_KEY, 'gemini');
+        updateAIPriorityUI();
+      });
+      $('aiPriorityAnthropic').addEventListener('click', function() {
+        localStorage.setItem(AI_PRIORITY_KEY, 'anthropic');
+        updateAIPriorityUI();
+      });
     }
 
     async function cloudAuthAction() {
