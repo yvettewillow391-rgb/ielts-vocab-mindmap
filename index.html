@@ -47,7 +47,7 @@
     .icon-bar-btn.primary:hover { background: #e0e7ff; }
     /* A-Z quick nav */
     #azNav::-webkit-scrollbar { display: none; }
-    .az-btn { min-width: 22px; width: 22px; height: 22px; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: 600; color: #9ca3af; background: #f3f4f6; transition: all 0.15s; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .az-btn { min-width: 25px; width: 25px; height: 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 11px; font-weight: 600; color: #6b7280; background: #f3f4f6; transition: all 0.15s; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .az-btn:hover { background: #eef2ff; color: #6366f1; }
     .az-btn.active-letter { background: #6366f1; color: #fff; }
     .az-btn:disabled { opacity: 0.3; cursor: default; background: #f3f4f6; color: #d1d5db; }
@@ -300,7 +300,10 @@
     </div>
 
     <!-- A-Z quick nav -->
-    <div id="azNav" class="px-2 pb-2" style="display:flex;gap:2px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;-ms-overflow-style:none"></div>
+    <div class="px-2 pt-1 pb-1">
+      <div class="text-[9px] text-gray-400 uppercase tracking-wider mb-1 pl-1">🔤 按首字母筛选</div>
+      <div id="azNav" style="display:flex;gap:3px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;-ms-overflow-style:none"></div>
+    </div>
 
     <!-- Root list -->
     <nav id="rootList" class="px-2 pb-1" style="min-height:0">
