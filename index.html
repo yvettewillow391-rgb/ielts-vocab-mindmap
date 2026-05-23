@@ -734,7 +734,13 @@
       </div>
       <!-- Sticky confirm bar (hidden until parsed) -->
       <div id="pasteConfirmBar" class="hidden px-5 py-3 border-t border-gray-100 bg-gray-50/80 backdrop-blur-sm flex-shrink-0 flex items-center justify-between gap-3">
-        <span id="pasteSummary" class="text-xs text-gray-600"></span>
+        <div class="flex items-center gap-3">
+          <span id="pasteSummary" class="text-xs text-gray-600"></span>
+          <label id="pasteAIToggle" class="hidden items-center gap-1.5 cursor-pointer select-none">
+            <input type="checkbox" id="pasteUseAI" checked class="w-3.5 h-3.5 rounded accent-indigo-500">
+            <span class="text-[11px] text-gray-500">🤖 AI 增强</span>
+          </label>
+        </div>
         <div class="flex gap-2">
           <button id="pasteCancelBtn" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">取消</button>
           <button id="pasteConfirmBtn" class="px-5 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 transition-colors">✅ 确认导入</button>
@@ -3881,6 +3887,30 @@
       pasteConfirmBar.classList.add('hidden');
       pendingParsedData = null;
     }
+
+    function updatePasteAIToggle() {
+      var hasAI = !!(localStorage.getItem(GEMINI_KEY_KEY) || localStorage.getItem(ANTHROPIC_KEY_KEY));
+      var toggle = document.getElementById('pasteAIToggle');
+      if (!toggle) return;
+      if (hasAI) {
+        toggle.classList.remove('hidden');
+        toggle.style.display = 'flex';
+      } else {
+        toggle.classList.add('hidden');
+        toggle.style.display = 'none';
+      }
+      return hasAI;
+    }
+
+    function pasteAIEnabled() {
+      var cb = document.getElementById('pasteUseAI');
+      if (!cb) return false;
+      // Check if AI is even configured
+      var hasAIKey = !!(localStorage.getItem(GEMINI_KEY_KEY) || localStorage.getItem(ANTHROPIC_KEY_KEY));
+      if (!hasAIKey) return false;
+      return cb.checked;
+    }
+
     function openPasteImport() {
       pasteRootSelect.innerHTML = '<option value="">选择目标词根...</option>';
       allData.forEach(function(r, i) {
@@ -4181,7 +4211,7 @@
       var totalWords = Object.values(rootMap).reduce(function(s, a) { return s + a.length; }, 0);
       var processed = 0;
 
-      var hasAI = !!(localStorage.getItem(GEMINI_KEY_KEY) || localStorage.getItem(ANTHROPIC_KEY_KEY));
+      var hasAI = pasteAIEnabled();
       var aiEnriched = 0;
 
       // Show progress
@@ -4865,6 +4895,7 @@
         pendingParsedData = { mode: 'fullword', fullEntries, rootMap, unknownEntries };
 
         pasteSummary.innerHTML = '将导入 <b class="text-indigo-600">' + totalImportable + '</b> 个完整单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根';
+        updatePasteAIToggle();
         pasteConfirmBar.classList.remove('hidden');
 
         // Attach inline button handlers
@@ -5115,6 +5146,7 @@
         // Show sticky confirm bar too
         var stickyTotal = Object.values(rootMap).reduce(function(s, a) { return s + a.length; }, 0);
         pasteSummary.innerHTML = '将导入 <b class="text-indigo-600">' + stickyTotal + '</b> 个单词到 <b class="text-indigo-600">' + Object.keys(rootMap).length + '</b> 个词根' + (unknownWords.length > 0 ? ' <span class="text-amber-500">（' + unknownWords.length + ' 个' + (hasAIKey ? 'AI 将自动生成并导入' : '未识别将跳过') + '）</span>' : '');
+        updatePasteAIToggle();
         pasteConfirmBar.classList.remove('hidden');
       } else {
         // Manual mode — show flat list
@@ -5135,6 +5167,7 @@
 
         // Show confirm bar
         pasteSummary.innerHTML = '将导入 <b class="text-green-600">' + parsed.length + '</b> 个单词到所选词根';
+        updatePasteAIToggle();
         pasteConfirmBar.classList.remove('hidden');
       }
     }
@@ -5163,7 +5196,7 @@
       var skipped = 0;
       var addedWords = [];
       var total = parsed.length;
-      var hasAI = !!(localStorage.getItem(GEMINI_KEY_KEY) || localStorage.getItem(ANTHROPIC_KEY_KEY));
+      var hasAI = pasteAIEnabled();
 
       // Show progress
       pasteProgress.classList.remove('hidden');
