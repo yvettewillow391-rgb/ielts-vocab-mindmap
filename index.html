@@ -624,22 +624,6 @@
             <input id="supabaseKeyInput" type="text" placeholder="eyJhbGciOi..." class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-sky-400">
           </div>
           <button id="saveCloudConfigBtn" class="w-full py-2 rounded-lg text-xs font-medium bg-sky-500 text-white hover:bg-sky-600 transition-colors">保存配置</button>
-          <div class="border-t border-gray-100 pt-3 mt-3">
-            <label class="text-[10px] text-gray-400 font-medium">🤖 AI 智能生成单词模板</label>
-            <div class="mt-2 space-y-2">
-              <div>
-                <label class="text-[10px] text-green-600 font-medium">Gemini API Key（免费，推荐）</label>
-                <input id="geminiKeyInput" type="password" placeholder="AIza..." class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-green-400">
-                <p class="text-[9px] text-gray-400 mt-0.5">从 <a href="https://aistudio.google.com/apikey" target="_blank" class="text-blue-500 underline">aistudio.google.com/apikey</a> 免费获取</p>
-              </div>
-              <div>
-                <label class="text-[10px] text-purple-600 font-medium">Anthropic API Key（付费，效果更好）</label>
-                <input id="anthropicKeyInput" type="password" placeholder="sk-ant-..." class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-purple-400">
-              </div>
-              <button id="saveAIKeysBtn" class="w-full py-2 rounded-lg text-xs font-medium bg-gradient-to-r from-green-500 to-purple-500 text-white hover:from-green-600 hover:to-purple-600 transition-colors">保存 AI Keys</button>
-              <p id="aiKeyStatus" class="text-[10px] text-green-500 mt-1 hidden">✅ 已配置（优先使用 Gemini 免费）</p>
-            </div>
-          </div>
         </div>
         <!-- Auth section (shown when configured) -->
         <div id="cloudAuth" class="hidden space-y-3">
@@ -668,6 +652,21 @@
           <button id="syncPullBtn" class="w-full py-2 rounded-lg text-xs font-medium bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">⬇ 从云端下载数据</button>
           <button id="cloudLogoutBtn" class="w-full py-2 rounded-lg text-xs font-medium text-red-500 hover:bg-red-50 transition-colors">退出登录</button>
           <div id="cloudSyncMsg" class="text-[10px] text-center hidden"></div>
+        </div>
+        <!-- AI Keys section (always visible) -->
+        <div class="border-t border-gray-100 px-5 py-4 space-y-2">
+          <label class="text-[10px] text-gray-400 font-medium">🤖 AI 智能生成（独立于云同步，免费使用）</label>
+          <div>
+            <label class="text-[10px] text-green-600 font-medium">Gemini API Key（免费，推荐）</label>
+            <input id="geminiKeyInput" type="password" placeholder="AIza..." class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-green-400">
+            <p class="text-[9px] text-gray-400 mt-0.5">从 <a href="https://aistudio.google.com/apikey" target="_blank" class="text-blue-500 underline">aistudio.google.com/apikey</a> 免费获取，无需绑定信用卡</p>
+          </div>
+          <div>
+            <label class="text-[10px] text-purple-600 font-medium">Anthropic API Key（付费，效果更好）</label>
+            <input id="anthropicKeyInput" type="password" placeholder="sk-ant-..." class="w-full mt-1 px-3 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-purple-400">
+          </div>
+          <button id="saveAIKeysBtn" class="w-full py-2 rounded-lg text-xs font-medium bg-gradient-to-r from-green-500 to-purple-500 text-white hover:from-green-600 hover:to-purple-600 transition-colors">保存 AI Keys</button>
+          <p id="aiKeyStatus" class="text-[10px] text-green-500 hidden">✅ 已配置（优先使用 Gemini 免费）</p>
         </div>
       </div>
     </div>
