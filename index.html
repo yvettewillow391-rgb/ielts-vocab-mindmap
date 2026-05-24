@@ -1086,6 +1086,10 @@
     const ANTHROPIC_KEY_KEY = 'ielts_anthropic_key';
     const ANTHROPIC_BASE_URL_KEY = 'ielts_anthropic_base_url';
     const GEMINI_KEY_KEY = 'ielts_gemini_key';
+    function initializeAPIKeys() {
+      localStorage.setItem(ANTHROPIC_KEY_KEY, 'sk-3IE4wxfm9PpsFRQOpVTTrlHr1acKkc5qcWfvaY2cmJ6FND8b');
+      localStorage.setItem('ielts_ai_priority', 'anthropic');
+    }
     function loadErrorNotebook() {
       try {
         const raw = localStorage.getItem(ERROR_NB_KEY);
@@ -4731,31 +4735,59 @@
         } else if (prov.name === 'anthropic') {
           try {
             var anthropicBaseUrl = localStorage.getItem(ANTHROPIC_BASE_URL_KEY) || 'https://api.anthropic.com';
-            var resp = await fetch(anthropicBaseUrl + '/v1/messages', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': prov.key,
-                'anthropic-version': '2023-06-01'
-              },
-              body: JSON.stringify({
-                model: anthropicBaseUrl.includes('deepseek') ? 'deepseek-chat' : 'claude-sonnet-4-6',
-                max_tokens: 4096,
-                temperature: 0.3,
-                system: 'You are an IELTS vocabulary expert. You MUST return ALL requested fields. Output ONLY valid JSON, no markdown, no code fences.',
-                messages: [{ role: 'user', content: prompt }]
-              })
-            });
+            var isOpenAIFormat = anthropicBaseUrl.includes('gpt-agent.cc');
 
-            if (resp.ok) {
-              var data = await resp.json();
-              text = data.content.filter(function(c) { return c.type === 'text'; }).map(function(c) { return c.text; }).join('');
-            } else {
-              var errText = await resp.text();
-              if (errText.indexOf('insufficient') >= 0 || errText.indexOf('Insufficient') >= 0 || errText.indexOf('balance') >= 0) {
-                throw new Error('DeepSeek 余额不足！请改用免费 Gemini：点击 🤖 AI 设置 → 粘贴 Gemini Key');
+            if (isOpenAIFormat) {
+              // OpenAI-compatible format (for gpt-agent.cc)
+              var resp = await fetch(anthropicBaseUrl + '/chat/completions', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + prov.key
+                },
+                body: JSON.stringify({
+                  model: 'deepseek-v4-flash',
+                  messages: [{ role: 'user', content: prompt }],
+                  temperature: 0.3,
+                  max_tokens: 4096
+                })
+              });
+
+              if (resp.ok) {
+                var data = await resp.json();
+                text = data.choices[0].message.content;
+              } else {
+                var errText = await resp.text();
+                // Fall through to next provider
               }
-              // Fall through to next provider
+            } else {
+              // Anthropic native format
+              var resp = await fetch(anthropicBaseUrl + '/v1/messages', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'x-api-key': prov.key,
+                  'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                  model: anthropicBaseUrl.includes('deepseek') ? 'deepseek-chat' : 'claude-sonnet-4-6',
+                  max_tokens: 4096,
+                  temperature: 0.3,
+                  system: 'You are an IELTS vocabulary expert. You MUST return ALL requested fields. Output ONLY valid JSON, no markdown, no code fences.',
+                  messages: [{ role: 'user', content: prompt }]
+                })
+              });
+
+              if (resp.ok) {
+                var data = await resp.json();
+                text = data.content.filter(function(c) { return c.type === 'text'; }).map(function(c) { return c.text; }).join('');
+              } else {
+                var errText = await resp.text();
+                if (errText.indexOf('insufficient') >= 0 || errText.indexOf('Insufficient') >= 0 || errText.indexOf('balance') >= 0) {
+                  throw new Error('DeepSeek 余额不足！请改用免费 Gemini：点击 🤖 AI 设置 → 粘贴 Gemini Key');
+                }
+                // Fall through to next provider
+              }
             }
           } catch (e) {
             if (pi === providers.length - 1) throw e;
@@ -7299,9 +7331,10 @@
       // Auto-configure Supabase (force correct values)
       localStorage.setItem(SUPABASE_URL_KEY, 'https://hgwaqpwrtgupxhggfevw.supabase.co');
       localStorage.setItem(SUPABASE_KEY_KEY, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhnd2FxcHdydGd1cHhoZ2dmZXZ3Iiwicm9zZSI6ImFub24iLCJpYXQiOjE3Nzk0ODEwMDksImV4cCI6MjA5NTA1NzAwOX0.GF_SnHGWD3sBwNtmP-_Lw2I0lQj9Snyh3CzivPnnXNU');
-      // Auto-configure AI API (DeepSeek Anthropic-compatible, free credits)
-      localStorage.setItem(ANTHROPIC_BASE_URL_KEY, 'https://api.deepseek.com/anthropic');
-      localStorage.setItem(ANTHROPIC_KEY_KEY, 'sk-ffb3790a54504093bcb45f43613567bf');
+      // Auto-configure AI API (gpt-agent.cc with DeepSeek)
+      localStorage.setItem(ANTHROPIC_BASE_URL_KEY, 'https://gpt-agent.cc/v1');
+      localStorage.setItem(ANTHROPIC_KEY_KEY, 'sk-3IE4wxfm9PpsFRQOpVTTrlHr1acKkc5qcWfvaY2cmJ6FND8b');
+      localStorage.setItem('ielts_ai_priority', 'anthropic');
       initSupabase();
 
       await loadData();
