@@ -2203,8 +2203,9 @@
         renderMindMap(root, newWi);
         setTimeout(function() { if (statusEl) statusEl.remove(); }, 2000);
       } catch (err) {
-        if (statusEl) { statusEl.textContent = '❌ 失败'; statusEl.className = 'text-[10px] text-red-500 ml-1'; }
-        setTimeout(function() { if (statusEl) statusEl.remove(); }, 3000);
+        console.error('AI enrichment error:', err);
+        if (statusEl) { statusEl.textContent = '❌ ' + err.message; statusEl.className = 'text-[10px] text-red-500 ml-1'; }
+        setTimeout(function() { if (statusEl) statusEl.remove(); }, 5000);
       }
     }
 
@@ -4758,6 +4759,9 @@
                 text = data.choices[0].message.content;
               } else {
                 var errText = await resp.text();
+                if (pi === providers.length - 1) {
+                  throw new Error('gpt-agent.cc 请求失败: ' + errText);
+                }
                 // Fall through to next provider
               }
             } else {
