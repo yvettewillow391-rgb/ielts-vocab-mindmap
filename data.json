@@ -1,5 +1,2473 @@
 [
   {
+    "root": "leg / lect / lig",
+    "root_meaning": "法律；收集，阅读，选择 (law; gather, choose, read)",
+    "words": [
+      {
+        "word": "legislate",
+        "meaning": "v. 立法，制定法律",
+        "inflections": [
+          {
+            "word": "legislation",
+            "pos": "n.",
+            "meaning": "立法，法律"
+          },
+          {
+            "word": "legislative",
+            "pos": "adj.",
+            "meaning": "立法的，有立法权的"
+          },
+          {
+            "word": "legitimate",
+            "pos": "adj.",
+            "meaning": "合法的，正当的"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "legislate against",
+            "zh": "立法禁止"
+          },
+          {
+            "en": "introduce new legislation",
+            "zh": "出台新法规"
+          },
+          {
+            "en": "the power to legislate",
+            "zh": "立法权"
+          },
+          {
+            "en": "legislate for",
+            "zh": "为...立法"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "It is the responsibility of the government to legislate against the exploitation of child labor in developing countries.",
+            "zh": "政府有责任立法禁止在发展中国家剥削童工的行为。"
+          },
+          {
+            "en": "Strict legislation must be introduced to regulate the disposal of toxic industrial waste and protect groundwater resources.",
+            "zh": "必须出台严格的立法来规范有毒工业废物的处理，并保护地下水资源。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "enact",
+            "pos": "v.",
+            "meaning": "颁布，制定法律"
+          },
+          {
+            "word": "codify",
+            "pos": "v.",
+            "meaning": "编纂法律"
+          },
+          {
+            "word": "pass laws",
+            "pos": "v.",
+            "meaning": "通过法律"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "repeal",
+            "pos": "v.",
+            "meaning": "废除"
+          },
+          {
+            "word": "abolish",
+            "pos": "v.",
+            "meaning": "废止"
+          }
+        ],
+        "_root": "leg / lect / lig — 法律；收集，阅读，选择 (law; gather, choose, read)",
+        "etymology": "legis(法律) + late(带来，源自latus) → 带来法律 → 立法，制定法律",
+        "mnemonic": "立法(legislate)就是把法(legis)拿出来(late)通过，制定规则。"
+      },
+      {
+        "word": "neglect",
+        "meaning": "vt. / n. 忽视，疏忽",
+        "inflections": [
+          {
+            "word": "negligence",
+            "pos": "n.",
+            "meaning": "疏忽，过失"
+          },
+          {
+            "word": "negligible",
+            "pos": "adj.",
+            "meaning": "可以忽略的，微不足道的"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "neglect one's duties",
+            "zh": "玩忽职守"
+          },
+          {
+            "en": "child neglect",
+            "zh": "忽视儿童"
+          },
+          {
+            "en": "neglect one's duty",
+            "zh": "玩忽职守"
+          },
+          {
+            "en": "neglect to do something",
+            "zh": "疏忽做某事"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Parents who are overly consumed by their careers often inadvertently neglect the emotional and psychological needs of their children.",
+            "zh": "过度专注于事业的父母常常不经意间忽视了孩子的情感需求和心理需求。"
+          },
+          {
+            "en": "The deterioration of public infrastructure is a direct consequence of decades of governmental neglect and insufficient budget allocation.",
+            "zh": "公共基础设施的恶化是几十年来政府疏忽和预算拨款不足的直接后果。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "disregard",
+            "pos": "vt./n.",
+            "meaning": "忽视，漠视"
+          },
+          {
+            "word": "ignore",
+            "pos": "vt.",
+            "meaning": "忽视，不理睬"
+          },
+          {
+            "word": "overlook",
+            "pos": "vt.",
+            "meaning": "忽略，未注意到"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "attention",
+            "pos": "n.",
+            "meaning": "注意，关注"
+          },
+          {
+            "word": "care",
+            "pos": "n./vi.",
+            "meaning": "关心，照料"
+          }
+        ],
+        "_root": "leg / lect / lig — 法律；收集，阅读，选择 (law; gather, choose, read)",
+        "etymology": "neg(不) + lect(选择，收集) → 不去选择、不去收集 → 忽视，疏忽",
+        "mnemonic": "那个neg(不)被lect(选)中的方案，最终被大家完全neglect了，就像从清单上划掉一样。"
+      },
+      {
+        "word": "intellectual",
+        "meaning": "n. 知识分子 adj. 智力的，理智的",
+        "inflections": [
+          {
+            "word": "intellect",
+            "pos": "n.",
+            "meaning": "智力，理解力"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "intellectual property",
+            "zh": "知识产权"
+          },
+          {
+            "en": "intellectual development",
+            "zh": "智力发展"
+          },
+          {
+            "en": "intellectual curiosity",
+            "zh": "求知欲"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The protection of intellectual property rights is crucial for fostering sustained innovation in the technology sector.",
+            "zh": "保护知识产权对于促进科技领域的持续创新至关重要。"
+          },
+          {
+            "en": "Engaging children in artistic activities from an early age significantly stimulates their intellectual and creative development.",
+            "zh": "让儿童从小参与艺术活动能显著激发他们的智力与创造力发展。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "cerebral",
+            "pos": "adj.",
+            "meaning": "理智的，脑力的"
+          },
+          {
+            "word": "mental",
+            "pos": "adj.",
+            "meaning": "智力的，心理的"
+          },
+          {
+            "word": "scholar",
+            "pos": "n.",
+            "meaning": "学者"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "physical",
+            "pos": "adj.",
+            "meaning": "身体的，体力的"
+          },
+          {
+            "word": "emotional",
+            "pos": "adj.",
+            "meaning": "情感的，情绪化的"
+          }
+        ],
+        "_root": "leg / lect / lig — 法律；收集，阅读，选择 (law; gather, choose, read)",
+        "etymology": "inter(在...之间) + lect(选择，阅读) + ual(形容词后缀) → 能在众多信息中选择阅读 → 有智力的，知识分子",
+        "mnemonic": "真正的知识分子(inter-lect-ual)总能在纷繁信息间(inter)精心挑选(lect)真知，这就是intellectual的力量。"
+      },
+      {
+        "word": "elite",
+        "meaning": "n. 精英，精华 adj. 精英的，最优秀的",
+        "inflections": [
+          {
+            "word": "elitism",
+            "pos": "n.",
+            "meaning": "精英主义，优越感"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "political elite",
+            "zh": "政治精英"
+          },
+          {
+            "en": "elite education",
+            "zh": "精英教育"
+          },
+          {
+            "en": "elite group",
+            "zh": "精英团体"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The widening gap between the political elite and ordinary citizens has contributed to growing social unrest.",
+            "zh": "政治精英与普通公民之间日益扩大的差距加剧了社会动荡。"
+          },
+          {
+            "en": "Access to elite higher education institutions should be determined by academic merit rather than socioeconomic privilege.",
+            "zh": "进入精英高等教育机构的机会应由学业成绩决定，而非社会经济特权。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "aristocracy",
+            "pos": "n.",
+            "meaning": "贵族，精英阶层"
+          },
+          {
+            "word": "cream",
+            "pos": "n.",
+            "meaning": "精华，佼佼者"
+          },
+          {
+            "word": "exclusive",
+            "pos": "adj.",
+            "meaning": "高级的，排外的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "commoner",
+            "pos": "n.",
+            "meaning": "平民"
+          },
+          {
+            "word": "ordinary",
+            "pos": "adj.",
+            "meaning": "普通的"
+          }
+        ],
+        "_root": "leg / lect / lig — 法律；收集，阅读，选择 (law; gather, choose, read)",
+        "etymology": "e(出) + lect(选择) → 被挑选出来的部分 → 精英，精华",
+        "mnemonic": "只有e(出)类拔萃的人，才能被lect(选)入elite(精英)团队，就像选秀节目中挑出的精华。"
+      },
+      {
+        "word": "eligible",
+        "meaning": "adj. 符合条件的，合格的",
+        "inflections": [
+          {
+            "word": "eligibility",
+            "pos": "n.",
+            "meaning": "资格，合格"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "eligible for a scholarship",
+            "zh": "符合奖学金条件"
+          },
+          {
+            "en": "eligible voters",
+            "zh": "合格选民"
+          },
+          {
+            "en": "eligible applicant",
+            "zh": "符合条件的申请人"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Only students who have maintained a consistently high GPA are eligible for the fully funded overseas research program.",
+            "zh": "只有保持一贯高平均绩点的学生才有资格申请该全额资助的海外研究项目。"
+          },
+          {
+            "en": "The government expanded the eligibility criteria to ensure that a greater proportion of low-income families could access housing subsidies.",
+            "zh": "政府放宽了资格标准，以确保更多低收入家庭能够获得住房补贴。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "qualified",
+            "pos": "adj.",
+            "meaning": "合格的，有资格的"
+          },
+          {
+            "word": "suitable",
+            "pos": "adj.",
+            "meaning": "适合的，符合条件的"
+          },
+          {
+            "word": "entitled",
+            "pos": "adj.",
+            "meaning": "有资格的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "ineligible",
+            "pos": "adj.",
+            "meaning": "不合格的"
+          },
+          {
+            "word": "unqualified",
+            "pos": "adj.",
+            "meaning": "不合格的"
+          }
+        ],
+        "_root": "leg / lect / lig — 法律；收集，阅读，选择 (law; gather, choose, read)",
+        "etymology": "e(出) + lig(选择) + ible(可...的) → 可以被选出来的 → 符合条件的，合格的",
+        "mnemonic": "要获得奖学金，你必须保证自己elig(能被选)ible(的)，即eligible(符合条件的)，然后才能被e(出)选。"
+      },
+      {
+        "word": "collect",
+        "phonetic": "",
+        "meaning": "v. 收集，采集；聚集",
+        "inflections": [
+          {
+            "word": "collection",
+            "pos": "n.",
+            "meaning": "收集；收藏品"
+          },
+          {
+            "word": "collective",
+            "pos": "adj.",
+            "meaning": "集体的"
+          },
+          {
+            "word": "collector",
+            "pos": "n.",
+            "meaning": "收藏家"
+          }
+        ],
+        "synonyms": [
+          {
+            "word": "gather",
+            "pos": "v.",
+            "meaning": "收集"
+          },
+          {
+            "word": "accumulate",
+            "pos": "v.",
+            "meaning": "积累"
+          },
+          {
+            "word": "amass",
+            "pos": "v.",
+            "meaning": "积聚"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "disperse",
+            "pos": "v.",
+            "meaning": "分散"
+          },
+          {
+            "word": "distribute",
+            "pos": "v.",
+            "meaning": "分发"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "collect data",
+            "zh": "收集数据"
+          },
+          {
+            "en": "collect evidence",
+            "zh": "收集证据"
+          },
+          {
+            "en": "collect stamps",
+            "zh": "集邮"
+          },
+          {
+            "en": "collective responsibility",
+            "zh": "集体责任"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Before drawing any conclusions, researchers must collect sufficient empirical data to support their hypotheses.",
+            "zh": "在得出结论之前，研究人员必须收集足够的实证数据来支持他们的假设。"
+          },
+          {
+            "en": "The museum's extensive collection of artifacts provides valuable insights into the region's cultural heritage.",
+            "zh": "博物馆丰富的文物收藏为了解该地区的文化遗产提供了宝贵的见解。"
+          }
+        ],
+        "etymology": "",
+        "mnemonic": ""
+      },
+      {
+        "word": "select",
+        "phonetic": "",
+        "meaning": "vt. 选择，挑选 adj. 精选的，优等的",
+        "inflections": [
+          {
+            "word": "selection",
+            "pos": "n.",
+            "meaning": "选择"
+          },
+          {
+            "word": "selective",
+            "pos": "adj.",
+            "meaning": "选择性的"
+          }
+        ],
+        "synonyms": [
+          {
+            "word": "choose",
+            "pos": "v.",
+            "meaning": "选择"
+          },
+          {
+            "word": "pick",
+            "pos": "v.",
+            "meaning": "挑选"
+          },
+          {
+            "word": "opt for",
+            "pos": "v.",
+            "meaning": "选择"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "reject",
+            "pos": "v.",
+            "meaning": "拒绝"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "select from",
+            "zh": "从...中选择"
+          },
+          {
+            "en": "carefully selected",
+            "zh": "精心挑选的"
+          },
+          {
+            "en": "select candidates",
+            "zh": "挑选候选人"
+          },
+          {
+            "en": "a select group",
+            "zh": "一个精选的群体"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Universities typically select applicants based on a combination of academic achievement, extracurricular involvement, and personal statements.",
+            "zh": "大学通常根据学业成绩、课外活动参与和个人陈述的综合表现来挑选申请者。"
+          },
+          {
+            "en": "The committee was tasked with selecting the most qualified candidates from a pool of over five hundred applicants.",
+            "zh": "委员会的任务是从五百多名申请者中挑选最合格的候选人。"
+          }
+        ],
+        "etymology": "",
+        "mnemonic": ""
+      },
+      {
+        "word": "elegant",
+        "phonetic": "",
+        "meaning": "adj. 优雅的，优美的；简练的",
+        "inflections": [
+          {
+            "word": "elegance",
+            "pos": "n.",
+            "meaning": "优雅"
+          },
+          {
+            "word": "elegantly",
+            "pos": "adv.",
+            "meaning": "优雅地"
+          }
+        ],
+        "synonyms": [
+          {
+            "word": "graceful",
+            "pos": "adj.",
+            "meaning": "优美的"
+          },
+          {
+            "word": "refined",
+            "pos": "adj.",
+            "meaning": "精致的"
+          },
+          {
+            "word": "sophisticated",
+            "pos": "adj.",
+            "meaning": "精致的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "clumsy",
+            "pos": "adj.",
+            "meaning": "笨拙的"
+          },
+          {
+            "word": "crude",
+            "pos": "adj.",
+            "meaning": "粗糙的"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "elegant solution",
+            "zh": "优雅的解决方案"
+          },
+          {
+            "en": "elegant design",
+            "zh": "优雅的设计"
+          },
+          {
+            "en": "simple yet elegant",
+            "zh": "简约而优雅"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The architect's elegant design seamlessly integrates modern functionality with traditional aesthetic elements.",
+            "zh": "建筑师优雅的设计将现代功能与传统美学元素无缝融合。"
+          },
+          {
+            "en": "In mathematics, the most elegant proofs are often those that express complex ideas with remarkable simplicity.",
+            "zh": "在数学中，最优雅的证明往往是用非凡的简洁表达复杂思想的证明。"
+          }
+        ],
+        "etymology": "",
+        "mnemonic": ""
+      },
+      {
+        "word": "obligation",
+        "phonetic": "[ˌɒblɪˈɡeɪʃn]",
+        "meaning": "n. 义务,职责,责任",
+        "inflections": [
+          {
+            "word": "obligatory",
+            "pos": "adj.",
+            "meaning": "义务的；必须的"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "legal obligation",
+            "zh": ""
+          },
+          {
+            "en": "fulfill moral obligations",
+            "zh": ""
+          },
+          {
+            "en": "under statutory obligation",
+            "zh": ""
+          },
+          {
+            "en": "moral obligation",
+            "zh": "道德责任"
+          },
+          {
+            "en": "sense of obligation",
+            "zh": "责任感"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Sovereign states possess a fundamental legal obligation to safeguard the basic human rights and ecological stability of their territories.",
+            "zh": "主权国家负有基本的法律义务，维护其领土内的基本人权和生态稳定。"
+          }
+        ],
+        "synonyms": [
+          {
+            "word": "duty",
+            "pos": "n.",
+            "meaning": "责任"
+          },
+          {
+            "word": "responsibility",
+            "pos": "n.",
+            "meaning": "职责"
+          },
+          {
+            "word": "commitment",
+            "pos": "n.",
+            "meaning": "义务"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "right",
+            "pos": "n.",
+            "meaning": "权利"
+          },
+          {
+            "word": "option",
+            "pos": "n.",
+            "meaning": "选择权"
+          }
+        ],
+        "_root": "lig / oblig — 捆绑，约束 (to bind)",
+        "etymology": "ob(朝向) + lig(捆绑) + ation(名词后缀) → 绑住某人的事物 → 义务，责任",
+        "mnemonic": "弟弟(ob)被绳子(lig)绑着去做事，这是他的义务(obligation)。"
+      }
+    ]
+  },
+  {
+    "root": "vert / vers",
+    "root_meaning": "转，改变 (to turn)",
+    "words": [
+      {
+        "word": "diversion",
+        "meaning": "n. 转向，转移；娱乐，消遣",
+        "inflections": [
+          {
+            "word": "divert",
+            "pos": "v.",
+            "meaning": "使转向；转移；娱乐"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "create a diversion",
+            "zh": "制造转移注意力的事物"
+          },
+          {
+            "en": "water diversion project",
+            "zh": "调水工程"
+          },
+          {
+            "en": "diversion of funds",
+            "zh": "挪用资金"
+          },
+          {
+            "en": "traffic diversion",
+            "zh": "交通改道"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Video games serve not only as a form of popular diversion but also as a tool for enhancing cognitive reflexes and problem-solving skills.",
+            "zh": "电子游戏不仅是一种流行的消遣方式，也是增强认知反应和解决问题能力的工具。"
+          },
+          {
+            "en": "The government approved the river diversion project to alleviate the severe drought that had devastated the agricultural basin.",
+            "zh": "政府批准了河流改道工程，以缓解严重干旱对农业流域的破坏。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "pastime",
+            "pos": "n.",
+            "meaning": "消遣，娱乐"
+          },
+          {
+            "word": "recreation",
+            "pos": "n.",
+            "meaning": "娱乐，消遣"
+          },
+          {
+            "word": "deviation",
+            "pos": "n.",
+            "meaning": "偏离，转向"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "focus",
+            "pos": "n.",
+            "meaning": "专注，集中"
+          },
+          {
+            "word": "work",
+            "pos": "n.",
+            "meaning": "工作"
+          }
+        ],
+        "_root": "vert / vers — 转，改变 (to turn)",
+        "etymology": "di(偏离) + vers(转) + ion(名词后缀) → 转向一边 → 转移，转向；消遣",
+        "mnemonic": "为了避开枯燥的学习，他di(分)心去玩乐，这个diversion(消遣)就像把他的注意力vers(转)了个大弯。"
+      },
+      {
+        "word": "reverse",
+        "meaning": "v. 颠倒，反转 n. 相反，背面 adj. 相反的",
+        "inflections": [
+          {
+            "word": "reversible",
+            "pos": "adj.",
+            "meaning": "可逆的；可反转的"
+          },
+          {
+            "word": "irreversible",
+            "pos": "adj.",
+            "meaning": "不可逆的"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "reverse the trend",
+            "zh": "扭转趋势"
+          },
+          {
+            "en": "in reverse order",
+            "zh": "按相反顺序"
+          },
+          {
+            "en": "reverse side",
+            "zh": "背面"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Without immediate international cooperation, it will be impossible to reverse the devastating trend of global warming and biodiversity loss.",
+            "zh": "没有立即的国际合作，就不可能扭转全球变暖和生物多样性丧失的毁灭性趋势。"
+          },
+          {
+            "en": "The policy had the reverse effect of what was intended, leading to higher unemployment rates rather than stimulating economic growth.",
+            "zh": "该政策产生了与预期相反的效果，导致失业率上升，而不是刺激经济增长。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "invert",
+            "pos": "v.",
+            "meaning": "使倒转；颠倒"
+          },
+          {
+            "word": "overturn",
+            "pos": "v.",
+            "meaning": "推翻；颠倒"
+          },
+          {
+            "word": "contrary",
+            "pos": "adj.",
+            "meaning": "相反的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "advance",
+            "pos": "v.",
+            "meaning": "前进；推进"
+          },
+          {
+            "word": "preserve",
+            "pos": "v.",
+            "meaning": "保持；维持"
+          }
+        ],
+        "_root": "vert / vers — 转，改变 (to turn)",
+        "etymology": "re(回) + vers(转) + e → 向后转 → 颠倒，反转，相反",
+        "mnemonic": "汽车re(倒)车时，方向盘vers(转)动将车reverse(倒转)，影像后视镜里的一切都颠倒了。"
+      },
+      {
+        "word": "controversy",
+        "meaning": "n. 争论，争议",
+        "inflections": [
+          {
+            "word": "controversial",
+            "pos": "adj.",
+            "meaning": "有争议的，引起争论的"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "spark controversy",
+            "zh": "引发争议"
+          },
+          {
+            "en": "a matter of controversy",
+            "zh": "有争议的问题"
+          },
+          {
+            "en": "a source of controversy",
+            "zh": "争论的根源"
+          },
+          {
+            "en": "intense controversy",
+            "zh": "激烈的争论"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The use of artificial intelligence in judicial decision-making has sparked considerable controversy among legal scholars.",
+            "zh": "人工智能在司法决策中的使用在法律学者中引发了相当大的争议。"
+          },
+          {
+            "en": "Genetically modified crops remain a matter of intense controversy, with proponents citing food security and opponents highlighting ecological risks.",
+            "zh": "转基因作物仍然是一个激烈争议的问题，支持者强调粮食安全，反对者则强调生态风险。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "dispute",
+            "pos": "n.",
+            "meaning": "争论；辩论"
+          },
+          {
+            "word": "debate",
+            "pos": "n.",
+            "meaning": "辩论；争论"
+          },
+          {
+            "word": "argument",
+            "pos": "n.",
+            "meaning": "争论；论据"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "agreement",
+            "pos": "n.",
+            "meaning": "一致；同意"
+          },
+          {
+            "word": "consensus",
+            "pos": "n.",
+            "meaning": "共识"
+          }
+        ],
+        "_root": "vert / vers — 转，改变 (to turn)",
+        "etymology": "contro(反) + vers(转) + y(名词后缀) → 转到反面 → 争论，争议",
+        "mnemonic": "反对派(contro)总是把话题翻来转去(vers)，引发争议。"
+      },
+      {
+        "word": "convert",
+        "phonetic": "",
+        "meaning": "v. 转变，转换；使皈依 n. 皈依者",
+        "inflections": [
+          {
+            "word": "conversion",
+            "pos": "n.",
+            "meaning": "转换；皈依"
+          },
+          {
+            "word": "convertible",
+            "pos": "adj./n.",
+            "meaning": "可转换的；敞篷车"
+          }
+        ],
+        "synonyms": [
+          {
+            "word": "transform",
+            "pos": "vt.",
+            "meaning": "转变"
+          },
+          {
+            "word": "alter",
+            "pos": "vt.",
+            "meaning": "改变"
+          },
+          {
+            "word": "change",
+            "pos": "v.",
+            "meaning": "改变"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "preserve",
+            "pos": "v.",
+            "meaning": "保持"
+          },
+          {
+            "word": "maintain",
+            "pos": "vt.",
+            "meaning": "维持"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "convert into",
+            "zh": "转变为"
+          },
+          {
+            "en": "convert currency",
+            "zh": "兑换货币"
+          },
+          {
+            "en": "convert to Christianity",
+            "zh": "皈依基督教"
+          },
+          {
+            "en": "convert waste into energy",
+            "zh": "将废物转化为能源"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Many cities are now investing in technology that can convert household waste into renewable energy.",
+            "zh": "许多城市正在投资能将家庭垃圾转化为可再生能源的技术。"
+          },
+          {
+            "en": "The company plans to convert its entire fleet of delivery vehicles to electric power within the next five years.",
+            "zh": "该公司计划在未来五年内将其整个送货车队转换为电动车辆。"
+          }
+        ],
+        "etymology": "",
+        "mnemonic": ""
+      },
+      {
+        "word": "diverse",
+        "phonetic": "",
+        "meaning": "adj. 多样的，不同的；多元的",
+        "inflections": [
+          {
+            "word": "diversity",
+            "pos": "n.",
+            "meaning": "多样性"
+          },
+          {
+            "word": "diversify",
+            "pos": "v.",
+            "meaning": "使多样化"
+          }
+        ],
+        "synonyms": [
+          {
+            "word": "varied",
+            "pos": "adj.",
+            "meaning": "多样的"
+          },
+          {
+            "word": "multifaceted",
+            "pos": "adj.",
+            "meaning": "多方面的"
+          },
+          {
+            "word": "heterogeneous",
+            "pos": "adj.",
+            "meaning": "异质的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "uniform",
+            "pos": "adj.",
+            "meaning": "一致的"
+          },
+          {
+            "word": "homogeneous",
+            "pos": "adj.",
+            "meaning": "同质的"
+          },
+          {
+            "word": "monolithic",
+            "pos": "adj.",
+            "meaning": "单一的"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "culturally diverse",
+            "zh": "文化多元的"
+          },
+          {
+            "en": "diverse range of",
+            "zh": "广泛的"
+          },
+          {
+            "en": "ethnic diversity",
+            "zh": "种族多样性"
+          },
+          {
+            "en": "biodiversity",
+            "zh": "生物多样性"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "A culturally diverse workforce brings together different perspectives that can lead to more innovative problem-solving.",
+            "zh": "文化多元的员工队伍汇集了不同的视角，可以带来更具创新性的问题解决方案。"
+          },
+          {
+            "en": "Conservation efforts are essential to protect the Earth's diverse ecosystems from the devastating effects of climate change.",
+            "zh": "保护努力对于保护地球多样的生态系统免受气候变化的破坏性影响至关重要。"
+          }
+        ],
+        "etymology": "",
+        "mnemonic": ""
+      },
+      {
+        "word": "version",
+        "phonetic": "",
+        "meaning": "n. 版本；说法，描述",
+        "inflections": [
+          {
+            "word": "versioning",
+            "pos": "n.",
+            "meaning": "版本控制"
+          }
+        ],
+        "synonyms": [
+          {
+            "word": "edition",
+            "pos": "n.",
+            "meaning": "版本"
+          },
+          {
+            "word": "variant",
+            "pos": "n.",
+            "meaning": "变体"
+          },
+          {
+            "word": "rendition",
+            "pos": "n.",
+            "meaning": "演绎"
+          }
+        ],
+        "antonyms": [],
+        "ielts_phrases": [
+          {
+            "en": "original version",
+            "zh": "原版"
+          },
+          {
+            "en": "updated version",
+            "zh": "更新版本"
+          },
+          {
+            "en": "abridged version",
+            "zh": "删节版"
+          },
+          {
+            "en": "trial version",
+            "zh": "试用版"
+          },
+          {
+            "en": "someone's version of events",
+            "zh": "某人对事件的描述"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The latest version of the software includes several crucial security updates that address previously identified vulnerabilities.",
+            "zh": "该软件的最新版本包含了几项关键的安全更新，解决了之前发现的漏洞。"
+          },
+          {
+            "en": "Eyewitnesses often provide conflicting versions of the same incident, demonstrating the unreliability of memory under stress.",
+            "zh": "目击者常常对同一事件提供相互矛盾的说法，这说明了在压力下记忆的不可靠性。"
+          }
+        ],
+        "etymology": "",
+        "mnemonic": ""
+      },
+      {
+        "word": "extrovert",
+        "meaning": "n. 性格外向者 adj. 外向的",
+        "inflections": [
+          {
+            "word": "extroversion",
+            "pos": "n.",
+            "meaning": "外向性；外向性格"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "natural extrovert",
+            "zh": "天生的外向者"
+          },
+          {
+            "en": "extrovert personality",
+            "zh": "外向性格"
+          },
+          {
+            "en": "social extrovert",
+            "zh": "社交外向者"
+          },
+          {
+            "en": "extrovert tendencies",
+            "zh": "外向倾向"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "While extroverts typically thrive in collaborative team environments, introverts often excel at tasks requiring sustained individual concentration.",
+            "zh": "虽然外向者通常在协作团队环境中如鱼得水，但内向者往往在需要持续专注的个人任务上表现出色。"
+          },
+          {
+            "en": "The modern workplace frequently privileges extrovert personality traits, potentially disadvantaging quieter but equally capable employees.",
+            "zh": "现代职场常常优待外向型人格特质，这可能会让安静但同样有能力的员工处于不利地位。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "outgoing",
+            "pos": "adj.",
+            "meaning": "外向的"
+          },
+          {
+            "word": "sociable",
+            "pos": "adj.",
+            "meaning": "好交际的"
+          },
+          {
+            "word": "gregarious",
+            "pos": "adj.",
+            "meaning": "爱社交的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "introvert",
+            "pos": "n.",
+            "meaning": "内向的人"
+          },
+          {
+            "word": "reserved",
+            "pos": "adj.",
+            "meaning": "矜持的；内向的"
+          }
+        ],
+        "_root": "vers / vert (二期) — 转 (to turn) — 补充词汇",
+        "etymology": "extro (向外) + vert (转) → 转向外部世界 → 性格外向者，外向的",
+        "mnemonic": "外向者(extrovert)像天线一样向外(extro)转(vert)，时刻接收外界的信号与社交能量。"
+      }
+    ]
+  },
+  {
+    "root": "voc / vok",
+    "root_meaning": "叫喊，呼唤 (to call, voice)",
+    "words": [
+      {
+        "word": "irrevocable",
+        "meaning": "adj. 无法取消的，不能改变的",
+        "inflections": [
+          {
+            "word": "irrevocably",
+            "pos": "adv.",
+            "meaning": "不可撤销地；不能改变地"
+          },
+          {
+            "word": "revoke",
+            "pos": "vt.",
+            "meaning": "撤销；撤回；取消"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "irrevocable decision",
+            "zh": "不可撤销的决定"
+          },
+          {
+            "en": "irrevocable damage",
+            "zh": "不可挽回的损害"
+          },
+          {
+            "en": "irrevocable step",
+            "zh": "不可逆转的一步"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Once the environmental damage reaches a certain threshold, it becomes irrevocable despite any subsequent remedial measures.",
+            "zh": "一旦环境破坏达到某个临界点，即便采取任何后续补救措施，它也会变得不可逆转。"
+          },
+          {
+            "en": "Signing the international treaty constituted an irrevocable commitment to reducing carbon emissions by forty percent within the next decade.",
+            "zh": "签署该国际条约构成了一项不可撤销的承诺，即在未来十年内将碳排放量减少百分之四十。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "irreversible",
+            "pos": "adj.",
+            "meaning": "不可逆的；不可挽回的"
+          },
+          {
+            "word": "unalterable",
+            "pos": "adj.",
+            "meaning": "不可改变的"
+          },
+          {
+            "word": "final",
+            "pos": "adj.",
+            "meaning": "最终的；决定性的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "reversible",
+            "pos": "adj.",
+            "meaning": "可逆的；可翻转的"
+          },
+          {
+            "word": "revocable",
+            "pos": "adj.",
+            "meaning": "可撤销的；可废除的"
+          }
+        ],
+        "_root": "voc / vok — 叫喊，呼唤 (to call, voice)",
+        "etymology": "ir-(不) + re-(回) + voc(呼唤) + -able(可...的) → 不能呼唤回来的 → 不可撤销的",
+        "mnemonic": "一旦决定就无法(ir)再(re)呼唤(voc)回来(able)，就是不可撤销的。"
+      },
+      {
+        "word": "equivocal",
+        "meaning": "adj. 模棱两可的，意义不清的",
+        "inflections": [
+          {
+            "word": "equivocate",
+            "pos": "v.",
+            "meaning": "含糊其辞，支吾"
+          },
+          {
+            "word": "unequivocal",
+            "pos": "adj.",
+            "meaning": "明确的，不含糊的"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "equivocal response",
+            "zh": "模棱两可的回应"
+          },
+          {
+            "en": "equivocal evidence",
+            "zh": "不确凿的证据"
+          },
+          {
+            "en": "equivocal answer",
+            "zh": "模棱两可的回答"
+          },
+          {
+            "en": "equivocal attitude",
+            "zh": "暧昧的态度"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The politician delivered an equivocal response to questions regarding campaign finance, which further eroded public trust.",
+            "zh": "这位政治家对竞选资金的问题给出了模棱两可的回应，这进一步损害了公众的信任。"
+          },
+          {
+            "en": "Scientific research demands precision; equivocal interpretations of experimental data can lead to fundamentally flawed conclusions.",
+            "zh": "科学研究要求精确性；对实验数据的模棱两可的解释可能导致根本错误的结论。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "ambiguous",
+            "pos": "adj.",
+            "meaning": "模棱两可的"
+          },
+          {
+            "word": "vague",
+            "pos": "adj.",
+            "meaning": "含糊的"
+          },
+          {
+            "word": "obscure",
+            "pos": "adj.",
+            "meaning": "模糊不清的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "unequivocal",
+            "pos": "adj.",
+            "meaning": "明确的"
+          },
+          {
+            "word": "clear",
+            "pos": "adj.",
+            "meaning": "清楚的"
+          }
+        ],
+        "_root": "voc / vok — 叫喊，呼唤 (to call, voice)",
+        "etymology": "equi-(相等) + voc(声音) + -al(形容词后缀) → 两种声音相等 → 模棱两可的",
+        "mnemonic": "两边声音(voc)相等(equi)，让人分不清哪边对，就是模棱两可。"
+      },
+      {
+        "word": "vocation",
+        "meaning": "n. 职业，行业",
+        "inflections": [
+          {
+            "word": "vocational",
+            "pos": "adj.",
+            "meaning": "职业的，行业的"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "vocational training",
+            "zh": "职业培训"
+          },
+          {
+            "en": "sense of vocation",
+            "zh": "使命感"
+          },
+          {
+            "en": "vocational education",
+            "zh": "职业教育"
+          },
+          {
+            "en": "pursue a vocation",
+            "zh": "从事某一职业"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Vocational training programs have proven to be an effective means of bridging the skills gap in the manufacturing sector.",
+            "zh": "职业培训项目已证明是弥补制造业技能差距的有效手段。"
+          },
+          {
+            "en": "Teaching is widely regarded not merely as a profession but as a genuine vocation that requires deep personal commitment.",
+            "zh": "教学被广泛认为不仅是一种职业，更是一种需要深刻个人投入的真正使命。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "profession",
+            "pos": "n.",
+            "meaning": "职业"
+          },
+          {
+            "word": "calling",
+            "pos": "n.",
+            "meaning": "天职，使命"
+          },
+          {
+            "word": "occupation",
+            "pos": "n.",
+            "meaning": "职业"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "avocation",
+            "pos": "n.",
+            "meaning": "副业，业余爱好"
+          }
+        ],
+        "_root": "voc / vok — 叫喊，呼唤 (to call, voice)",
+        "etymology": "voc(呼唤) + -ation(名词后缀) → 被召唤(使命) → 职业",
+        "mnemonic": "听从内心呼唤(voc)的工作，就是你的天职(vocation)。"
+      },
+      {
+        "word": "avenge",
+        "meaning": "vt. 报仇，复仇，向(某人)报仇",
+        "inflections": [
+          {
+            "word": "avenger",
+            "pos": "n.",
+            "meaning": "复仇者"
+          },
+          {
+            "word": "vengeance",
+            "pos": "n.",
+            "meaning": "复仇; 报仇"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "avenge a wrong",
+            "zh": "报仇雪恨"
+          },
+          {
+            "en": "swear to avenge",
+            "zh": "发誓要报仇"
+          },
+          {
+            "en": "avenge a death",
+            "zh": "为死报仇"
+          },
+          {
+            "en": "avenge an insult",
+            "zh": "为侮辱报复"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The protagonist's unrelenting desire to avenge the injustice inflicted upon her family serves as the central narrative drive of the novel.",
+            "zh": "主人公为家人遭受的不公正待遇复仇的坚定决心，构成了这部小说的核心叙事动力。"
+          },
+          {
+            "en": "International law exists precisely to ensure that nations do not unilaterally seek to avenge perceived wrongs through military aggression.",
+            "zh": "国际法的存在正是为了确保各国不会单方面地通过军事侵略来寻求报复所认为的冤屈。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "retaliate",
+            "pos": "vi.",
+            "meaning": "报复"
+          },
+          {
+            "word": "revenge",
+            "pos": "vt.",
+            "meaning": "报仇"
+          },
+          {
+            "word": "punish",
+            "pos": "vt.",
+            "meaning": "惩罚"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "forgive",
+            "pos": "vt.",
+            "meaning": "原谅"
+          },
+          {
+            "word": "pardon",
+            "pos": "vt.",
+            "meaning": "赦免"
+          }
+        ],
+        "_root": "voc / veng — 声音；复仇 (voice; revenge)",
+        "etymology": "a(向，朝) + venge(复仇，源自拉丁文vindicare) → 朝向某人复仇 → 报仇，复仇",
+        "mnemonic": "阿(a)文(ven)哥(ge)要为家人报仇，他发誓要报复仇人。"
+      },
+      {
+        "word": "vindicate",
+        "meaning": "v. 为...辩白；证明...正确；维护",
+        "inflections": [
+          {
+            "word": "vindication",
+            "pos": "n.",
+            "meaning": "辩护; 证明无罪"
+          },
+          {
+            "word": "vindictive",
+            "pos": "adj.",
+            "meaning": "怀恨的; 报复性的"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "vindicate one's reputation",
+            "zh": "维护声誉"
+          },
+          {
+            "en": "be fully vindicated",
+            "zh": "完全被证明正确"
+          },
+          {
+            "en": "vindicate one's rights",
+            "zh": "维护权利"
+          },
+          {
+            "en": "vindicate a decision",
+            "zh": "证明决定正确"
+          },
+          {
+            "en": "be vindicated by evidence",
+            "zh": "被证据证明清白"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The publication of the previously classified documents served to vindicate the journalist's controversial allegations against the corporation.",
+            "zh": "这些先前机密文件的公布，证明了该记者对公司提出的有争议指控是正确的。"
+          },
+          {
+            "en": "While the scientist's theory was initially ridiculed by the academic establishment, subsequent research fully vindicated her groundbreaking hypothesis.",
+            "zh": "尽管这位科学家的理论最初遭到了学术界的嘲笑，但随后的研究充分证实了她开创性的假设。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "justify",
+            "pos": "vt.",
+            "meaning": "证明…正确"
+          },
+          {
+            "word": "exonerate",
+            "pos": "vt.",
+            "meaning": "使免罪"
+          },
+          {
+            "word": "uphold",
+            "pos": "vt.",
+            "meaning": "支持; 维护"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "incriminate",
+            "pos": "vt.",
+            "meaning": "使负罪"
+          },
+          {
+            "word": "disprove",
+            "pos": "vt.",
+            "meaning": "反驳"
+          }
+        ],
+        "_root": "voc / veng — 声音；复仇 (voice; revenge)",
+        "etymology": "vind (来自拉丁文vindicare，意为复仇/主张) + icate (动词后缀) → 通过声音或行动为自己讨回公道 → 为...辩白；证明正确",
+        "mnemonic": "文迪卡特(vindicate)在法庭上大声辩护，证明自己的清白。"
+      }
+    ]
+  },
+  {
+    "root": "ple / plac / pleas",
+    "root_meaning": "取悦，高兴 (to please, satisfy)",
+    "words": [
+      {
+        "word": "pleasure",
+        "meaning": "n. / v. (感到)愉快、高兴、乐趣",
+        "inflections": [
+          {
+            "word": "pleasing",
+            "pos": "adj.",
+            "meaning": "令人愉快的"
+          },
+          {
+            "word": "pleasant",
+            "pos": "adj.",
+            "meaning": "令人愉快的，舒适的"
+          },
+          {
+            "word": "displeasure",
+            "pos": "n.",
+            "meaning": "不悦，不满"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "take pleasure in",
+            "zh": "以...为乐"
+          },
+          {
+            "en": "a sense of pleasure",
+            "zh": "愉悦感"
+          },
+          {
+            "en": "take great pleasure in",
+            "zh": "从…中获得很大乐趣"
+          },
+          {
+            "en": "with pleasure",
+            "zh": "乐意地；愉快地"
+          },
+          {
+            "en": "a simple pleasure",
+            "zh": "简单的快乐"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "An increasing number of individuals now derive greater pleasure from experiences and travel than from the acquisition of material possessions.",
+            "zh": "如今，越来越多的人从体验和旅行中获得的快乐大于从获取物质财富中获得的快乐。"
+          },
+          {
+            "en": "The intrinsic pleasure associated with creative problem-solving is a powerful motivator for scientists engaged in fundamental research.",
+            "zh": "与创造性解决问题相关的内在愉悦是从事基础研究的科学家们的强大动力。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "enjoyment",
+            "pos": "n.",
+            "meaning": "享受，乐趣"
+          },
+          {
+            "word": "delight",
+            "pos": "n.",
+            "meaning": "高兴，快乐"
+          },
+          {
+            "word": "joy",
+            "pos": "n.",
+            "meaning": "欢乐，喜悦"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "displeasure",
+            "pos": "n.",
+            "meaning": "不悦，不满"
+          },
+          {
+            "word": "pain",
+            "pos": "n.",
+            "meaning": "痛苦"
+          }
+        ],
+        "_root": "ple / plac / pleas — 取悦，高兴 (to please, satisfy)",
+        "etymology": "pleas(取悦) + ure(名词后缀) → 取悦的状态 → 愉快，乐趣",
+        "mnemonic": "请(plea)你确(sure)定要尽情享受这份快乐(pleasure)。"
+      },
+      {
+        "word": "complacent",
+        "meaning": "adj. 自满的，得意的",
+        "inflections": [
+          {
+            "word": "complacency",
+            "pos": "n.",
+            "meaning": "自满，满足"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "dangerously complacent",
+            "zh": "危险的自满"
+          },
+          {
+            "en": "avoid complacency",
+            "zh": "避免自满"
+          },
+          {
+            "en": "complacent about one's achievements",
+            "zh": "对自己的成就感到自满"
+          },
+          {
+            "en": "a complacent smile",
+            "zh": "得意的微笑"
+          },
+          {
+            "en": "become complacent",
+            "zh": "变得自满"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Organizations that become complacent about their market dominance risk being swiftly overtaken by more innovative competitors.",
+            "zh": "那些对其市场主导地位感到自满的组织，有被更具创新力的竞争对手迅速超越的风险。"
+          },
+          {
+            "en": "The government cannot afford to be complacent about the modest decline in unemployment; structural reforms are still urgently needed.",
+            "zh": "政府不能满足于失业率的轻微下降而沾沾自喜；结构性改革仍然迫切需要。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "self-satisfied",
+            "pos": "adj.",
+            "meaning": "自满的"
+          },
+          {
+            "word": "smug",
+            "pos": "adj.",
+            "meaning": "自鸣得意的"
+          },
+          {
+            "word": "conceited",
+            "pos": "adj.",
+            "meaning": "自负的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "dissatisfied",
+            "pos": "adj.",
+            "meaning": "不满的"
+          },
+          {
+            "word": "humble",
+            "pos": "adj.",
+            "meaning": "谦虚的"
+          }
+        ],
+        "_root": "ple / plac / pleas — 取悦，高兴 (to please, satisfy)",
+        "etymology": "com(完全) + plac(取悦) + ent(形容词后缀) → 完全取悦自己 → 自满的",
+        "mnemonic": "公司(com)给了他一个高位(place)，他就变得自满(complacent)起来。"
+      },
+      {
+        "word": "compliment",
+        "phonetic": "ˈkɒmplɪment",
+        "meaning": "vt.&n. 赞美；派：complimentary",
+        "inflections": [
+          {
+            "word": "complimentary",
+            "pos": "adj.",
+            "meaning": "赞美的；表示敬意的"
+          }
+        ],
+        "synonyms": [
+          {
+            "word": "praise",
+            "pos": "",
+            "meaning": ""
+          },
+          {
+            "word": "flatter",
+            "pos": "",
+            "meaning": ""
+          },
+          {
+            "word": "acclaim",
+            "pos": "",
+            "meaning": ""
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "criticism",
+            "pos": "n.",
+            "meaning": "批评"
+          },
+          {
+            "word": "insult",
+            "pos": "vt./n.",
+            "meaning": "侮辱"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "pay a compliment to someone",
+            "zh": ""
+          },
+          {
+            "en": "complimentary services",
+            "zh": ""
+          },
+          {
+            "en": "pay a compliment",
+            "zh": "赞美"
+          },
+          {
+            "en": "fish for compliments",
+            "zh": "讨赞美"
+          },
+          {
+            "en": "compliment someone on",
+            "zh": "称赞某人的…"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "While constructive criticism is vital for corporate evolution, managers who lavish genuine compliments on their workforce tend to foster a more synergistic organizational climate.",
+            "zh": "虽然建设性批评对于企业的进步至关重要，但那些毫不吝惜地给予员工真诚赞美的管理者，往往能营造出更具协同效应的组织氛围。"
+          }
+        ],
+        "etymology": "com(共同) + pli(充满) + -ment(名词后缀) → 让大家充满喜悦的话 → 赞美",
+        "mnemonic": "公司(com)给员工满(pli)满的赞美(compliment)，让人心里充实。",
+        "_root": "plie / ple / pli — 倍，叠，满"
+      }
+    ]
+  },
+  {
+    "root": "sper / spair",
+    "root_meaning": "希望 (hope)",
+    "words": [
+      {
+        "word": "desperate",
+        "meaning": "adj. 绝望的；极度渴望的",
+        "inflections": [
+          {
+            "word": "desperation",
+            "pos": "n.",
+            "meaning": "绝望"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "desperate situation",
+            "zh": "绝境"
+          },
+          {
+            "en": "desperately need",
+            "zh": "急需"
+          },
+          {
+            "en": "desperate attempt",
+            "zh": "绝望的尝试"
+          },
+          {
+            "en": "desperate for money",
+            "zh": "急需用钱"
+          },
+          {
+            "en": "in desperate need",
+            "zh": "迫切需要"
+          },
+          {
+            "en": "desperate measures",
+            "zh": "非常措施"
+          },
+          {
+            "en": "desperate struggle",
+            "zh": "绝望挣扎"
+          },
+          {
+            "en": "in desperate need of",
+            "zh": "急需"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The government's desperate attempt to curb inflation through price controls ultimately proved counterproductive and led to widespread shortages.",
+            "zh": "政府试图通过价格控制来遏制通货膨胀的绝望尝试最终证明适得其反，并导致了广泛的短缺。"
+          },
+          {
+            "en": "Millions of refugees are in desperate need of humanitarian assistance, including access to clean water, shelter, and emergency medical care.",
+            "zh": "数百万难民迫切需要人道主义援助，包括获得清洁水、住所和紧急医疗护理。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "hopeless",
+            "pos": "adj.",
+            "meaning": "绝望的"
+          },
+          {
+            "word": "frantic",
+            "pos": "adj.",
+            "meaning": "疯狂的，拼命的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "hopeful",
+            "pos": "adj.",
+            "meaning": "有希望的"
+          }
+        ],
+        "_root": "sper / spair — 希望 (hope)",
+        "etymology": "de(离开，否定) + sper(希望) + ate(形容词后缀) → 希望离开了 → 绝望的",
+        "mnemonic": "得(de)死吧(sper)？完全绝望了，看不到任何希望。"
+      },
+      {
+        "word": "prosper",
+        "meaning": "v. 繁荣，昌盛；成功",
+        "inflections": [
+          {
+            "word": "prosperity",
+            "pos": "n.",
+            "meaning": "繁荣，兴旺"
+          },
+          {
+            "word": "prosperous",
+            "pos": "adj.",
+            "meaning": "繁荣的，兴旺的"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "prosper economically",
+            "zh": "经济繁荣"
+          },
+          {
+            "en": "prosper and thrive",
+            "zh": "繁荣发展"
+          },
+          {
+            "en": "prosper and flourish",
+            "zh": "繁荣兴旺"
+          },
+          {
+            "en": "hope to prosper",
+            "zh": "希望成功"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "For any nation to prosper economically in the long term, it must invest strategically in education, infrastructure, and technological innovation.",
+            "zh": "任何国家要想长期经济繁荣，就必须在教育、基础设施和技术创新上进行战略性投资。"
+          },
+          {
+            "en": "Small and medium-sized enterprises can prosper in highly competitive markets if they focus on niche segments and superior customer service.",
+            "zh": "如果中小型企业专注于利基市场和优质客户服务，就能在高度竞争的市场中蓬勃发展。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "thrive",
+            "pos": "v.",
+            "meaning": "兴旺，繁荣"
+          },
+          {
+            "word": "flourish",
+            "pos": "v.",
+            "meaning": "繁荣，昌盛"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "decline",
+            "pos": "v.",
+            "meaning": "衰落，衰退"
+          },
+          {
+            "word": "fail",
+            "pos": "v.",
+            "meaning": "失败"
+          }
+        ],
+        "_root": "sper / spair (二期) — 希望 (hope) — 补充词汇",
+        "etymology": "pro(向前) + sper(希望) → 带着希望向前进 → 繁荣，成功",
+        "mnemonic": "向前(pro)播种希望(sper)的种子，终将收获繁荣昌盛。"
+      }
+    ]
+  },
+  {
+    "root": "rect / reg / rul",
+    "root_meaning": "直，统治 (straight, rule)",
+    "words": [
+      {
+        "word": "rectify",
+        "meaning": "vt. 纠正，改正；矫正",
+        "inflections": [
+          {
+            "word": "rectification",
+            "pos": "n.",
+            "meaning": "纠正，改正"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "rectify the situation",
+            "zh": "纠正局面"
+          },
+          {
+            "en": "rectify an error",
+            "zh": "纠正错误"
+          },
+          {
+            "en": "rectify the imbalance",
+            "zh": "纠正不平衡"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The government must act swiftly to rectify the systemic inequalities that perpetuate the cycle of intergenerational poverty.",
+            "zh": "政府必须迅速采取行动，纠正那些使代际贫困循环持续下去的系统性不平等。"
+          },
+          {
+            "en": "Once the accounting discrepancies were identified, the firm took immediate measures to rectify the errors and prevent their recurrence.",
+            "zh": "一旦发现会计差异，该公司立即采取措施纠正错误，并防止其再次发生。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "correct",
+            "pos": "vt.",
+            "meaning": "纠正"
+          },
+          {
+            "word": "remedy",
+            "pos": "vt.",
+            "meaning": "补救"
+          },
+          {
+            "word": "amend",
+            "pos": "vt.",
+            "meaning": "修改"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "worsen",
+            "pos": "vt.",
+            "meaning": "恶化"
+          },
+          {
+            "word": "ruin",
+            "pos": "vt.",
+            "meaning": "毁坏"
+          }
+        ],
+        "_root": "rect / reg / rul — 直，统治 (straight, rule)",
+        "etymology": "rect(直，正) + ify(使，动词后缀) → 使变直/变正 → 纠正，改正",
+        "mnemonic": "犯了错要赶紧rectify(纠正)，就像把弯曲的东西拉直(rect)。"
+      },
+      {
+        "word": "overrule",
+        "meaning": "vt. 批驳，否决；宣布无效",
+        "inflections": [
+          {
+            "word": "overrule a decision",
+            "pos": "v.",
+            "meaning": "否决一项决定"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "overrule a decision",
+            "zh": "否决决定"
+          },
+          {
+            "en": "overrule an objection",
+            "zh": "驳回异议"
+          },
+          {
+            "en": "overrule the verdict",
+            "zh": "推翻裁决"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The Supreme Court has the constitutional authority to overrule legislation that is deemed incompatible with fundamental human rights.",
+            "zh": "最高法院拥有宪法赋予的权力，可以否决被认为与基本人权不符的立法。"
+          },
+          {
+            "en": "The chairperson's decision to overrule the committee's recommendation sparked considerable resentment among senior faculty members.",
+            "zh": "主席否决委员会建议的决定在高级教职人员中引发了相当大的不满。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "veto",
+            "pos": "vt.",
+            "meaning": "否决"
+          },
+          {
+            "word": "nullify",
+            "pos": "vt.",
+            "meaning": "使无效"
+          },
+          {
+            "word": "override",
+            "pos": "vt.",
+            "meaning": "推翻"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "approve",
+            "pos": "vt.",
+            "meaning": "批准"
+          },
+          {
+            "word": "uphold",
+            "pos": "vt.",
+            "meaning": "维持"
+          }
+        ],
+        "_root": "rect / reg / rul — 直，统治 (straight, rule)",
+        "etymology": "over(在...之上) + rule(统治) → 从上统治 → 否决，批驳",
+        "mnemonic": "裁判over(高高在上)掌握rule(规则)，可以随时overrule(否决)场上判决。"
+      },
+      {
+        "word": "regular",
+        "phonetic": "[ˈreɡjələ(r)]",
+        "meaning": "a. 规则的;周期性的;经常的",
+        "inflections": [
+          {
+            "word": "regularity",
+            "pos": "n.",
+            "meaning": "规律性;规则性;定期"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "on a regular basis",
+            "zh": ""
+          },
+          {
+            "en": "maintain regular structural inspections",
+            "zh": ""
+          },
+          {
+            "en": "regular maintenance",
+            "zh": "定期维护"
+          },
+          {
+            "en": "regular intervals",
+            "zh": "规律间隔"
+          },
+          {
+            "en": "regular customer",
+            "zh": "常客"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Interacting with natural bio-diverse settings on a regular basis systematically reduces chemical stress markers within human neurological frameworks.",
+            "zh": "定期接触自然生物多样性的环境能系统性地降低人类神经系统内的化学应激标记物。"
+          }
+        ],
+        "synonyms": [
+          {
+            "word": "routine",
+            "pos": "adj.",
+            "meaning": "常规的;例行的"
+          },
+          {
+            "word": "habitual",
+            "pos": "adj.",
+            "meaning": "习惯的;惯常的"
+          },
+          {
+            "word": "periodic",
+            "pos": "adj.",
+            "meaning": "周期性的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "irregular",
+            "pos": "adj.",
+            "meaning": "不规则的"
+          },
+          {
+            "word": "sporadic",
+            "pos": "adj.",
+            "meaning": "不定期的"
+          }
+        ],
+        "_root": "reg / rig / rect — 统治，管理，正，直 (to rule, straight)",
+        "etymology": "reg(统治，规则) + ular(形容词后缀) → 按规则来的 → 规则的，定期的",
+        "mnemonic": "reg(统治)要遵循规则(regular)，定期检查不能乱。"
+      },
+      {
+        "word": "direct",
+        "phonetic": "[dəˈrekt]",
+        "meaning": "v.&a. 指挥,指示; 直接的,坦白的",
+        "inflections": [
+          {
+            "word": "direction",
+            "pos": "n.",
+            "meaning": "方向;指示;指挥"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "have a direct bearing on",
+            "zh": ""
+          },
+          {
+            "en": "direct causal linkage",
+            "zh": ""
+          },
+          {
+            "en": "direct impact",
+            "zh": "直接影响"
+          },
+          {
+            "en": "direct access",
+            "zh": "直接进入"
+          },
+          {
+            "en": "direct communication",
+            "zh": "直接交流"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Epidemiological evidence shows that early exposure to ultra-processed foodstuffs has a direct bearing on subsequent pediatric obesity rates.",
+            "zh": "流行病学证据表明，早期接触超加工食品与随后的儿童肥胖率有直接关联。"
+          }
+        ],
+        "synonyms": [
+          {
+            "word": "guide",
+            "pos": "v.",
+            "meaning": "指导"
+          },
+          {
+            "word": "instruct",
+            "pos": "v.",
+            "meaning": "指示"
+          },
+          {
+            "word": "forthright",
+            "pos": "adj.",
+            "meaning": "直率的"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "indirect",
+            "pos": "adj.",
+            "meaning": "间接的"
+          },
+          {
+            "word": "ambiguous",
+            "pos": "adj.",
+            "meaning": "含糊的"
+          }
+        ],
+        "_root": "reg / rig / rect — 统治，管理，正，直 (to rule, straight)",
+        "etymology": "di(分开，离开) + rect(正，直) → 直接引导 → 直接的，指挥",
+        "mnemonic": "di(弟弟)说话rect(直)截了当，从不绕弯，指挥别人也直接(direct)。"
+      }
+    ]
+  },
+  {
+    "root": "cur / curs / cour",
+    "root_meaning": "跑，流动 (to run, flow)",
+    "words": [
+      {
+        "word": "course",
+        "meaning": "n. 过程，进程；路线，方针；跑道；课程 v. 追猎；运行；流动",
+        "inflections": [
+          {
+            "word": "currency",
+            "pos": "n.",
+            "meaning": "货币；流通"
+          },
+          {
+            "word": "curriculum",
+            "pos": "n.",
+            "meaning": "课程"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "in due course",
+            "zh": "在适当的时候"
+          },
+          {
+            "en": "change course",
+            "zh": "改变方向"
+          },
+          {
+            "en": "in the course of history",
+            "zh": "在历史进程中"
+          },
+          {
+            "en": "a course of action",
+            "zh": "行动方针"
+          },
+          {
+            "en": "take a course in",
+            "zh": "修读...课程"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "The government was compelled to fundamentally change course on its economic strategy following the severe recession.",
+            "zh": "在严重的经济衰退之后，政府被迫从根本上改变其经济战略方针。"
+          },
+          {
+            "en": "Over the course of the twentieth century, life expectancy in industrialized nations increased by approximately three decades.",
+            "zh": "在二十世纪的历程中，工业化国家的人均寿命提高了大约三十年。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "path",
+            "pos": "n.",
+            "meaning": "道路；途径"
+          },
+          {
+            "word": "route",
+            "pos": "n.",
+            "meaning": "路线"
+          },
+          {
+            "word": "progression",
+            "pos": "n.",
+            "meaning": "进程"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "standstill",
+            "pos": "n.",
+            "meaning": "停顿"
+          },
+          {
+            "word": "halt",
+            "pos": "n.",
+            "meaning": "停止"
+          }
+        ],
+        "_root": "cur / curs / cour — 跑，流动 (to run, flow)",
+        "etymology": "cour(跑) + se(名词后缀) → 奔跑的路径 → 过程，路线；课程",
+        "mnemonic": "学习课程(course)就像在跑道上奔跑(cour)，沿着路线一步步前进。"
+      },
+      {
+        "word": "incur",
+        "meaning": "vt. 招致，引起；遭受",
+        "inflections": [
+          {
+            "word": "incursion",
+            "pos": "n.",
+            "meaning": "入侵；侵犯"
+          }
+        ],
+        "ielts_phrases": [
+          {
+            "en": "incur costs",
+            "zh": "产生费用"
+          },
+          {
+            "en": "incur a penalty",
+            "zh": "遭受处罚"
+          },
+          {
+            "en": "incur debts",
+            "zh": "负债"
+          },
+          {
+            "en": "incur expenses",
+            "zh": "产生费用"
+          },
+          {
+            "en": "incur losses",
+            "zh": "遭受损失"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Companies that fail to comply with environmental regulations may incur substantial financial penalties and irreparable reputational damage.",
+            "zh": "未能遵守环境法规的公司可能会招致巨额经济罚款和无法挽回的声誉损害。"
+          },
+          {
+            "en": "The government's decision to default on its sovereign debt incurred the wrath of international creditors and rating agencies.",
+            "zh": "政府决定拖欠主权债务，引起了国际债权人和评级机构的愤怒。"
+          }
+        ],
+        "phonetic": "",
+        "synonyms": [
+          {
+            "word": "contract",
+            "pos": "vt.",
+            "meaning": "招致；感染"
+          },
+          {
+            "word": "suffer",
+            "pos": "vt.",
+            "meaning": "遭受"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "avoid",
+            "pos": "vt.",
+            "meaning": "避免"
+          },
+          {
+            "word": "avert",
+            "pos": "vt.",
+            "meaning": "避免"
+          }
+        ],
+        "_root": "cur / curs / cour — 跑，流动 (to run, flow)",
+        "etymology": "in(进入) + cur(跑) → 跑进来 → 招致，引起(不好的事)",
+        "mnemonic": "不小心闯进(in)危险区域，结果跑(cur)出来一堆麻烦，招致了损失。"
+      },
+      {
+        "word": "cure",
+        "phonetic": "[kjʊə(r)]",
+        "meaning": "n.&v. 治愈,治疗",
+        "inflections": [],
+        "ielts_phrases": [
+          {
+            "en": "seek a permanent cure for",
+            "zh": ""
+          },
+          {
+            "en": "preventative medical cure",
+            "zh": ""
+          },
+          {
+            "en": "cure for cancer",
+            "zh": "癌症疗法"
+          },
+          {
+            "en": "miracle cure",
+            "zh": "灵丹妙药"
+          },
+          {
+            "en": "find a cure",
+            "zh": "找到治疗方法"
+          }
+        ],
+        "ielts_sentences": [
+          {
+            "en": "Biomedical engineering has accelerated rapidly, yet seeking a definitive cure for sophisticated neurological degeneration remains an elusive milestone.",
+            "zh": "生物医学工程发展迅速，但寻找彻底治愈复杂神经退行性疾病的方法仍然是一个难以实现的里程碑。"
+          }
+        ],
+        "synonyms": [
+          {
+            "word": "remedy",
+            "pos": "n.",
+            "meaning": "疗法"
+          },
+          {
+            "word": "treatment",
+            "pos": "n.",
+            "meaning": "治疗"
+          },
+          {
+            "word": "heal",
+            "pos": "v.",
+            "meaning": "治愈"
+          }
+        ],
+        "antonyms": [
+          {
+            "word": "disease",
+            "pos": "n.",
+            "meaning": "疾病"
+          },
+          {
+            "word": "aggravate",
+            "pos": "v.",
+            "meaning": "加重"
+          }
+        ],
+        "_root": "cur / cura — 关心，治疗 (to care, heal)",
+        "etymology": "cur(关心，治疗) → 关心病人以治疗 → 治愈",
+        "mnemonic": "医生对病人说‘Cur(e)你的病，需要我的关心(cur)’。"
+      }
+    ]
+  },
+  {
     "root": "miss / mit",
     "root_meaning": "送，投掷，放出 (to send, let go)",
     "words": [
@@ -1481,1043 +3949,6 @@
     ]
   },
   {
-    "root": "leg / lect / lig",
-    "root_meaning": "法律；收集，阅读，选择 (law; gather, choose, read)",
-    "words": [
-      {
-        "word": "legislate",
-        "meaning": "v. 立法，制定法律",
-        "inflections": [
-          {
-            "word": "legislation",
-            "pos": "n.",
-            "meaning": "立法，法律"
-          },
-          {
-            "word": "legislative",
-            "pos": "adj.",
-            "meaning": "立法的，有立法权的"
-          },
-          {
-            "word": "legitimate",
-            "pos": "adj.",
-            "meaning": "合法的，正当的"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "legislate against",
-            "zh": "立法禁止"
-          },
-          {
-            "en": "introduce new legislation",
-            "zh": "出台新法规"
-          },
-          {
-            "en": "the power to legislate",
-            "zh": "立法权"
-          },
-          {
-            "en": "legislate for",
-            "zh": "为...立法"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "It is the responsibility of the government to legislate against the exploitation of child labor in developing countries.",
-            "zh": "政府有责任立法禁止在发展中国家剥削童工的行为。"
-          },
-          {
-            "en": "Strict legislation must be introduced to regulate the disposal of toxic industrial waste and protect groundwater resources.",
-            "zh": "必须出台严格的立法来规范有毒工业废物的处理，并保护地下水资源。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "enact",
-            "pos": "v.",
-            "meaning": "颁布，制定法律"
-          },
-          {
-            "word": "codify",
-            "pos": "v.",
-            "meaning": "编纂法律"
-          },
-          {
-            "word": "pass laws",
-            "pos": "v.",
-            "meaning": "通过法律"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "repeal",
-            "pos": "v.",
-            "meaning": "废除"
-          },
-          {
-            "word": "abolish",
-            "pos": "v.",
-            "meaning": "废止"
-          }
-        ],
-        "_root": "leg / lect / lig — 法律；收集，阅读，选择 (law; gather, choose, read)",
-        "etymology": "legis(法律) + late(带来，源自latus) → 带来法律 → 立法，制定法律",
-        "mnemonic": "立法(legislate)就是把法(legis)拿出来(late)通过，制定规则。"
-      },
-      {
-        "word": "neglect",
-        "meaning": "vt. / n. 忽视，疏忽",
-        "inflections": [
-          {
-            "word": "negligence",
-            "pos": "n.",
-            "meaning": "疏忽，过失"
-          },
-          {
-            "word": "negligible",
-            "pos": "adj.",
-            "meaning": "可以忽略的，微不足道的"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "neglect one's duties",
-            "zh": "玩忽职守"
-          },
-          {
-            "en": "child neglect",
-            "zh": "忽视儿童"
-          },
-          {
-            "en": "neglect one's duty",
-            "zh": "玩忽职守"
-          },
-          {
-            "en": "neglect to do something",
-            "zh": "疏忽做某事"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Parents who are overly consumed by their careers often inadvertently neglect the emotional and psychological needs of their children.",
-            "zh": "过度专注于事业的父母常常不经意间忽视了孩子的情感需求和心理需求。"
-          },
-          {
-            "en": "The deterioration of public infrastructure is a direct consequence of decades of governmental neglect and insufficient budget allocation.",
-            "zh": "公共基础设施的恶化是几十年来政府疏忽和预算拨款不足的直接后果。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "disregard",
-            "pos": "vt./n.",
-            "meaning": "忽视，漠视"
-          },
-          {
-            "word": "ignore",
-            "pos": "vt.",
-            "meaning": "忽视，不理睬"
-          },
-          {
-            "word": "overlook",
-            "pos": "vt.",
-            "meaning": "忽略，未注意到"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "attention",
-            "pos": "n.",
-            "meaning": "注意，关注"
-          },
-          {
-            "word": "care",
-            "pos": "n./vi.",
-            "meaning": "关心，照料"
-          }
-        ],
-        "_root": "leg / lect / lig — 法律；收集，阅读，选择 (law; gather, choose, read)",
-        "etymology": "neg(不) + lect(选择，收集) → 不去选择、不去收集 → 忽视，疏忽",
-        "mnemonic": "那个neg(不)被lect(选)中的方案，最终被大家完全neglect了，就像从清单上划掉一样。"
-      },
-      {
-        "word": "intellectual",
-        "meaning": "n. 知识分子 adj. 智力的，理智的",
-        "inflections": [
-          {
-            "word": "intellect",
-            "pos": "n.",
-            "meaning": "智力，理解力"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "intellectual property",
-            "zh": "知识产权"
-          },
-          {
-            "en": "intellectual development",
-            "zh": "智力发展"
-          },
-          {
-            "en": "intellectual curiosity",
-            "zh": "求知欲"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The protection of intellectual property rights is crucial for fostering sustained innovation in the technology sector.",
-            "zh": "保护知识产权对于促进科技领域的持续创新至关重要。"
-          },
-          {
-            "en": "Engaging children in artistic activities from an early age significantly stimulates their intellectual and creative development.",
-            "zh": "让儿童从小参与艺术活动能显著激发他们的智力与创造力发展。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "cerebral",
-            "pos": "adj.",
-            "meaning": "理智的，脑力的"
-          },
-          {
-            "word": "mental",
-            "pos": "adj.",
-            "meaning": "智力的，心理的"
-          },
-          {
-            "word": "scholar",
-            "pos": "n.",
-            "meaning": "学者"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "physical",
-            "pos": "adj.",
-            "meaning": "身体的，体力的"
-          },
-          {
-            "word": "emotional",
-            "pos": "adj.",
-            "meaning": "情感的，情绪化的"
-          }
-        ],
-        "_root": "leg / lect / lig — 法律；收集，阅读，选择 (law; gather, choose, read)",
-        "etymology": "inter(在...之间) + lect(选择，阅读) + ual(形容词后缀) → 能在众多信息中选择阅读 → 有智力的，知识分子",
-        "mnemonic": "真正的知识分子(inter-lect-ual)总能在纷繁信息间(inter)精心挑选(lect)真知，这就是intellectual的力量。"
-      },
-      {
-        "word": "elite",
-        "meaning": "n. 精英，精华 adj. 精英的，最优秀的",
-        "inflections": [
-          {
-            "word": "elitism",
-            "pos": "n.",
-            "meaning": "精英主义，优越感"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "political elite",
-            "zh": "政治精英"
-          },
-          {
-            "en": "elite education",
-            "zh": "精英教育"
-          },
-          {
-            "en": "elite group",
-            "zh": "精英团体"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The widening gap between the political elite and ordinary citizens has contributed to growing social unrest.",
-            "zh": "政治精英与普通公民之间日益扩大的差距加剧了社会动荡。"
-          },
-          {
-            "en": "Access to elite higher education institutions should be determined by academic merit rather than socioeconomic privilege.",
-            "zh": "进入精英高等教育机构的机会应由学业成绩决定，而非社会经济特权。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "aristocracy",
-            "pos": "n.",
-            "meaning": "贵族，精英阶层"
-          },
-          {
-            "word": "cream",
-            "pos": "n.",
-            "meaning": "精华，佼佼者"
-          },
-          {
-            "word": "exclusive",
-            "pos": "adj.",
-            "meaning": "高级的，排外的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "commoner",
-            "pos": "n.",
-            "meaning": "平民"
-          },
-          {
-            "word": "ordinary",
-            "pos": "adj.",
-            "meaning": "普通的"
-          }
-        ],
-        "_root": "leg / lect / lig — 法律；收集，阅读，选择 (law; gather, choose, read)",
-        "etymology": "e(出) + lect(选择) → 被挑选出来的部分 → 精英，精华",
-        "mnemonic": "只有e(出)类拔萃的人，才能被lect(选)入elite(精英)团队，就像选秀节目中挑出的精华。"
-      },
-      {
-        "word": "eligible",
-        "meaning": "adj. 符合条件的，合格的",
-        "inflections": [
-          {
-            "word": "eligibility",
-            "pos": "n.",
-            "meaning": "资格，合格"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "eligible for a scholarship",
-            "zh": "符合奖学金条件"
-          },
-          {
-            "en": "eligible voters",
-            "zh": "合格选民"
-          },
-          {
-            "en": "eligible applicant",
-            "zh": "符合条件的申请人"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Only students who have maintained a consistently high GPA are eligible for the fully funded overseas research program.",
-            "zh": "只有保持一贯高平均绩点的学生才有资格申请该全额资助的海外研究项目。"
-          },
-          {
-            "en": "The government expanded the eligibility criteria to ensure that a greater proportion of low-income families could access housing subsidies.",
-            "zh": "政府放宽了资格标准，以确保更多低收入家庭能够获得住房补贴。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "qualified",
-            "pos": "adj.",
-            "meaning": "合格的，有资格的"
-          },
-          {
-            "word": "suitable",
-            "pos": "adj.",
-            "meaning": "适合的，符合条件的"
-          },
-          {
-            "word": "entitled",
-            "pos": "adj.",
-            "meaning": "有资格的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "ineligible",
-            "pos": "adj.",
-            "meaning": "不合格的"
-          },
-          {
-            "word": "unqualified",
-            "pos": "adj.",
-            "meaning": "不合格的"
-          }
-        ],
-        "_root": "leg / lect / lig — 法律；收集，阅读，选择 (law; gather, choose, read)",
-        "etymology": "e(出) + lig(选择) + ible(可...的) → 可以被选出来的 → 符合条件的，合格的",
-        "mnemonic": "要获得奖学金，你必须保证自己elig(能被选)ible(的)，即eligible(符合条件的)，然后才能被e(出)选。"
-      },
-      {
-        "word": "collect",
-        "phonetic": "",
-        "meaning": "v. 收集，采集；聚集",
-        "inflections": [
-          {
-            "word": "collection",
-            "pos": "n.",
-            "meaning": "收集；收藏品"
-          },
-          {
-            "word": "collective",
-            "pos": "adj.",
-            "meaning": "集体的"
-          },
-          {
-            "word": "collector",
-            "pos": "n.",
-            "meaning": "收藏家"
-          }
-        ],
-        "synonyms": [
-          {
-            "word": "gather",
-            "pos": "v.",
-            "meaning": "收集"
-          },
-          {
-            "word": "accumulate",
-            "pos": "v.",
-            "meaning": "积累"
-          },
-          {
-            "word": "amass",
-            "pos": "v.",
-            "meaning": "积聚"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "disperse",
-            "pos": "v.",
-            "meaning": "分散"
-          },
-          {
-            "word": "distribute",
-            "pos": "v.",
-            "meaning": "分发"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "collect data",
-            "zh": "收集数据"
-          },
-          {
-            "en": "collect evidence",
-            "zh": "收集证据"
-          },
-          {
-            "en": "collect stamps",
-            "zh": "集邮"
-          },
-          {
-            "en": "collective responsibility",
-            "zh": "集体责任"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Before drawing any conclusions, researchers must collect sufficient empirical data to support their hypotheses.",
-            "zh": "在得出结论之前，研究人员必须收集足够的实证数据来支持他们的假设。"
-          },
-          {
-            "en": "The museum's extensive collection of artifacts provides valuable insights into the region's cultural heritage.",
-            "zh": "博物馆丰富的文物收藏为了解该地区的文化遗产提供了宝贵的见解。"
-          }
-        ],
-        "etymology": "",
-        "mnemonic": ""
-      },
-      {
-        "word": "select",
-        "phonetic": "",
-        "meaning": "vt. 选择，挑选 adj. 精选的，优等的",
-        "inflections": [
-          {
-            "word": "selection",
-            "pos": "n.",
-            "meaning": "选择"
-          },
-          {
-            "word": "selective",
-            "pos": "adj.",
-            "meaning": "选择性的"
-          }
-        ],
-        "synonyms": [
-          {
-            "word": "choose",
-            "pos": "v.",
-            "meaning": "选择"
-          },
-          {
-            "word": "pick",
-            "pos": "v.",
-            "meaning": "挑选"
-          },
-          {
-            "word": "opt for",
-            "pos": "v.",
-            "meaning": "选择"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "reject",
-            "pos": "v.",
-            "meaning": "拒绝"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "select from",
-            "zh": "从...中选择"
-          },
-          {
-            "en": "carefully selected",
-            "zh": "精心挑选的"
-          },
-          {
-            "en": "select candidates",
-            "zh": "挑选候选人"
-          },
-          {
-            "en": "a select group",
-            "zh": "一个精选的群体"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Universities typically select applicants based on a combination of academic achievement, extracurricular involvement, and personal statements.",
-            "zh": "大学通常根据学业成绩、课外活动参与和个人陈述的综合表现来挑选申请者。"
-          },
-          {
-            "en": "The committee was tasked with selecting the most qualified candidates from a pool of over five hundred applicants.",
-            "zh": "委员会的任务是从五百多名申请者中挑选最合格的候选人。"
-          }
-        ],
-        "etymology": "",
-        "mnemonic": ""
-      },
-      {
-        "word": "elegant",
-        "phonetic": "",
-        "meaning": "adj. 优雅的，优美的；简练的",
-        "inflections": [
-          {
-            "word": "elegance",
-            "pos": "n.",
-            "meaning": "优雅"
-          },
-          {
-            "word": "elegantly",
-            "pos": "adv.",
-            "meaning": "优雅地"
-          }
-        ],
-        "synonyms": [
-          {
-            "word": "graceful",
-            "pos": "adj.",
-            "meaning": "优美的"
-          },
-          {
-            "word": "refined",
-            "pos": "adj.",
-            "meaning": "精致的"
-          },
-          {
-            "word": "sophisticated",
-            "pos": "adj.",
-            "meaning": "精致的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "clumsy",
-            "pos": "adj.",
-            "meaning": "笨拙的"
-          },
-          {
-            "word": "crude",
-            "pos": "adj.",
-            "meaning": "粗糙的"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "elegant solution",
-            "zh": "优雅的解决方案"
-          },
-          {
-            "en": "elegant design",
-            "zh": "优雅的设计"
-          },
-          {
-            "en": "simple yet elegant",
-            "zh": "简约而优雅"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The architect's elegant design seamlessly integrates modern functionality with traditional aesthetic elements.",
-            "zh": "建筑师优雅的设计将现代功能与传统美学元素无缝融合。"
-          },
-          {
-            "en": "In mathematics, the most elegant proofs are often those that express complex ideas with remarkable simplicity.",
-            "zh": "在数学中，最优雅的证明往往是用非凡的简洁表达复杂思想的证明。"
-          }
-        ],
-        "etymology": "",
-        "mnemonic": ""
-      }
-    ]
-  },
-  {
-    "root": "vert / vers",
-    "root_meaning": "转，改变 (to turn)",
-    "words": [
-      {
-        "word": "diversion",
-        "meaning": "n. 转向，转移；娱乐，消遣",
-        "inflections": [
-          {
-            "word": "divert",
-            "pos": "v.",
-            "meaning": "使转向；转移；娱乐"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "create a diversion",
-            "zh": "制造转移注意力的事物"
-          },
-          {
-            "en": "water diversion project",
-            "zh": "调水工程"
-          },
-          {
-            "en": "diversion of funds",
-            "zh": "挪用资金"
-          },
-          {
-            "en": "traffic diversion",
-            "zh": "交通改道"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Video games serve not only as a form of popular diversion but also as a tool for enhancing cognitive reflexes and problem-solving skills.",
-            "zh": "电子游戏不仅是一种流行的消遣方式，也是增强认知反应和解决问题能力的工具。"
-          },
-          {
-            "en": "The government approved the river diversion project to alleviate the severe drought that had devastated the agricultural basin.",
-            "zh": "政府批准了河流改道工程，以缓解严重干旱对农业流域的破坏。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "pastime",
-            "pos": "n.",
-            "meaning": "消遣，娱乐"
-          },
-          {
-            "word": "recreation",
-            "pos": "n.",
-            "meaning": "娱乐，消遣"
-          },
-          {
-            "word": "deviation",
-            "pos": "n.",
-            "meaning": "偏离，转向"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "focus",
-            "pos": "n.",
-            "meaning": "专注，集中"
-          },
-          {
-            "word": "work",
-            "pos": "n.",
-            "meaning": "工作"
-          }
-        ],
-        "_root": "vert / vers — 转，改变 (to turn)",
-        "etymology": "di(偏离) + vers(转) + ion(名词后缀) → 转向一边 → 转移，转向；消遣",
-        "mnemonic": "为了避开枯燥的学习，他di(分)心去玩乐，这个diversion(消遣)就像把他的注意力vers(转)了个大弯。"
-      },
-      {
-        "word": "reverse",
-        "meaning": "v. 颠倒，反转 n. 相反，背面 adj. 相反的",
-        "inflections": [
-          {
-            "word": "reversible",
-            "pos": "adj.",
-            "meaning": "可逆的；可反转的"
-          },
-          {
-            "word": "irreversible",
-            "pos": "adj.",
-            "meaning": "不可逆的"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "reverse the trend",
-            "zh": "扭转趋势"
-          },
-          {
-            "en": "in reverse order",
-            "zh": "按相反顺序"
-          },
-          {
-            "en": "reverse side",
-            "zh": "背面"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Without immediate international cooperation, it will be impossible to reverse the devastating trend of global warming and biodiversity loss.",
-            "zh": "没有立即的国际合作，就不可能扭转全球变暖和生物多样性丧失的毁灭性趋势。"
-          },
-          {
-            "en": "The policy had the reverse effect of what was intended, leading to higher unemployment rates rather than stimulating economic growth.",
-            "zh": "该政策产生了与预期相反的效果，导致失业率上升，而不是刺激经济增长。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "invert",
-            "pos": "v.",
-            "meaning": "使倒转；颠倒"
-          },
-          {
-            "word": "overturn",
-            "pos": "v.",
-            "meaning": "推翻；颠倒"
-          },
-          {
-            "word": "contrary",
-            "pos": "adj.",
-            "meaning": "相反的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "advance",
-            "pos": "v.",
-            "meaning": "前进；推进"
-          },
-          {
-            "word": "preserve",
-            "pos": "v.",
-            "meaning": "保持；维持"
-          }
-        ],
-        "_root": "vert / vers — 转，改变 (to turn)",
-        "etymology": "re(回) + vers(转) + e → 向后转 → 颠倒，反转，相反",
-        "mnemonic": "汽车re(倒)车时，方向盘vers(转)动将车reverse(倒转)，影像后视镜里的一切都颠倒了。"
-      },
-      {
-        "word": "controversy",
-        "meaning": "n. 争论，争议",
-        "inflections": [
-          {
-            "word": "controversial",
-            "pos": "adj.",
-            "meaning": "有争议的，引起争论的"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "spark controversy",
-            "zh": "引发争议"
-          },
-          {
-            "en": "a matter of controversy",
-            "zh": "有争议的问题"
-          },
-          {
-            "en": "a source of controversy",
-            "zh": "争论的根源"
-          },
-          {
-            "en": "intense controversy",
-            "zh": "激烈的争论"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The use of artificial intelligence in judicial decision-making has sparked considerable controversy among legal scholars.",
-            "zh": "人工智能在司法决策中的使用在法律学者中引发了相当大的争议。"
-          },
-          {
-            "en": "Genetically modified crops remain a matter of intense controversy, with proponents citing food security and opponents highlighting ecological risks.",
-            "zh": "转基因作物仍然是一个激烈争议的问题，支持者强调粮食安全，反对者则强调生态风险。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "dispute",
-            "pos": "n.",
-            "meaning": "争论；辩论"
-          },
-          {
-            "word": "debate",
-            "pos": "n.",
-            "meaning": "辩论；争论"
-          },
-          {
-            "word": "argument",
-            "pos": "n.",
-            "meaning": "争论；论据"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "agreement",
-            "pos": "n.",
-            "meaning": "一致；同意"
-          },
-          {
-            "word": "consensus",
-            "pos": "n.",
-            "meaning": "共识"
-          }
-        ],
-        "_root": "vert / vers — 转，改变 (to turn)",
-        "etymology": "contro(反) + vers(转) + y(名词后缀) → 转到反面 → 争论，争议",
-        "mnemonic": "反对派(contro)总是把话题翻来转去(vers)，引发争议。"
-      },
-      {
-        "word": "convert",
-        "phonetic": "",
-        "meaning": "v. 转变，转换；使皈依 n. 皈依者",
-        "inflections": [
-          {
-            "word": "conversion",
-            "pos": "n.",
-            "meaning": "转换；皈依"
-          },
-          {
-            "word": "convertible",
-            "pos": "adj./n.",
-            "meaning": "可转换的；敞篷车"
-          }
-        ],
-        "synonyms": [
-          {
-            "word": "transform",
-            "pos": "vt.",
-            "meaning": "转变"
-          },
-          {
-            "word": "alter",
-            "pos": "vt.",
-            "meaning": "改变"
-          },
-          {
-            "word": "change",
-            "pos": "v.",
-            "meaning": "改变"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "preserve",
-            "pos": "v.",
-            "meaning": "保持"
-          },
-          {
-            "word": "maintain",
-            "pos": "vt.",
-            "meaning": "维持"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "convert into",
-            "zh": "转变为"
-          },
-          {
-            "en": "convert currency",
-            "zh": "兑换货币"
-          },
-          {
-            "en": "convert to Christianity",
-            "zh": "皈依基督教"
-          },
-          {
-            "en": "convert waste into energy",
-            "zh": "将废物转化为能源"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Many cities are now investing in technology that can convert household waste into renewable energy.",
-            "zh": "许多城市正在投资能将家庭垃圾转化为可再生能源的技术。"
-          },
-          {
-            "en": "The company plans to convert its entire fleet of delivery vehicles to electric power within the next five years.",
-            "zh": "该公司计划在未来五年内将其整个送货车队转换为电动车辆。"
-          }
-        ],
-        "etymology": "",
-        "mnemonic": ""
-      },
-      {
-        "word": "diverse",
-        "phonetic": "",
-        "meaning": "adj. 多样的，不同的；多元的",
-        "inflections": [
-          {
-            "word": "diversity",
-            "pos": "n.",
-            "meaning": "多样性"
-          },
-          {
-            "word": "diversify",
-            "pos": "v.",
-            "meaning": "使多样化"
-          }
-        ],
-        "synonyms": [
-          {
-            "word": "varied",
-            "pos": "adj.",
-            "meaning": "多样的"
-          },
-          {
-            "word": "multifaceted",
-            "pos": "adj.",
-            "meaning": "多方面的"
-          },
-          {
-            "word": "heterogeneous",
-            "pos": "adj.",
-            "meaning": "异质的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "uniform",
-            "pos": "adj.",
-            "meaning": "一致的"
-          },
-          {
-            "word": "homogeneous",
-            "pos": "adj.",
-            "meaning": "同质的"
-          },
-          {
-            "word": "monolithic",
-            "pos": "adj.",
-            "meaning": "单一的"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "culturally diverse",
-            "zh": "文化多元的"
-          },
-          {
-            "en": "diverse range of",
-            "zh": "广泛的"
-          },
-          {
-            "en": "ethnic diversity",
-            "zh": "种族多样性"
-          },
-          {
-            "en": "biodiversity",
-            "zh": "生物多样性"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "A culturally diverse workforce brings together different perspectives that can lead to more innovative problem-solving.",
-            "zh": "文化多元的员工队伍汇集了不同的视角，可以带来更具创新性的问题解决方案。"
-          },
-          {
-            "en": "Conservation efforts are essential to protect the Earth's diverse ecosystems from the devastating effects of climate change.",
-            "zh": "保护努力对于保护地球多样的生态系统免受气候变化的破坏性影响至关重要。"
-          }
-        ],
-        "etymology": "",
-        "mnemonic": ""
-      },
-      {
-        "word": "version",
-        "phonetic": "",
-        "meaning": "n. 版本；说法，描述",
-        "inflections": [
-          {
-            "word": "versioning",
-            "pos": "n.",
-            "meaning": "版本控制"
-          }
-        ],
-        "synonyms": [
-          {
-            "word": "edition",
-            "pos": "n.",
-            "meaning": "版本"
-          },
-          {
-            "word": "variant",
-            "pos": "n.",
-            "meaning": "变体"
-          },
-          {
-            "word": "rendition",
-            "pos": "n.",
-            "meaning": "演绎"
-          }
-        ],
-        "antonyms": [],
-        "ielts_phrases": [
-          {
-            "en": "original version",
-            "zh": "原版"
-          },
-          {
-            "en": "updated version",
-            "zh": "更新版本"
-          },
-          {
-            "en": "abridged version",
-            "zh": "删节版"
-          },
-          {
-            "en": "trial version",
-            "zh": "试用版"
-          },
-          {
-            "en": "someone's version of events",
-            "zh": "某人对事件的描述"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The latest version of the software includes several crucial security updates that address previously identified vulnerabilities.",
-            "zh": "该软件的最新版本包含了几项关键的安全更新，解决了之前发现的漏洞。"
-          },
-          {
-            "en": "Eyewitnesses often provide conflicting versions of the same incident, demonstrating the unreliability of memory under stress.",
-            "zh": "目击者常常对同一事件提供相互矛盾的说法，这说明了在压力下记忆的不可靠性。"
-          }
-        ],
-        "etymology": "",
-        "mnemonic": ""
-      }
-    ]
-  },
-  {
     "root": "vid / vis",
     "root_meaning": "看 (to see)",
     "words": [
@@ -3485,229 +4916,6 @@
         "_root": "sum / sumpt — 拿，取 (to take)",
         "etymology": "as- (ad-, 向...方向) + simil (类似) + -ate (使) → 使与之类似 → 吸收，同化。注：本词词根实际为simil(类似)，非sum/sumpt",
         "mnemonic": "把外来文化吸收(simil)进来，使之与自己相似，就是同化。"
-      }
-    ]
-  },
-  {
-    "root": "voc / vok",
-    "root_meaning": "叫喊，呼唤 (to call, voice)",
-    "words": [
-      {
-        "word": "irrevocable",
-        "meaning": "adj. 无法取消的，不能改变的",
-        "inflections": [
-          {
-            "word": "irrevocably",
-            "pos": "adv.",
-            "meaning": "不可撤销地；不能改变地"
-          },
-          {
-            "word": "revoke",
-            "pos": "vt.",
-            "meaning": "撤销；撤回；取消"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "irrevocable decision",
-            "zh": "不可撤销的决定"
-          },
-          {
-            "en": "irrevocable damage",
-            "zh": "不可挽回的损害"
-          },
-          {
-            "en": "irrevocable step",
-            "zh": "不可逆转的一步"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Once the environmental damage reaches a certain threshold, it becomes irrevocable despite any subsequent remedial measures.",
-            "zh": "一旦环境破坏达到某个临界点，即便采取任何后续补救措施，它也会变得不可逆转。"
-          },
-          {
-            "en": "Signing the international treaty constituted an irrevocable commitment to reducing carbon emissions by forty percent within the next decade.",
-            "zh": "签署该国际条约构成了一项不可撤销的承诺，即在未来十年内将碳排放量减少百分之四十。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "irreversible",
-            "pos": "adj.",
-            "meaning": "不可逆的；不可挽回的"
-          },
-          {
-            "word": "unalterable",
-            "pos": "adj.",
-            "meaning": "不可改变的"
-          },
-          {
-            "word": "final",
-            "pos": "adj.",
-            "meaning": "最终的；决定性的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "reversible",
-            "pos": "adj.",
-            "meaning": "可逆的；可翻转的"
-          },
-          {
-            "word": "revocable",
-            "pos": "adj.",
-            "meaning": "可撤销的；可废除的"
-          }
-        ],
-        "_root": "voc / vok — 叫喊，呼唤 (to call, voice)",
-        "etymology": "ir-(不) + re-(回) + voc(呼唤) + -able(可...的) → 不能呼唤回来的 → 不可撤销的",
-        "mnemonic": "一旦决定就无法(ir)再(re)呼唤(voc)回来(able)，就是不可撤销的。"
-      },
-      {
-        "word": "equivocal",
-        "meaning": "adj. 模棱两可的，意义不清的",
-        "inflections": [
-          {
-            "word": "equivocate",
-            "pos": "v.",
-            "meaning": "含糊其辞，支吾"
-          },
-          {
-            "word": "unequivocal",
-            "pos": "adj.",
-            "meaning": "明确的，不含糊的"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "equivocal response",
-            "zh": "模棱两可的回应"
-          },
-          {
-            "en": "equivocal evidence",
-            "zh": "不确凿的证据"
-          },
-          {
-            "en": "equivocal answer",
-            "zh": "模棱两可的回答"
-          },
-          {
-            "en": "equivocal attitude",
-            "zh": "暧昧的态度"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The politician delivered an equivocal response to questions regarding campaign finance, which further eroded public trust.",
-            "zh": "这位政治家对竞选资金的问题给出了模棱两可的回应，这进一步损害了公众的信任。"
-          },
-          {
-            "en": "Scientific research demands precision; equivocal interpretations of experimental data can lead to fundamentally flawed conclusions.",
-            "zh": "科学研究要求精确性；对实验数据的模棱两可的解释可能导致根本错误的结论。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "ambiguous",
-            "pos": "adj.",
-            "meaning": "模棱两可的"
-          },
-          {
-            "word": "vague",
-            "pos": "adj.",
-            "meaning": "含糊的"
-          },
-          {
-            "word": "obscure",
-            "pos": "adj.",
-            "meaning": "模糊不清的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "unequivocal",
-            "pos": "adj.",
-            "meaning": "明确的"
-          },
-          {
-            "word": "clear",
-            "pos": "adj.",
-            "meaning": "清楚的"
-          }
-        ],
-        "_root": "voc / vok — 叫喊，呼唤 (to call, voice)",
-        "etymology": "equi-(相等) + voc(声音) + -al(形容词后缀) → 两种声音相等 → 模棱两可的",
-        "mnemonic": "两边声音(voc)相等(equi)，让人分不清哪边对，就是模棱两可。"
-      },
-      {
-        "word": "vocation",
-        "meaning": "n. 职业，行业",
-        "inflections": [
-          {
-            "word": "vocational",
-            "pos": "adj.",
-            "meaning": "职业的，行业的"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "vocational training",
-            "zh": "职业培训"
-          },
-          {
-            "en": "sense of vocation",
-            "zh": "使命感"
-          },
-          {
-            "en": "vocational education",
-            "zh": "职业教育"
-          },
-          {
-            "en": "pursue a vocation",
-            "zh": "从事某一职业"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Vocational training programs have proven to be an effective means of bridging the skills gap in the manufacturing sector.",
-            "zh": "职业培训项目已证明是弥补制造业技能差距的有效手段。"
-          },
-          {
-            "en": "Teaching is widely regarded not merely as a profession but as a genuine vocation that requires deep personal commitment.",
-            "zh": "教学被广泛认为不仅是一种职业，更是一种需要深刻个人投入的真正使命。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "profession",
-            "pos": "n.",
-            "meaning": "职业"
-          },
-          {
-            "word": "calling",
-            "pos": "n.",
-            "meaning": "天职，使命"
-          },
-          {
-            "word": "occupation",
-            "pos": "n.",
-            "meaning": "职业"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "avocation",
-            "pos": "n.",
-            "meaning": "副业，业余爱好"
-          }
-        ],
-        "_root": "voc / vok — 叫喊，呼唤 (to call, voice)",
-        "etymology": "voc(呼唤) + -ation(名词后缀) → 被召唤(使命) → 职业",
-        "mnemonic": "听从内心呼唤(voc)的工作，就是你的天职(vocation)。"
       }
     ]
   },
@@ -8842,174 +10050,6 @@
     ]
   },
   {
-    "root": "ple / plac / pleas",
-    "root_meaning": "取悦，高兴 (to please, satisfy)",
-    "words": [
-      {
-        "word": "pleasure",
-        "meaning": "n. / v. (感到)愉快、高兴、乐趣",
-        "inflections": [
-          {
-            "word": "pleasing",
-            "pos": "adj.",
-            "meaning": "令人愉快的"
-          },
-          {
-            "word": "pleasant",
-            "pos": "adj.",
-            "meaning": "令人愉快的，舒适的"
-          },
-          {
-            "word": "displeasure",
-            "pos": "n.",
-            "meaning": "不悦，不满"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "take pleasure in",
-            "zh": "以...为乐"
-          },
-          {
-            "en": "a sense of pleasure",
-            "zh": "愉悦感"
-          },
-          {
-            "en": "take great pleasure in",
-            "zh": "从…中获得很大乐趣"
-          },
-          {
-            "en": "with pleasure",
-            "zh": "乐意地；愉快地"
-          },
-          {
-            "en": "a simple pleasure",
-            "zh": "简单的快乐"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "An increasing number of individuals now derive greater pleasure from experiences and travel than from the acquisition of material possessions.",
-            "zh": "如今，越来越多的人从体验和旅行中获得的快乐大于从获取物质财富中获得的快乐。"
-          },
-          {
-            "en": "The intrinsic pleasure associated with creative problem-solving is a powerful motivator for scientists engaged in fundamental research.",
-            "zh": "与创造性解决问题相关的内在愉悦是从事基础研究的科学家们的强大动力。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "enjoyment",
-            "pos": "n.",
-            "meaning": "享受，乐趣"
-          },
-          {
-            "word": "delight",
-            "pos": "n.",
-            "meaning": "高兴，快乐"
-          },
-          {
-            "word": "joy",
-            "pos": "n.",
-            "meaning": "欢乐，喜悦"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "displeasure",
-            "pos": "n.",
-            "meaning": "不悦，不满"
-          },
-          {
-            "word": "pain",
-            "pos": "n.",
-            "meaning": "痛苦"
-          }
-        ],
-        "_root": "ple / plac / pleas — 取悦，高兴 (to please, satisfy)",
-        "etymology": "pleas(取悦) + ure(名词后缀) → 取悦的状态 → 愉快，乐趣",
-        "mnemonic": "请(plea)你确(sure)定要尽情享受这份快乐(pleasure)。"
-      },
-      {
-        "word": "complacent",
-        "meaning": "adj. 自满的，得意的",
-        "inflections": [
-          {
-            "word": "complacency",
-            "pos": "n.",
-            "meaning": "自满，满足"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "dangerously complacent",
-            "zh": "危险的自满"
-          },
-          {
-            "en": "avoid complacency",
-            "zh": "避免自满"
-          },
-          {
-            "en": "complacent about one's achievements",
-            "zh": "对自己的成就感到自满"
-          },
-          {
-            "en": "a complacent smile",
-            "zh": "得意的微笑"
-          },
-          {
-            "en": "become complacent",
-            "zh": "变得自满"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Organizations that become complacent about their market dominance risk being swiftly overtaken by more innovative competitors.",
-            "zh": "那些对其市场主导地位感到自满的组织，有被更具创新力的竞争对手迅速超越的风险。"
-          },
-          {
-            "en": "The government cannot afford to be complacent about the modest decline in unemployment; structural reforms are still urgently needed.",
-            "zh": "政府不能满足于失业率的轻微下降而沾沾自喜；结构性改革仍然迫切需要。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "self-satisfied",
-            "pos": "adj.",
-            "meaning": "自满的"
-          },
-          {
-            "word": "smug",
-            "pos": "adj.",
-            "meaning": "自鸣得意的"
-          },
-          {
-            "word": "conceited",
-            "pos": "adj.",
-            "meaning": "自负的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "dissatisfied",
-            "pos": "adj.",
-            "meaning": "不满的"
-          },
-          {
-            "word": "humble",
-            "pos": "adj.",
-            "meaning": "谦虚的"
-          }
-        ],
-        "_root": "ple / plac / pleas — 取悦，高兴 (to please, satisfy)",
-        "etymology": "com(完全) + plac(取悦) + ent(形容词后缀) → 完全取悦自己 → 自满的",
-        "mnemonic": "公司(com)给了他一个高位(place)，他就变得自满(complacent)起来。"
-      }
-    ]
-  },
-  {
     "root": "orn",
     "root_meaning": "装饰 (to decorate)",
     "words": [
@@ -10647,254 +11687,6 @@
         "_root": "cap / capt / cept / cip — 拿，取，抓住 (to take, seize, hold)",
         "etymology": "re-(重新，再) + capt(抓住) + ure(名词/动词后缀) → 重新抓住 → 重获，收复",
         "mnemonic": "“瑞卡抓住(recapture)” 失地，军队反攻重新夺回城池，就像捡回丢失的卡片。"
-      }
-    ]
-  },
-  {
-    "root": "voc / veng",
-    "root_meaning": "声音；复仇 (voice; revenge)",
-    "words": [
-      {
-        "word": "avenge",
-        "meaning": "vt. 报仇，复仇，向(某人)报仇",
-        "inflections": [
-          {
-            "word": "avenger",
-            "pos": "n.",
-            "meaning": "复仇者"
-          },
-          {
-            "word": "vengeance",
-            "pos": "n.",
-            "meaning": "复仇; 报仇"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "avenge a wrong",
-            "zh": "报仇雪恨"
-          },
-          {
-            "en": "swear to avenge",
-            "zh": "发誓要报仇"
-          },
-          {
-            "en": "avenge a death",
-            "zh": "为死报仇"
-          },
-          {
-            "en": "avenge an insult",
-            "zh": "为侮辱报复"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The protagonist's unrelenting desire to avenge the injustice inflicted upon her family serves as the central narrative drive of the novel.",
-            "zh": "主人公为家人遭受的不公正待遇复仇的坚定决心，构成了这部小说的核心叙事动力。"
-          },
-          {
-            "en": "International law exists precisely to ensure that nations do not unilaterally seek to avenge perceived wrongs through military aggression.",
-            "zh": "国际法的存在正是为了确保各国不会单方面地通过军事侵略来寻求报复所认为的冤屈。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "retaliate",
-            "pos": "vi.",
-            "meaning": "报复"
-          },
-          {
-            "word": "revenge",
-            "pos": "vt.",
-            "meaning": "报仇"
-          },
-          {
-            "word": "punish",
-            "pos": "vt.",
-            "meaning": "惩罚"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "forgive",
-            "pos": "vt.",
-            "meaning": "原谅"
-          },
-          {
-            "word": "pardon",
-            "pos": "vt.",
-            "meaning": "赦免"
-          }
-        ],
-        "_root": "voc / veng — 声音；复仇 (voice; revenge)",
-        "etymology": "a(向，朝) + venge(复仇，源自拉丁文vindicare) → 朝向某人复仇 → 报仇，复仇",
-        "mnemonic": "阿(a)文(ven)哥(ge)要为家人报仇，他发誓要报复仇人。"
-      },
-      {
-        "word": "vindicate",
-        "meaning": "v. 为...辩白；证明...正确；维护",
-        "inflections": [
-          {
-            "word": "vindication",
-            "pos": "n.",
-            "meaning": "辩护; 证明无罪"
-          },
-          {
-            "word": "vindictive",
-            "pos": "adj.",
-            "meaning": "怀恨的; 报复性的"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "vindicate one's reputation",
-            "zh": "维护声誉"
-          },
-          {
-            "en": "be fully vindicated",
-            "zh": "完全被证明正确"
-          },
-          {
-            "en": "vindicate one's rights",
-            "zh": "维护权利"
-          },
-          {
-            "en": "vindicate a decision",
-            "zh": "证明决定正确"
-          },
-          {
-            "en": "be vindicated by evidence",
-            "zh": "被证据证明清白"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The publication of the previously classified documents served to vindicate the journalist's controversial allegations against the corporation.",
-            "zh": "这些先前机密文件的公布，证明了该记者对公司提出的有争议指控是正确的。"
-          },
-          {
-            "en": "While the scientist's theory was initially ridiculed by the academic establishment, subsequent research fully vindicated her groundbreaking hypothesis.",
-            "zh": "尽管这位科学家的理论最初遭到了学术界的嘲笑，但随后的研究充分证实了她开创性的假设。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "justify",
-            "pos": "vt.",
-            "meaning": "证明…正确"
-          },
-          {
-            "word": "exonerate",
-            "pos": "vt.",
-            "meaning": "使免罪"
-          },
-          {
-            "word": "uphold",
-            "pos": "vt.",
-            "meaning": "支持; 维护"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "incriminate",
-            "pos": "vt.",
-            "meaning": "使负罪"
-          },
-          {
-            "word": "disprove",
-            "pos": "vt.",
-            "meaning": "反驳"
-          }
-        ],
-        "_root": "voc / veng — 声音；复仇 (voice; revenge)",
-        "etymology": "vind (来自拉丁文vindicare，意为复仇/主张) + icate (动词后缀) → 通过声音或行动为自己讨回公道 → 为...辩白；证明正确",
-        "mnemonic": "文迪卡特(vindicate)在法庭上大声辩护，证明自己的清白。"
-      }
-    ]
-  },
-  {
-    "root": "sper / spair",
-    "root_meaning": "希望 (hope)",
-    "words": [
-      {
-        "word": "desperate",
-        "meaning": "adj. 绝望的；极度渴望的",
-        "inflections": [
-          {
-            "word": "desperation",
-            "pos": "n.",
-            "meaning": "绝望"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "desperate situation",
-            "zh": "绝境"
-          },
-          {
-            "en": "desperately need",
-            "zh": "急需"
-          },
-          {
-            "en": "desperate attempt",
-            "zh": "绝望的尝试"
-          },
-          {
-            "en": "desperate for money",
-            "zh": "急需用钱"
-          },
-          {
-            "en": "in desperate need",
-            "zh": "迫切需要"
-          },
-          {
-            "en": "desperate measures",
-            "zh": "非常措施"
-          },
-          {
-            "en": "desperate struggle",
-            "zh": "绝望挣扎"
-          },
-          {
-            "en": "in desperate need of",
-            "zh": "急需"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The government's desperate attempt to curb inflation through price controls ultimately proved counterproductive and led to widespread shortages.",
-            "zh": "政府试图通过价格控制来遏制通货膨胀的绝望尝试最终证明适得其反，并导致了广泛的短缺。"
-          },
-          {
-            "en": "Millions of refugees are in desperate need of humanitarian assistance, including access to clean water, shelter, and emergency medical care.",
-            "zh": "数百万难民迫切需要人道主义援助，包括获得清洁水、住所和紧急医疗护理。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "hopeless",
-            "pos": "adj.",
-            "meaning": "绝望的"
-          },
-          {
-            "word": "frantic",
-            "pos": "adj.",
-            "meaning": "疯狂的，拼命的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "hopeful",
-            "pos": "adj.",
-            "meaning": "有希望的"
-          }
-        ],
-        "_root": "sper / spair — 希望 (hope)",
-        "etymology": "de(离开，否定) + sper(希望) + ate(形容词后缀) → 希望离开了 → 绝望的",
-        "mnemonic": "得(de)死吧(sper)？完全绝望了，看不到任何希望。"
       }
     ]
   },
@@ -13443,84 +14235,6 @@
         "_root": "labor — 劳动，工作 (to work)",
         "etymology": "col(共同) + labor(劳动) + ate(使动) → 共同劳动 → 合作",
         "mnemonic": "col(一起)labor(劳动)ate(吃)饭，就是collaborate合作的美好结果。"
-      }
-    ]
-  },
-  {
-    "root": "vers / vert (二期)",
-    "root_meaning": "转 (to turn) — 补充词汇",
-    "words": [
-      {
-        "word": "extrovert",
-        "meaning": "n. 性格外向者 adj. 外向的",
-        "inflections": [
-          {
-            "word": "extroversion",
-            "pos": "n.",
-            "meaning": "外向性；外向性格"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "natural extrovert",
-            "zh": "天生的外向者"
-          },
-          {
-            "en": "extrovert personality",
-            "zh": "外向性格"
-          },
-          {
-            "en": "social extrovert",
-            "zh": "社交外向者"
-          },
-          {
-            "en": "extrovert tendencies",
-            "zh": "外向倾向"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "While extroverts typically thrive in collaborative team environments, introverts often excel at tasks requiring sustained individual concentration.",
-            "zh": "虽然外向者通常在协作团队环境中如鱼得水，但内向者往往在需要持续专注的个人任务上表现出色。"
-          },
-          {
-            "en": "The modern workplace frequently privileges extrovert personality traits, potentially disadvantaging quieter but equally capable employees.",
-            "zh": "现代职场常常优待外向型人格特质，这可能会让安静但同样有能力的员工处于不利地位。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "outgoing",
-            "pos": "adj.",
-            "meaning": "外向的"
-          },
-          {
-            "word": "sociable",
-            "pos": "adj.",
-            "meaning": "好交际的"
-          },
-          {
-            "word": "gregarious",
-            "pos": "adj.",
-            "meaning": "爱社交的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "introvert",
-            "pos": "n.",
-            "meaning": "内向的人"
-          },
-          {
-            "word": "reserved",
-            "pos": "adj.",
-            "meaning": "矜持的；内向的"
-          }
-        ],
-        "_root": "vers / vert (二期) — 转 (to turn) — 补充词汇",
-        "etymology": "extro (向外) + vert (转) → 转向外部世界 → 性格外向者，外向的",
-        "mnemonic": "外向者(extrovert)像天线一样向外(extro)转(vert)，时刻接收外界的信号与社交能量。"
       }
     ]
   },
@@ -17106,148 +17820,6 @@
     ]
   },
   {
-    "root": "rect / reg / rul",
-    "root_meaning": "直，统治 (straight, rule)",
-    "words": [
-      {
-        "word": "rectify",
-        "meaning": "vt. 纠正，改正；矫正",
-        "inflections": [
-          {
-            "word": "rectification",
-            "pos": "n.",
-            "meaning": "纠正，改正"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "rectify the situation",
-            "zh": "纠正局面"
-          },
-          {
-            "en": "rectify an error",
-            "zh": "纠正错误"
-          },
-          {
-            "en": "rectify the imbalance",
-            "zh": "纠正不平衡"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The government must act swiftly to rectify the systemic inequalities that perpetuate the cycle of intergenerational poverty.",
-            "zh": "政府必须迅速采取行动，纠正那些使代际贫困循环持续下去的系统性不平等。"
-          },
-          {
-            "en": "Once the accounting discrepancies were identified, the firm took immediate measures to rectify the errors and prevent their recurrence.",
-            "zh": "一旦发现会计差异，该公司立即采取措施纠正错误，并防止其再次发生。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "correct",
-            "pos": "vt.",
-            "meaning": "纠正"
-          },
-          {
-            "word": "remedy",
-            "pos": "vt.",
-            "meaning": "补救"
-          },
-          {
-            "word": "amend",
-            "pos": "vt.",
-            "meaning": "修改"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "worsen",
-            "pos": "vt.",
-            "meaning": "恶化"
-          },
-          {
-            "word": "ruin",
-            "pos": "vt.",
-            "meaning": "毁坏"
-          }
-        ],
-        "_root": "rect / reg / rul — 直，统治 (straight, rule)",
-        "etymology": "rect(直，正) + ify(使，动词后缀) → 使变直/变正 → 纠正，改正",
-        "mnemonic": "犯了错要赶紧rectify(纠正)，就像把弯曲的东西拉直(rect)。"
-      },
-      {
-        "word": "overrule",
-        "meaning": "vt. 批驳，否决；宣布无效",
-        "inflections": [
-          {
-            "word": "overrule a decision",
-            "pos": "v.",
-            "meaning": "否决一项决定"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "overrule a decision",
-            "zh": "否决决定"
-          },
-          {
-            "en": "overrule an objection",
-            "zh": "驳回异议"
-          },
-          {
-            "en": "overrule the verdict",
-            "zh": "推翻裁决"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The Supreme Court has the constitutional authority to overrule legislation that is deemed incompatible with fundamental human rights.",
-            "zh": "最高法院拥有宪法赋予的权力，可以否决被认为与基本人权不符的立法。"
-          },
-          {
-            "en": "The chairperson's decision to overrule the committee's recommendation sparked considerable resentment among senior faculty members.",
-            "zh": "主席否决委员会建议的决定在高级教职人员中引发了相当大的不满。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "veto",
-            "pos": "vt.",
-            "meaning": "否决"
-          },
-          {
-            "word": "nullify",
-            "pos": "vt.",
-            "meaning": "使无效"
-          },
-          {
-            "word": "override",
-            "pos": "vt.",
-            "meaning": "推翻"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "approve",
-            "pos": "vt.",
-            "meaning": "批准"
-          },
-          {
-            "word": "uphold",
-            "pos": "vt.",
-            "meaning": "维持"
-          }
-        ],
-        "_root": "rect / reg / rul — 直，统治 (straight, rule)",
-        "etymology": "over(在...之上) + rule(统治) → 从上统治 → 否决，批驳",
-        "mnemonic": "裁判over(高高在上)掌握rule(规则)，可以随时overrule(否决)场上判决。"
-      }
-    ]
-  },
-  {
     "root": "sanct / sacr",
     "root_meaning": "神圣 (holy, sacred)",
     "words": [
@@ -17560,84 +18132,6 @@
         "_root": "cert / cern — 确定，分辨 (to determine, distinguish)",
         "etymology": "dis(分开) + cern(分辨，筛选) → 分开筛选 → 辨别，识别",
         "mnemonic": "侦探dis(分开)线索，仔细cern(筛选)，最终discern(识别)出凶手。"
-      }
-    ]
-  },
-  {
-    "root": "sper / spair (二期)",
-    "root_meaning": "希望 (hope) — 补充词汇",
-    "words": [
-      {
-        "word": "prosper",
-        "meaning": "v. 繁荣，昌盛；成功",
-        "inflections": [
-          {
-            "word": "prosperity",
-            "pos": "n.",
-            "meaning": "繁荣，兴旺"
-          },
-          {
-            "word": "prosperous",
-            "pos": "adj.",
-            "meaning": "繁荣的，兴旺的"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "prosper economically",
-            "zh": "经济繁荣"
-          },
-          {
-            "en": "prosper and thrive",
-            "zh": "繁荣发展"
-          },
-          {
-            "en": "prosper and flourish",
-            "zh": "繁荣兴旺"
-          },
-          {
-            "en": "hope to prosper",
-            "zh": "希望成功"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "For any nation to prosper economically in the long term, it must invest strategically in education, infrastructure, and technological innovation.",
-            "zh": "任何国家要想长期经济繁荣，就必须在教育、基础设施和技术创新上进行战略性投资。"
-          },
-          {
-            "en": "Small and medium-sized enterprises can prosper in highly competitive markets if they focus on niche segments and superior customer service.",
-            "zh": "如果中小型企业专注于利基市场和优质客户服务，就能在高度竞争的市场中蓬勃发展。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "thrive",
-            "pos": "v.",
-            "meaning": "兴旺，繁荣"
-          },
-          {
-            "word": "flourish",
-            "pos": "v.",
-            "meaning": "繁荣，昌盛"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "decline",
-            "pos": "v.",
-            "meaning": "衰落，衰退"
-          },
-          {
-            "word": "fail",
-            "pos": "v.",
-            "meaning": "失败"
-          }
-        ],
-        "_root": "sper / spair (二期) — 希望 (hope) — 补充词汇",
-        "etymology": "pro(向前) + sper(希望) → 带着希望向前进 → 繁荣，成功",
-        "mnemonic": "向前(pro)播种希望(sper)的种子，终将收获繁荣昌盛。"
       }
     ]
   },
@@ -18561,164 +19055,6 @@
     ]
   },
   {
-    "root": "cur / curs / cour",
-    "root_meaning": "跑，流动 (to run, flow)",
-    "words": [
-      {
-        "word": "course",
-        "meaning": "n. 过程，进程；路线，方针；跑道；课程 v. 追猎；运行；流动",
-        "inflections": [
-          {
-            "word": "currency",
-            "pos": "n.",
-            "meaning": "货币；流通"
-          },
-          {
-            "word": "curriculum",
-            "pos": "n.",
-            "meaning": "课程"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "in due course",
-            "zh": "在适当的时候"
-          },
-          {
-            "en": "change course",
-            "zh": "改变方向"
-          },
-          {
-            "en": "in the course of history",
-            "zh": "在历史进程中"
-          },
-          {
-            "en": "a course of action",
-            "zh": "行动方针"
-          },
-          {
-            "en": "take a course in",
-            "zh": "修读...课程"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "The government was compelled to fundamentally change course on its economic strategy following the severe recession.",
-            "zh": "在严重的经济衰退之后，政府被迫从根本上改变其经济战略方针。"
-          },
-          {
-            "en": "Over the course of the twentieth century, life expectancy in industrialized nations increased by approximately three decades.",
-            "zh": "在二十世纪的历程中，工业化国家的人均寿命提高了大约三十年。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "path",
-            "pos": "n.",
-            "meaning": "道路；途径"
-          },
-          {
-            "word": "route",
-            "pos": "n.",
-            "meaning": "路线"
-          },
-          {
-            "word": "progression",
-            "pos": "n.",
-            "meaning": "进程"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "standstill",
-            "pos": "n.",
-            "meaning": "停顿"
-          },
-          {
-            "word": "halt",
-            "pos": "n.",
-            "meaning": "停止"
-          }
-        ],
-        "_root": "cur / curs / cour — 跑，流动 (to run, flow)",
-        "etymology": "cour(跑) + se(名词后缀) → 奔跑的路径 → 过程，路线；课程",
-        "mnemonic": "学习课程(course)就像在跑道上奔跑(cour)，沿着路线一步步前进。"
-      },
-      {
-        "word": "incur",
-        "meaning": "vt. 招致，引起；遭受",
-        "inflections": [
-          {
-            "word": "incursion",
-            "pos": "n.",
-            "meaning": "入侵；侵犯"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "incur costs",
-            "zh": "产生费用"
-          },
-          {
-            "en": "incur a penalty",
-            "zh": "遭受处罚"
-          },
-          {
-            "en": "incur debts",
-            "zh": "负债"
-          },
-          {
-            "en": "incur expenses",
-            "zh": "产生费用"
-          },
-          {
-            "en": "incur losses",
-            "zh": "遭受损失"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Companies that fail to comply with environmental regulations may incur substantial financial penalties and irreparable reputational damage.",
-            "zh": "未能遵守环境法规的公司可能会招致巨额经济罚款和无法挽回的声誉损害。"
-          },
-          {
-            "en": "The government's decision to default on its sovereign debt incurred the wrath of international creditors and rating agencies.",
-            "zh": "政府决定拖欠主权债务，引起了国际债权人和评级机构的愤怒。"
-          }
-        ],
-        "phonetic": "",
-        "synonyms": [
-          {
-            "word": "contract",
-            "pos": "vt.",
-            "meaning": "招致；感染"
-          },
-          {
-            "word": "suffer",
-            "pos": "vt.",
-            "meaning": "遭受"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "avoid",
-            "pos": "vt.",
-            "meaning": "避免"
-          },
-          {
-            "word": "avert",
-            "pos": "vt.",
-            "meaning": "避免"
-          }
-        ],
-        "_root": "cur / curs / cour — 跑，流动 (to run, flow)",
-        "etymology": "in(进入) + cur(跑) → 跑进来 → 招致，引起(不好的事)",
-        "mnemonic": "不小心闯进(in)危险区域，结果跑(cur)出来一堆麻烦，招致了损失。"
-      }
-    ]
-  },
-  {
     "root": "ment (二期)",
     "root_meaning": "心，思想 (mind) — 补充词汇",
     "words": [
@@ -19454,84 +19790,6 @@
     ]
   },
   {
-    "root": "lig / oblig",
-    "root_meaning": "捆绑，约束 (to bind)",
-    "words": [
-      {
-        "word": "obligation",
-        "phonetic": "[ˌɒblɪˈɡeɪʃn]",
-        "meaning": "n. 义务,职责,责任",
-        "inflections": [
-          {
-            "word": "obligatory",
-            "pos": "adj.",
-            "meaning": "义务的；必须的"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "legal obligation",
-            "zh": ""
-          },
-          {
-            "en": "fulfill moral obligations",
-            "zh": ""
-          },
-          {
-            "en": "under statutory obligation",
-            "zh": ""
-          },
-          {
-            "en": "moral obligation",
-            "zh": "道德责任"
-          },
-          {
-            "en": "sense of obligation",
-            "zh": "责任感"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Sovereign states possess a fundamental legal obligation to safeguard the basic human rights and ecological stability of their territories.",
-            "zh": "主权国家负有基本的法律义务，维护其领土内的基本人权和生态稳定。"
-          }
-        ],
-        "synonyms": [
-          {
-            "word": "duty",
-            "pos": "n.",
-            "meaning": "责任"
-          },
-          {
-            "word": "responsibility",
-            "pos": "n.",
-            "meaning": "职责"
-          },
-          {
-            "word": "commitment",
-            "pos": "n.",
-            "meaning": "义务"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "right",
-            "pos": "n.",
-            "meaning": "权利"
-          },
-          {
-            "word": "option",
-            "pos": "n.",
-            "meaning": "选择权"
-          }
-        ],
-        "_root": "lig / oblig — 捆绑，约束 (to bind)",
-        "etymology": "ob(朝向) + lig(捆绑) + ation(名词后缀) → 绑住某人的事物 → 义务，责任",
-        "mnemonic": "弟弟(ob)被绳子(lig)绑着去做事，这是他的义务(obligation)。"
-      }
-    ]
-  },
-  {
     "root": "duc / duct",
     "root_meaning": "引导，带来 (to lead, bring)",
     "words": [
@@ -19606,78 +19864,6 @@
         "_root": "duc / duct — 引导，带来 (to lead, bring)",
         "etymology": "re(再次) + pro(向前) + duc(引导) + tion(名词后缀) → 再次引导出来 → 复制品",
         "mnemonic": "再(re)生产(produce)一模一样的东西就是复制品(reproduction)。"
-      }
-    ]
-  },
-  {
-    "root": "cur / cura",
-    "root_meaning": "关心，治疗 (to care, heal)",
-    "words": [
-      {
-        "word": "cure",
-        "phonetic": "[kjʊə(r)]",
-        "meaning": "n.&v. 治愈,治疗",
-        "inflections": [],
-        "ielts_phrases": [
-          {
-            "en": "seek a permanent cure for",
-            "zh": ""
-          },
-          {
-            "en": "preventative medical cure",
-            "zh": ""
-          },
-          {
-            "en": "cure for cancer",
-            "zh": "癌症疗法"
-          },
-          {
-            "en": "miracle cure",
-            "zh": "灵丹妙药"
-          },
-          {
-            "en": "find a cure",
-            "zh": "找到治疗方法"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Biomedical engineering has accelerated rapidly, yet seeking a definitive cure for sophisticated neurological degeneration remains an elusive milestone.",
-            "zh": "生物医学工程发展迅速，但寻找彻底治愈复杂神经退行性疾病的方法仍然是一个难以实现的里程碑。"
-          }
-        ],
-        "synonyms": [
-          {
-            "word": "remedy",
-            "pos": "n.",
-            "meaning": "疗法"
-          },
-          {
-            "word": "treatment",
-            "pos": "n.",
-            "meaning": "治疗"
-          },
-          {
-            "word": "heal",
-            "pos": "v.",
-            "meaning": "治愈"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "disease",
-            "pos": "n.",
-            "meaning": "疾病"
-          },
-          {
-            "word": "aggravate",
-            "pos": "v.",
-            "meaning": "加重"
-          }
-        ],
-        "_root": "cur / cura — 关心，治疗 (to care, heal)",
-        "etymology": "cur(关心，治疗) → 关心病人以治疗 → 治愈",
-        "mnemonic": "医生对病人说‘Cur(e)你的病，需要我的关心(cur)’。"
       }
     ]
   },
@@ -19890,37 +20076,6 @@
         "_root": "dec / decor — 美观，体面，端庄 (beauty, dignity)",
         "etymology": "in(不) + dec(体面) + ent(形容词后缀) → 不体面的 → 下流的，不雅的",
         "mnemonic": "他穿着不(in)体面(dec)的衣服，被(ent)人认为很下流(indecent)。"
-      }
-    ]
-  },
-  {
-    "root": "sper",
-    "root_meaning": "希望 (hope)",
-    "words": [
-      {
-        "word": "desperate",
-        "phonetic": "[ˈdespərət]",
-        "meaning": "a. 绝望的;拼命的,不顾一切的;极度渴望的;危急的",
-        "inflections": [],
-        "ielts_phrases": [
-          {
-            "en": "desperate attempt to",
-            "zh": ""
-          },
-          {
-            "en": "in desperate need of fiscal aid",
-            "zh": ""
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Impoverished rural communities remain in desperate need of clean hydraulic infrastructure to mitigate the fatal propagation of waterborne pathogens.",
-            "zh": ""
-          }
-        ],
-        "synonyms": [],
-        "antonyms": [],
-        "_root": "sper / spair — 希望 (hope)"
       }
     ]
   },
@@ -20836,156 +20991,6 @@
     ]
   },
   {
-    "root": "reg / rig / rect",
-    "root_meaning": "统治，管理，正，直 (to rule, straight)",
-    "words": [
-      {
-        "word": "regular",
-        "phonetic": "[ˈreɡjələ(r)]",
-        "meaning": "a. 规则的;周期性的;经常的",
-        "inflections": [
-          {
-            "word": "regularity",
-            "pos": "n.",
-            "meaning": "规律性;规则性;定期"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "on a regular basis",
-            "zh": ""
-          },
-          {
-            "en": "maintain regular structural inspections",
-            "zh": ""
-          },
-          {
-            "en": "regular maintenance",
-            "zh": "定期维护"
-          },
-          {
-            "en": "regular intervals",
-            "zh": "规律间隔"
-          },
-          {
-            "en": "regular customer",
-            "zh": "常客"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Interacting with natural bio-diverse settings on a regular basis systematically reduces chemical stress markers within human neurological frameworks.",
-            "zh": "定期接触自然生物多样性的环境能系统性地降低人类神经系统内的化学应激标记物。"
-          }
-        ],
-        "synonyms": [
-          {
-            "word": "routine",
-            "pos": "adj.",
-            "meaning": "常规的;例行的"
-          },
-          {
-            "word": "habitual",
-            "pos": "adj.",
-            "meaning": "习惯的;惯常的"
-          },
-          {
-            "word": "periodic",
-            "pos": "adj.",
-            "meaning": "周期性的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "irregular",
-            "pos": "adj.",
-            "meaning": "不规则的"
-          },
-          {
-            "word": "sporadic",
-            "pos": "adj.",
-            "meaning": "不定期的"
-          }
-        ],
-        "_root": "reg / rig / rect — 统治，管理，正，直 (to rule, straight)",
-        "etymology": "reg(统治，规则) + ular(形容词后缀) → 按规则来的 → 规则的，定期的",
-        "mnemonic": "reg(统治)要遵循规则(regular)，定期检查不能乱。"
-      },
-      {
-        "word": "direct",
-        "phonetic": "[dəˈrekt]",
-        "meaning": "v.&a. 指挥,指示; 直接的,坦白的",
-        "inflections": [
-          {
-            "word": "direction",
-            "pos": "n.",
-            "meaning": "方向;指示;指挥"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "have a direct bearing on",
-            "zh": ""
-          },
-          {
-            "en": "direct causal linkage",
-            "zh": ""
-          },
-          {
-            "en": "direct impact",
-            "zh": "直接影响"
-          },
-          {
-            "en": "direct access",
-            "zh": "直接进入"
-          },
-          {
-            "en": "direct communication",
-            "zh": "直接交流"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "Epidemiological evidence shows that early exposure to ultra-processed foodstuffs has a direct bearing on subsequent pediatric obesity rates.",
-            "zh": "流行病学证据表明，早期接触超加工食品与随后的儿童肥胖率有直接关联。"
-          }
-        ],
-        "synonyms": [
-          {
-            "word": "guide",
-            "pos": "v.",
-            "meaning": "指导"
-          },
-          {
-            "word": "instruct",
-            "pos": "v.",
-            "meaning": "指示"
-          },
-          {
-            "word": "forthright",
-            "pos": "adj.",
-            "meaning": "直率的"
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "indirect",
-            "pos": "adj.",
-            "meaning": "间接的"
-          },
-          {
-            "word": "ambiguous",
-            "pos": "adj.",
-            "meaning": "含糊的"
-          }
-        ],
-        "_root": "reg / rig / rect — 统治，管理，正，直 (to rule, straight)",
-        "etymology": "di(分开，离开) + rect(正，直) → 直接引导 → 直接的，指挥",
-        "mnemonic": "di(弟弟)说话rect(直)截了当，从不绕弯，指挥别人也直接(direct)。"
-      }
-    ]
-  },
-  {
     "root": "tribut",
     "root_meaning": "给予，付出 (to give, pay)",
     "words": [
@@ -21412,84 +21417,6 @@
         "etymology": "in(进入) + sert(放置) → 放进去 → 插入，嵌入",
         "mnemonic": "in(进入)后，把东西sert(音似“塞它”)进去，就是insert插入。",
         "_root": "sert — 放置，结合"
-      }
-    ]
-  },
-  {
-    "root": "plie / ple / pli",
-    "root_meaning": "倍，叠，满",
-    "words": [
-      {
-        "word": "compliment",
-        "phonetic": "ˈkɒmplɪment",
-        "meaning": "vt.&n. 赞美；派：complimentary",
-        "inflections": [
-          {
-            "word": "complimentary",
-            "pos": "adj.",
-            "meaning": "赞美的；表示敬意的"
-          }
-        ],
-        "synonyms": [
-          {
-            "word": "praise",
-            "pos": "",
-            "meaning": ""
-          },
-          {
-            "word": "flatter",
-            "pos": "",
-            "meaning": ""
-          },
-          {
-            "word": "acclaim",
-            "pos": "",
-            "meaning": ""
-          }
-        ],
-        "antonyms": [
-          {
-            "word": "criticism",
-            "pos": "n.",
-            "meaning": "批评"
-          },
-          {
-            "word": "insult",
-            "pos": "vt./n.",
-            "meaning": "侮辱"
-          }
-        ],
-        "ielts_phrases": [
-          {
-            "en": "pay a compliment to someone",
-            "zh": ""
-          },
-          {
-            "en": "complimentary services",
-            "zh": ""
-          },
-          {
-            "en": "pay a compliment",
-            "zh": "赞美"
-          },
-          {
-            "en": "fish for compliments",
-            "zh": "讨赞美"
-          },
-          {
-            "en": "compliment someone on",
-            "zh": "称赞某人的…"
-          }
-        ],
-        "ielts_sentences": [
-          {
-            "en": "While constructive criticism is vital for corporate evolution, managers who lavish genuine compliments on their workforce tend to foster a more synergistic organizational climate.",
-            "zh": "虽然建设性批评对于企业的进步至关重要，但那些毫不吝惜地给予员工真诚赞美的管理者，往往能营造出更具协同效应的组织氛围。"
-          }
-        ],
-        "etymology": "com(共同) + pli(充满) + -ment(名词后缀) → 让大家充满喜悦的话 → 赞美",
-        "mnemonic": "公司(com)给员工满(pli)满的赞美(compliment)，让人心里充实。",
-        "_root": "plie / ple / pli — 倍，叠，满"
       }
     ]
   },
