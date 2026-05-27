@@ -2856,10 +2856,20 @@
     }
 
     window.scrollToAZLetter = function(letter) {
+      // Find the section header with matching letter
       var header = rootListInner.querySelector('.az-section-header[data-letter="' + letter + '"]');
       if (header) {
-        header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Scroll to the header
+        rootListInner.scrollTo({ top: header.offsetTop - rootListInner.offsetTop, behavior: 'smooth' });
+      } else {
+        // Fallback: look for first root starting with this letter
+        var firstRoot = rootListInner.querySelector('.root-item[data-root]');
+        if (firstRoot) {
+          rootListInner.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       }
+
+      // Update A-Z nav button highlight
       var azEl = document.getElementById('azNav');
       if (azEl) {
         azEl.querySelectorAll('.az-btn').forEach(function(b) {
