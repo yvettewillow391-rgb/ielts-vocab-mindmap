@@ -2859,14 +2859,9 @@
       // Find the section header with matching letter
       var header = rootListInner.querySelector('.az-section-header[data-letter="' + letter + '"]');
       if (header) {
-        // Scroll to the header
-        rootListInner.scrollTo({ top: header.offsetTop - rootListInner.offsetTop, behavior: 'smooth' });
-      } else {
-        // Fallback: look for first root starting with this letter
-        var firstRoot = rootListInner.querySelector('.root-item[data-root]');
-        if (firstRoot) {
-          rootListInner.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        // Calculate scroll position: header's position within rootListInner
+        var scrollPos = header.offsetTop - header.parentElement.offsetTop;
+        rootListInner.scrollTop = scrollPos;
       }
 
       // Update A-Z nav button highlight
