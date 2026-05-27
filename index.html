@@ -4841,50 +4841,68 @@
       if (btn) { btn.disabled = true; btn.textContent = '⏳ 生成中...'; }
 
       progressEl.classList.remove('hidden');
-      progressEl.innerHTML = '<div class="text-[10px] text-purple-600 animate-pulse">🤖 正在调用 AI 生成完整单词模板...</div>';
+      progressEl.innerHTML = '<div class="text-[10px] text-purple-600 animate-pulse">🤖 正在并发生成单词模板（3个并发）...</div>';
       resultsEl.innerHTML = '';
 
       var enrichedList = [];
-      for (var i = 0; i < unknownWords.length; i++) {
-        var p = unknownWords[i];
-        progressEl.innerHTML = '<div class="text-[10px] text-purple-600">🤖 AI 正在生成 <b>' + escapeHTML(p.word) + '</b> 的完整模板 (' + (i + 1) + '/' + unknownWords.length + ')... <span class="animate-pulse">⏳</span></div>';
-        try {
-          var entry = await enrichWordWithAI(p.word, p.meaning, p.pos);
-          enrichedList.push(entry);
+      var BATCH_SIZE = 3; // Process 3 words concurrently
 
-          // Try to find root: first check rootMap, then detectRoot
-          var rootIdx = null;
-          Object.keys(rootMap).forEach(function(ridx) {
-            if (rootMap[ridx].some(function(w) { return w.word.toLowerCase() === entry.word.toLowerCase(); })) {
-              rootIdx = parseInt(ridx);
+      for (var i = 0; i < unknownWords.length; i += BATCH_SIZE) {
+        var batch = unknownWords.slice(i, i + BATCH_SIZE);
+        var batchPromises = batch.map((p, idx) => {
+          var globalIdx = i + idx;
+          return enrichWordWithAI(p.word, p.meaning, p.pos)
+            .then(entry => {
+              progressEl.innerHTML = '<div class="text-[10px] text-purple-600">🤖 已生成 <b>' + escapeHTML(entry.word) + '</b> (' + (globalIdx + 1) + '/' + unknownWords.length + ')... <span class="animate-pulse">⏳</span></div>';
+              return { success: true, entry: entry, word: p.word };
+            })
+            .catch(err => {
+              return { success: false, error: err.message, word: p.word };
+            });
+        });
+
+        var batchResults = await Promise.all(batchPromises);
+
+        for (var j = 0; j < batchResults.length; j++) {
+          var result = batchResults[j];
+          if (result.success) {
+            var entry = result.entry;
+            enrichedList.push(entry);
+
+            // Try to find root: first check rootMap, then detectRoot
+            var rootIdx = null;
+            Object.keys(rootMap).forEach(function(ridx) {
+              if (rootMap[ridx].some(function(w) { return w.word.toLowerCase() === entry.word.toLowerCase(); })) {
+                rootIdx = parseInt(ridx);
+              }
+            });
+            if (rootIdx === null) {
+              var detected = detectRoot(entry.word);
+              rootIdx = (detected !== null && detected >= 0) ? detected : null;
             }
-          });
-          if (rootIdx === null) {
-            var detected = detectRoot(entry.word);
-            rootIdx = (detected !== null && detected >= 0) ? detected : null;
-          }
 
-          var entryHtml = '<div class="bg-white rounded-lg p-2 border border-green-200 text-[10px]">';
-          entryHtml += '<div class="flex items-center gap-2 mb-1">';
-          entryHtml += '<span class="font-bold text-green-700">✅ ' + escapeHTML(entry.word) + '</span>';
-          if (entry.phonetic) entryHtml += '<span class="text-gray-400 text-[9px]">/' + escapeHTML(entry.phonetic) + '/</span>';
-          entryHtml += '<span class="text-gray-500">' + escapeHTML(entry.meaning) + '</span>';
-          if (rootIdx !== null) {
-            entryHtml += '<span class="text-indigo-500 text-[9px]">→ ' + escapeHTML(allData[rootIdx].root) + '</span>';
+            var entryHtml = '<div class="bg-white rounded-lg p-2 border border-green-200 text-[10px]">';
+            entryHtml += '<div class="flex items-center gap-2 mb-1">';
+            entryHtml += '<span class="font-bold text-green-700">✅ ' + escapeHTML(entry.word) + '</span>';
+            if (entry.phonetic) entryHtml += '<span class="text-gray-400 text-[9px]">/' + escapeHTML(entry.phonetic) + '/</span>';
+            entryHtml += '<span class="text-gray-500">' + escapeHTML(entry.meaning) + '</span>';
+            if (rootIdx !== null) {
+              entryHtml += '<span class="text-indigo-500 text-[9px]">→ ' + escapeHTML(allData[rootIdx].root) + '</span>';
+            } else {
+              entryHtml += '<span class="text-amber-500 text-[9px]">⚠ 未识别词根</span>';
+            }
+            entryHtml += '</div>';
+            if (entry.etymology) entryHtml += '<div class="text-gray-500 ml-1">🔍 ' + escapeHTML(entry.etymology) + '</div>';
+            if (entry.mnemonic) entryHtml += '<div class="text-gray-500 ml-1">💡 ' + escapeHTML(entry.mnemonic) + '</div>';
+            if (entry.inflections && entry.inflections.length > 0) entryHtml += '<div class="text-gray-400 ml-1">📎 ' + entry.inflections.length + ' 变形态</div>';
+            if (entry.synonyms && entry.synonyms.length > 0) entryHtml += '<div class="text-gray-400 ml-1">≈ ' + entry.synonyms.length + ' 近义词</div>';
+            if (entry.phrases && entry.phrases.length > 0) entryHtml += '<div class="text-gray-400 ml-1">📝 ' + entry.phrases.length + ' 词组</div>';
+            if (entry.sentences && entry.sentences.length > 0) entryHtml += '<div class="text-gray-400 ml-1">📖 ' + entry.sentences.length + ' 例句</div>';
+            entryHtml += '</div>';
+            resultsEl.innerHTML += entryHtml;
           } else {
-            entryHtml += '<span class="text-amber-500 text-[9px]">⚠ 未识别词根</span>';
+            resultsEl.innerHTML += '<div class="text-[10px] text-red-500">❌ ' + escapeHTML(result.word) + ': ' + escapeHTML(result.error) + '</div>';
           }
-          entryHtml += '</div>';
-          if (entry.etymology) entryHtml += '<div class="text-gray-500 ml-1">🔍 ' + escapeHTML(entry.etymology) + '</div>';
-          if (entry.mnemonic) entryHtml += '<div class="text-gray-500 ml-1">💡 ' + escapeHTML(entry.mnemonic) + '</div>';
-          if (entry.inflections && entry.inflections.length > 0) entryHtml += '<div class="text-gray-400 ml-1">📎 ' + entry.inflections.length + ' 变形态</div>';
-          if (entry.synonyms && entry.synonyms.length > 0) entryHtml += '<div class="text-gray-400 ml-1">≈ ' + entry.synonyms.length + ' 近义词</div>';
-          if (entry.phrases && entry.phrases.length > 0) entryHtml += '<div class="text-gray-400 ml-1">📝 ' + entry.phrases.length + ' 词组</div>';
-          if (entry.sentences && entry.sentences.length > 0) entryHtml += '<div class="text-gray-400 ml-1">📖 ' + entry.sentences.length + ' 例句</div>';
-          entryHtml += '</div>';
-          resultsEl.innerHTML += entryHtml;
-        } catch (err) {
-          resultsEl.innerHTML += '<div class="text-[10px] text-red-500">❌ ' + escapeHTML(p.word) + ': ' + escapeHTML(err.message) + '</div>';
         }
       }
 
