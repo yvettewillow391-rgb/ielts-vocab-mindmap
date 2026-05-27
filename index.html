@@ -6976,31 +6976,60 @@
         return;
       }
 
-      // Non-favorites view (normal)
+      // Non-favorites view - apply original renderRootList logic with grouping
       if (roots.length === 0) {
         rootListInner.innerHTML = '';
         rootListEmpty.classList.remove('hidden');
         rootListEmpty.querySelector('p').textContent = '未找到匹配的词根';
+        renderAZNav([], null);
         return;
       }
       rootListEmpty.classList.add('hidden');
 
+      // Group roots by first letter
+      const groups = {};
+      const lettersUsed = {};
+      roots.forEach(r => {
+        if (!r.root) return;
+        const letter = r.root.charAt(0).toUpperCase();
+        if (!groups[letter]) groups[letter] = [];
+        groups[letter].push({ root: r, realIndex: allData.indexOf(r) });
+        lettersUsed[letter] = true;
+      });
+
+      // Render A-Z nav
+      const allLettersUsed = {};
+      allData.forEach(r => {
+        if (r.root) allLettersUsed[r.root.charAt(0).toUpperCase()] = true;
+      });
+      renderAZNav(Object.keys(allLettersUsed).sort(), filterText ? Object.keys(lettersUsed) : null);
+
+      // Render grouped root list
       let html = '';
-      roots.forEach((r) => {
-        const realIndex = allData.indexOf(allData.find(ar => ar.root === r.root));
-        const wordCount = (r.words || []).length;
-        const isActive = realIndex === currentRootIndex;
-        html +=
-          '<div class="root-item group relative px-3 py-2.5 mb-0.5 cursor-pointer rounded-r-lg border-l-[3px] ' +
-          (isActive ? 'active border-l-indigo-500' : 'border-l-transparent') +
-          '" data-root="' + realIndex + '">' +
-          '<div class="text-sm font-medium text-gray-800">' + escapeHTML(r.root) + '</div>' +
-          '<div class="flex items-center justify-between mt-0.5">' +
-          '<span class="text-xs text-gray-400">' + escapeHTML(r.root_meaning || '') + '</span>' +
-          '<span class="text-[10px] text-gray-300 bg-gray-100 px-1.5 py-0.5 rounded-full">' + wordCount + '词</span>' +
-          '</div>' +
-          '<button class="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-100 text-gray-400 hover:bg-green-100 hover:text-green-500 transition-colors flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100" onclick="event.stopPropagation();addWordToRootAction(' + realIndex + ')" title="新增单词">+</button>' +
-          '</div>';
+      const sortedLetters = Object.keys(groups).sort();
+      sortedLetters.forEach(letter => {
+        html += '<div class="az-section-header" data-letter="' + letter + '">' + letter + '</div>';
+        // Sort roots within each letter alphabetically
+        groups[letter].sort((a, b) =>
+          a.root.root.toLowerCase().localeCompare(b.root.root.toLowerCase())
+        );
+        groups[letter].forEach(item => {
+          const r = item.root;
+          const realIndex = item.realIndex;
+          const wordCount = (r.words || []).length;
+          const isActive = realIndex === currentRootIndex;
+          html +=
+            '<div class="root-item group relative px-3 py-2.5 mb-0.5 cursor-pointer rounded-r-lg border-l-[3px] ' +
+            (isActive ? 'active border-l-indigo-500' : 'border-l-transparent') +
+            '" data-root="' + realIndex + '">' +
+            '<div class="text-sm font-medium text-gray-800">' + escapeHTML(r.root) + '</div>' +
+            '<div class="flex items-center justify-between mt-0.5">' +
+            '<span class="text-xs text-gray-400">' + escapeHTML(r.root_meaning || '') + '</span>' +
+            '<span class="text-[10px] text-gray-300 bg-gray-100 px-1.5 py-0.5 rounded-full">' + wordCount + '词</span>' +
+            '</div>' +
+            '<button class="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-100 text-gray-400 hover:bg-green-100 hover:text-green-500 transition-colors flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100" onclick="event.stopPropagation();addWordToRootAction(' + realIndex + ')" title="新增单词">+</button>' +
+            '</div>';
+        });
       });
       rootListInner.innerHTML = html;
 
