@@ -2856,14 +2856,26 @@
     }
 
     window.scrollToAZLetter = function(letter) {
+      console.log('scrollToAZLetter called:', letter);
+
       // Find the section header with matching letter
       var header = rootListInner.querySelector('.az-section-header[data-letter="' + letter + '"]');
+      console.log('Found header:', !!header);
+
       if (header) {
+        console.log('Header element:', header);
         // Get position of header relative to rootListInner
         var headerRect = header.getBoundingClientRect();
         var containerRect = rootListInner.getBoundingClientRect();
+        console.log('Header rect:', headerRect.top, 'Container rect:', containerRect.top);
+
         var scrollPos = rootListInner.scrollTop + (headerRect.top - containerRect.top);
+        console.log('Setting scrollTop to:', scrollPos);
         rootListInner.scrollTop = scrollPos;
+        console.log('Actual scrollTop:', rootListInner.scrollTop);
+      } else {
+        console.log('No header found for letter:', letter);
+        console.log('Available headers:', Array.from(rootListInner.querySelectorAll('.az-section-header')).map(h => h.dataset.letter));
       }
 
       // Update A-Z nav button highlight
