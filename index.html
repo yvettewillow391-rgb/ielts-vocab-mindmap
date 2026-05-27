@@ -3719,26 +3719,81 @@
     // Add word to specific root (from sidebar + button)
     window.addWordToRootAction = function(rootIndex) {
       if (rootIndex < 0 || rootIndex >= allData.length) return;
-      currentRootIndex = rootIndex;
-      const root = allData[rootIndex];
-      const newWord = {
-        word: 'new_word',
-        phonetic: '',
-        meaning: '请输入释义',
-        inflections: [],
-        synonyms: [],
-        antonyms: [],
-        ielts_phrases: [],
-        ielts_sentences: [],
-        etymology: '',
-        mnemonic: ''
-      };
-      autoEnrichWord(newWord, rootIndex);
-      root.words.push(newWord);
-      saveDataToStorage();
-      renderRootList(searchInput.value.trim());
-      selectWord(root.words.length - 1, newWord);
-      if (!editMode) toggleEditMode();
+
+      // Show batch input dialog
+      const batchHtml = `
+        <div class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center p-4">
+          <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">📝 批量添加单词到 ${allData[rootIndex].root}</h2>
+            <div class="space-y-3 mb-4">
+              <label class="block">
+                <span class="text-sm text-gray-600 mb-1 block">输入单词（用逗号或换行分隔）</span>
+                <textarea id="batchWordInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100" rows="5" placeholder="例：apple, banana, cherry&#10;或者：&#10;apple&#10;banana&#10;cherry"></textarea>
+              </label>
+            </div>
+            <div class="space-y-3 max-h-64 overflow-y-auto mb-4" id="batchWordList"></div>
+            <div class="flex gap-2">
+              <button id="batchCancelBtn" class="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors">取消</button>
+              <button id="batchConfirmBtn" class="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">✅ 添加</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = batchHtml;
+      const dialog = tempDiv.firstElementChild;
+      document.body.appendChild(dialog);
+
+      const input = document.getElementById('batchWordInput');
+      const wordList = document.getElementById('batchWordList');
+      const confirmBtn = document.getElementById('batchConfirmBtn');
+      const cancelBtn = document.getElementById('batchCancelBtn');
+
+      input.addEventListener('input', () => {
+        const words = input.value.split(/[,\n]/).map(w => w.trim()).filter(w => w);
+        wordList.innerHTML = words.map((w, i) => `
+          <div class="flex items-center gap-2 p-2 bg-gray-50 rounded">
+            <span class="text-sm font-medium text-gray-800 flex-1">${escapeHTML(w)}</span>
+            <input type="text" placeholder="释义" data-idx="${i}" class="word-meaning text-xs px-2 py-1 border border-gray-200 rounded flex-1">
+          </div>
+        `).join('');
+      });
+
+      confirmBtn.addEventListener('click', () => {
+        const words = input.value.split(/[,\n]/).map(w => w.trim()).filter(w => w);
+        const root = allData[rootIndex];
+
+        words.forEach((word, idx) => {
+          const meaningInput = document.querySelector(`input[data-idx="${idx}"].word-meaning`);
+          const meaning = meaningInput ? meaningInput.value || '请输入释义' : '请输入释义';
+
+          const newWord = {
+            word: word,
+            phonetic: '',
+            meaning: meaning,
+            inflections: [],
+            synonyms: [],
+            antonyms: [],
+            ielts_phrases: [],
+            ielts_sentences: [],
+            etymology: '',
+            mnemonic: ''
+          };
+          autoEnrichWord(newWord, rootIndex);
+          root.words.push(newWord);
+        });
+
+        currentRootIndex = rootIndex;
+        saveDataToStorage();
+        renderRootList(searchInput.value.trim());
+        selectWord(root.words.length - 1, root.words[root.words.length - 1]);
+        if (!editMode) toggleEditMode();
+        dialog.remove();
+      });
+
+      cancelBtn.addEventListener('click', () => dialog.remove());
+      input.focus();
     };
 
     // Add new word to current root
