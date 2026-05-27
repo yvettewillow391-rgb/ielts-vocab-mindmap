@@ -2859,8 +2859,10 @@
       // Find the section header with matching letter
       var header = rootListInner.querySelector('.az-section-header[data-letter="' + letter + '"]');
       if (header) {
-        // Calculate scroll position: header's position within rootListInner
-        var scrollPos = header.offsetTop - header.parentElement.offsetTop;
+        // Get position of header relative to rootListInner
+        var headerRect = header.getBoundingClientRect();
+        var containerRect = rootListInner.getBoundingClientRect();
+        var scrollPos = rootListInner.scrollTop + (headerRect.top - containerRect.top);
         rootListInner.scrollTop = scrollPos;
       }
 
