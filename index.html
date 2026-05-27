@@ -2801,6 +2801,10 @@
       var sortedLetters = Object.keys(groups).sort();
       sortedLetters.forEach(function(letter) {
         html += '<div class="az-section-header" data-letter="' + letter + '">' + letter + '</div>';
+        // Sort roots within each letter alphabetically
+        groups[letter].sort(function(a, b) {
+          return a.root.root.toLowerCase().localeCompare(b.root.root.toLowerCase());
+        });
         groups[letter].forEach(function(item) {
           var r = item.root;
           var realIndex = item.realIndex;
@@ -6228,6 +6232,8 @@
         renderRootList('');
         return;
       }
+      // Update root list to show filtered results
+      renderRootList(q);
       searchTimeout = setTimeout(() => doSearch(q), 250);
     });
 
