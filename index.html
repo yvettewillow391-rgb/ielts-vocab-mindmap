@@ -1454,9 +1454,9 @@
       u.lang = accent;
       // Use more natural parameters for sentences vs single words
       var isSentence = text.length > 25 && text.includes(' ');
-      u.rate = speechRate;
-      u.pitch = 1.0;
-      u.volume = 0.95;
+      u.rate = isSentence ? speechRate * 0.9 : speechRate; // Slightly slower for sentences
+      u.pitch = 0.95; // Slightly lower pitch for more natural sound
+      u.volume = 1.0; // Full volume for clarity
       var bestVoice = getBestVoice();
       if (bestVoice) u.voice = bestVoice;
       u.onend = () => {
@@ -2449,8 +2449,9 @@
       var text = getSpeakableText(word);
       var u = new SpeechSynthesisUtterance(text);
       u.lang = accent;
-      u.rate = speechRate;
-      u.pitch = 1.0;
+      u.rate = speechRate; // Natural speaking rate
+      u.pitch = 0.95; // Slightly lower pitch for natural sound
+      u.volume = 1.0; // Full volume
       var bestVoice = getBestVoice();
       if (bestVoice) u.voice = bestVoice;
       window.speechSynthesis.speak(u);
