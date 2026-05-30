@@ -2526,9 +2526,7 @@
       html += '<button id="detailSpeakBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors">🔊</button>';
       html += '<button id="detailSmartImportBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 hover:from-indigo-100 hover:to-purple-100 border border-indigo-200 transition-colors whitespace-nowrap" title="导入相关词">📋 导入</button>';
       var hasAIKey = !!(localStorage.getItem('ielts_gemini_key') || localStorage.getItem('ielts_anthropic_key'));
-      if (hasAIKey) {
-        html += '<button id="detailAIEnrichBtn" class="py-2 px-3 text-xs font-medium rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-colors whitespace-nowrap" title="AI 补全词根拆解、记忆、例句等">🤖 AI 补全</button>';
-      }
+      html += '<button id="detailAIEnrichBtn" class="py-2 px-3 text-xs font-medium rounded-xl ' + (hasAIKey ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600' : 'bg-gray-100 text-gray-400 hover:bg-gray-200') + ' transition-colors whitespace-nowrap" title="AI 补全词根拆解、记忆、例句等">🤖 AI 补全</button>';
       html += '</div>';
 
       // Etymology / root breakdown — show FIRST
@@ -4840,6 +4838,7 @@
     async function enrichWordWithAI(word, meaning, pos) {
       var geminiKey = localStorage.getItem(GEMINI_KEY_KEY);
       var anthropicKey = localStorage.getItem(ANTHROPIC_KEY_KEY);
+      console.log('[AI] enrichWordWithAI called:', word, '| geminiKey:', !!geminiKey, '| anthropicKey:', !!anthropicKey);
 
       if (!geminiKey && !anthropicKey) throw new Error('请先点 🤖 AI 设置配置 API Key（Gemini 免费）');
 
@@ -4854,6 +4853,7 @@
 
       // Build an ordered list of providers to try: [preferred, fallback]
       var providers = [];
+      console.log('[AI] Priority:', priority);
       if (priority === 'anthropic' && anthropicKey) {
         providers.push({ name: 'anthropic', key: anthropicKey });
         if (geminiKey) providers.push({ name: 'gemini', key: geminiKey });
@@ -4913,7 +4913,13 @@
 
               if (resp.ok) {
                 var data = await resp.json();
+                console.log('[AI] gpt-agent.cc response OK, model:', data.model);
                 text = data.choices[0].message.content;
+                // DeepSeek reasoning models may put output in reasoning field
+                if (!text && data.choices[0].message.reasoning) {
+                  console.log('[AI] Content empty, trying reasoning field');
+                  text = data.choices[0].message.reasoning;
+                }
               } else {
                 var errText = await resp.text();
                 if (pi === providers.length - 1) {
@@ -4958,6 +4964,7 @@
       }
 
       if (!text) throw new Error('AI 生成失败。建议配置免费 Gemini Key：点 🤖 AI 设置');
+      console.log('[AI] Raw response length:', text.length, '| preview:', text.substring(0, 100));
 
       var jsonStr = text.trim();
       var fm = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
@@ -5095,12 +5102,18 @@
 
     // AI enrich the current word in detail panel
     async function enrichCurrentWord(wordData) {
-      if (!wordData || currentRootIndex < 0 || currentWordIndex < 0) return;
+      if (!wordData || currentRootIndex < 0 || currentWordIndex < 0) {
+        alert('请先选择一个单词');
+        return;
+      }
       var btn = document.getElementById('detailAIEnrichBtn');
       if (btn) { btn.disabled = true; btn.textContent = '⏳ 生成中...'; }
 
       try {
+        console.log('[AI] Starting enrichment for:', wordData.word);
         var enriched = await enrichWordWithAI(wordData.word, wordData.meaning, '');
+        console.log('[AI] Enriched result:', enriched);
+        if (!enriched || typeof enriched !== 'object') throw new Error('AI 返回数据无效');
         var w = allData[currentRootIndex].words[currentWordIndex];
         // Always update etymology & mnemonic with AI versions (better than auto-generated)
         if (enriched.phonetic) w.phonetic = enriched.phonetic;
@@ -5117,8 +5130,9 @@
         if (btn) { btn.textContent = '✅ 完成'; }
         setTimeout(function() { if (btn) { btn.disabled = false; btn.textContent = '🤖 AI 补全'; } }, 1500);
       } catch (err) {
+        console.error('[AI] Enrichment error:', err);
         if (btn) { btn.disabled = false; btn.textContent = '🤖 AI 补全'; }
-        alert('AI 生成失败: ' + err.message);
+        alert('AI 生成失败: ' + (err.message || err));
       }
     }
 
