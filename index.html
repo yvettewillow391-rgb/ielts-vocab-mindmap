@@ -183,6 +183,44 @@
     .toast-undo-btn:hover { background:rgba(255,255,255,0.3); }
     .toast-dismiss { background:none; border:none; color:rgba(255,255,255,0.7); cursor:pointer; font-size:1rem; padding:0; line-height:1; }
     @keyframes toastIn { from { opacity:0; transform:translateY(1rem); } to { opacity:1; transform:translateY(0); } }
+    /* Floating sidebar toggle button */
+    #sidebarToggleFloat {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 30;
+      width: 22px;
+      height: 48px;
+      border-radius: 0 8px 8px 0;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-left: none;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9ca3af;
+      font-size: 11px;
+      transition: left 0.3s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+      padding: 0;
+      line-height: 1;
+    }
+    #sidebarToggleFloat:hover {
+      background: #eef2ff;
+      color: #6366f1;
+      box-shadow: 2px 0 12px rgba(99,102,241,0.15);
+    }
+    #sidebarToggleFloat:active {
+      background: #e0e7ff;
+    }
+    #sidebarToggleFloat .toggle-arrow {
+      transition: transform 0.3s ease;
+      font-size: 12px;
+    }
+    #sidebarToggleFloat.collapsed .toggle-arrow {
+      transform: rotate(180deg);
+    }
   </style>
 </head>
 <body class="h-screen overflow-hidden bg-gray-100 flex">
@@ -336,6 +374,9 @@
       <button id="scrollToBottomBtn" title="滚动到底部" style="width:28px;height:28px;border-radius:50%;border:1px solid #e5e7eb;background:#fff;color:#9ca3af;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);transition:all 0.15s">▼</button>
     </div>
   </aside>
+  <button id="sidebarToggleFloat" title="收起/展开侧栏">
+    <span class="toggle-arrow">◀</span>
+  </button>
   <div id="sidebarMobileOverlay"></div>
 
   <!-- ===== MAIN CONTENT ===== -->
@@ -6491,17 +6532,33 @@
 
     // Sidebar collapse/expand
     var sidebar = document.getElementById('sidebar');
+    var toggleFloat = document.getElementById('sidebarToggleFloat');
     function isMobile() { return window.matchMedia('(max-width: 767px)').matches; }
+
+    function updateToggleFloatPos() {
+      if (isMobile()) { toggleFloat.style.display = 'none'; return; }
+      toggleFloat.style.display = 'flex';
+      toggleFloat.style.left = sidebar.offsetWidth + 'px';
+      if (sidebar.classList.contains('collapsed')) {
+        toggleFloat.classList.add('collapsed');
+        toggleFloat.title = '展开侧栏';
+      } else {
+        toggleFloat.classList.remove('collapsed');
+        toggleFloat.title = '收起侧栏';
+      }
+    }
 
     function collapseSidebar() {
       sidebar.classList.add('collapsed');
       sidebar.classList.remove('expanded-mobile');
-      setTimeout(() => { if (chart && !chart.isDisposed()) chart.resize(); }, 350);
+      setTimeout(() => { if (chart && !chart.isDisposed()) chart.resize(); updateToggleFloatPos(); }, 350);
+      updateToggleFloatPos();
     }
     function expandSidebar() {
       sidebar.classList.remove('collapsed');
       sidebar.classList.remove('expanded-mobile');
-      setTimeout(() => { if (chart && !chart.isDisposed()) chart.resize(); }, 350);
+      setTimeout(() => { if (chart && !chart.isDisposed()) chart.resize(); updateToggleFloatPos(); }, 350);
+      updateToggleFloatPos();
     }
     function expandSidebarMobile() {
       sidebar.classList.add('expanded-mobile');
@@ -6518,6 +6575,17 @@
     });
     // Click mobile overlay to close
     $('sidebarMobileOverlay').addEventListener('click', closeSidebarMobile);
+    // Floating toggle button
+    toggleFloat.addEventListener('click', function() {
+      if (sidebar.classList.contains('collapsed')) {
+        if (isMobile()) expandSidebarMobile();
+        else expandSidebar();
+      } else {
+        collapseSidebar();
+      }
+    });
+    updateToggleFloatPos();
+    window.addEventListener('resize', updateToggleFloatPos);
     // Icon bar buttons
     $('iconSearch').addEventListener('click', function() {
       if (isMobile()) closeSidebarMobile(); else expandSidebar();
