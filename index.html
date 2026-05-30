@@ -2662,7 +2662,7 @@
           html += '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm bg-gray-50 rounded-lg px-3 py-1.5">' +
             posBadge(p) +
             '<span class="font-medium text-gray-800">' + escapeHTML(w) + '</span>' +
-            (m ? '<span class="text-gray-400 text-xs">' + escapeHTML(m) + '</span>' : '') +
+            (m ? '<span class="text-gray-400 text-xs">' + escapeHTML(m) + '</span>' : '<span class="text-gray-300 text-xs italic">暂无中文</span>') +
             '<span class="flex-1 min-w-[24px]"></span>' +
             '<button id="fav-inf-' + ii + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
             '<span id="spk-inf-' + ii + '" class="flex-shrink-0"></span></div>';
@@ -2684,7 +2684,7 @@
             (inDB
               ? '<a class="font-medium text-indigo-600 hover:text-indigo-800 underline cursor-pointer" onclick="navigateToWord(\'' + escapeAttr(w) + '\')" title="点击跳转到 ' + escapeHTML(w) + ' 详情">' + escapeHTML(w) + '</a>'
               : '<span class="font-medium text-violet-800">' + escapeHTML(w) + '</span>') +
-            (m ? '<span class="text-violet-500 text-xs">' + escapeHTML(m) + '</span>' : '') +
+            (m ? '<span class="text-violet-500 text-xs">' + escapeHTML(m) + '</span>' : '<span class="text-violet-300 text-xs italic">暂无中文</span>') +
             (!inDB ? '<button class="text-[10px] px-1.5 py-0.5 rounded bg-violet-200 text-violet-600 hover:bg-violet-300 transition-colors flex-shrink-0" onclick="event.stopPropagation();importSynonymWord(\'' + escapeAttr(w) + '\',\'' + escapeAttr(p) + '\',\'' + escapeAttr(m) + '\')" title="AI 导入此词">➕</button>' : '') +
             '<span class="flex-1 min-w-[24px]"></span>' +
             '<button id="fav-syn-' + si + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
@@ -2707,7 +2707,7 @@
             (inDB
               ? '<a class="font-medium text-indigo-600 hover:text-indigo-800 underline cursor-pointer" onclick="navigateToWord(\'' + escapeAttr(w) + '\')" title="点击跳转到 ' + escapeHTML(w) + ' 详情">' + escapeHTML(w) + '</a>'
               : '<span class="font-medium text-red-800">' + escapeHTML(w) + '</span>') +
-            (m ? '<span class="text-red-500 text-xs">' + escapeHTML(m) + '</span>' : '') +
+            (m ? '<span class="text-red-500 text-xs">' + escapeHTML(m) + '</span>' : '<span class="text-red-300 text-xs italic">暂无中文</span>') +
             (!inDB ? '<button class="text-[10px] px-1.5 py-0.5 rounded bg-red-200 text-red-600 hover:bg-red-300 transition-colors flex-shrink-0" onclick="event.stopPropagation();importSynonymWord(\'' + escapeAttr(w) + '\',\'' + escapeAttr(p) + '\',\'' + escapeAttr(m) + '\')" title="AI 导入此词">➕</button>' : '') +
             '<span class="flex-1 min-w-[24px]"></span>' +
             '<button id="fav-ant-' + ai + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
@@ -2725,7 +2725,7 @@
           const isFav = isItemFavorited(wordData.word, 'phrase', en);
           html += '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm bg-amber-50 rounded-lg px-3 py-1.5 border-l-2 border-amber-300">' +
             '<span class="font-medium text-gray-800">' + escapeHTML(en) + '</span>' +
-            (zh ? '<span class="text-amber-600 text-xs">' + escapeHTML(zh) + '</span>' : '') +
+            (zh ? '<span class="text-amber-600 text-xs">' + escapeHTML(zh) + '</span>' : '<span class="text-amber-300 text-xs italic">暂无中文</span>') +
             '<span class="flex-1 min-w-[24px]"></span>' +
             '<button id="fav-ph-' + pi + '" class="text-xs ' + (isFav ? 'text-amber-400' : 'text-gray-300 hover:text-amber-400') + ' transition-colors flex-shrink-0" title="收藏">★</button>' +
             '<span id="spk-ph-' + pi + '" class="flex-shrink-0"></span></div>';
@@ -4953,7 +4953,7 @@
       if (pos) wordInfo = word + ' ' + pos;
       if (meaning) wordInfo = wordInfo + ' ' + meaning;
 
-      var prompt = 'You are an IELTS vocabulary expert. For the word "' + wordInfo + '", generate ALL of the following in valid JSON format. EVERY field is REQUIRED — do not skip any:\n\n{\n  "pos": "part of speech, e.g. v. or n. or adj.",\n  "meaning": "Chinese translation, e.g. 吸收；理解",\n  "phonetic": "IPA pronunciation, e.g. /əbˈzɔːrb/",\n  "etymology": "词根拆解: Break down prefix+root+suffix in Chinese, explain how parts combine to form meaning. Example: sub(在...之下) + mit(送) → 从下面送上去 → 提交，服从",\n  "mnemonic": "一句话记忆: A vivid Chinese memory sentence using root parts, with 🔑 emoji, max 40 Chinese characters",\n  "inflections": [{"word": "derivative", "pos": "n.", "meaning": "Chinese meaning"}],\n  "synonyms": [{"word": "synonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "antonyms": [{"word": "antonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "phrases": [{"en": "English collocation", "zh": "Chinese translation"}],\n  "sentences": [{"en": "IELTS-level example sentence", "zh": "Chinese translation"}]\n}\n\nCRITICAL REQUIREMENTS:\n- pos: MUST be provided. One of n./v./adj./adv./prep./conj./pron./det./num..\n- meaning: MUST be provided. Chinese translation of the word, e.g. 吸收；全神贯注.\n- phonetic: MUST be provided. Use standard IPA notation with slashes, e.g. /əˈvɜːrt/.\n- etymology: MUST be provided. Analyze the actual word\'s prefix/root/suffix.\n- mnemonic: MUST be provided. Use creative imagery.\n- inflections: MUST provide 2-4 derivative forms (noun/adj/adv forms) with POS and Chinese meaning.\n- synonyms: MUST provide 3-5 IELTS-level synonyms with POS and Chinese meaning.\n- antonyms: MUST provide 2-3 antonyms with POS and Chinese meaning.\n- phrases: MUST provide 3-5 common IELTS collocations with Chinese translations.\n- sentences: MUST provide 1-2 IELTS-style sentences with Chinese translations.\n\nReturn ONLY the JSON object, no markdown, no code fences, no extra text.';
+      var prompt = 'You are an IELTS vocabulary expert. For the word "' + wordInfo + '", generate ALL of the following in valid JSON format. EVERY field is REQUIRED — do not skip any:\n\n{\n  "pos": "part of speech, e.g. v. or n. or adj.",\n  "meaning": "Chinese translation, e.g. 吸收；理解",\n  "phonetic": "IPA pronunciation, e.g. /əbˈzɔːrb/",\n  "etymology": "词根拆解: Break down prefix+root+suffix in Chinese, explain how parts combine to form meaning. Example: sub(在...之下) + mit(送) → 从下面送上去 → 提交，服从",\n  "mnemonic": "一句话记忆: A vivid Chinese memory sentence using root parts, with 🔑 emoji, max 40 Chinese characters",\n  "inflections": [{"word": "derivative", "pos": "n.", "meaning": "Chinese meaning"}],\n  "synonyms": [{"word": "synonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "antonyms": [{"word": "antonym", "pos": "v.", "meaning": "Chinese meaning"}],\n  "phrases": [{"en": "English collocation", "zh": "Chinese translation"}],\n  "sentences": [{"en": "IELTS-level example sentence", "zh": "Chinese translation"}]\n}\n\nCRITICAL REQUIREMENTS:\n- pos: MUST be provided. One of n./v./adj./adv./prep./conj./pron./det./num..\n- meaning: MUST be provided. Chinese translation of the word, e.g. 吸收；全神贯注.\n- phonetic: MUST be provided. Use standard IPA notation with slashes, e.g. /əˈvɜːrt/.\n- etymology: MUST be provided. Analyze the actual word\'s prefix/root/suffix.\n- mnemonic: MUST be provided. Use creative imagery.\n- inflections: MUST provide 2-4 derivative forms (noun/adj/adv forms) with POS and Chinese meaning.\n- synonyms: MUST provide 3-5 IELTS-level synonyms. EVERY synonym MUST have "meaning" field with Chinese translation, e.g. {"word": "absorb", "pos": "v.", "meaning": "吸收；理解"}.\n- antonyms: MUST provide 2-3 antonyms. EVERY antonym MUST have "meaning" field with Chinese translation.\n- phrases: MUST provide 3-5 common IELTS collocations. EVERY phrase MUST have "zh" field with Chinese translation, e.g. {"en": "take advantage of", "zh": "利用"}.\n- sentences: MUST provide 1-2 IELTS-style sentences with Chinese translations.\n\nNEVER leave meaning/zh fields empty or missing. Every English entry MUST have its Chinese translation.\nReturn ONLY the JSON object, no markdown, no code fences, no extra text.';
 
       var text;
       var priority = localStorage.getItem('ielts_ai_priority') || 'gemini';
@@ -5078,6 +5078,28 @@
       if (fm) jsonStr = fm[1].trim();
 
       var enriched = JSON.parse(jsonStr);
+
+      // Ensure all synonyms have meaning field
+      (enriched.synonyms || []).forEach(function(s) {
+        if (typeof s === 'object' && !s.meaning) s.meaning = '';
+      });
+      // Ensure all antonyms have meaning field
+      (enriched.antonyms || []).forEach(function(a) {
+        if (typeof a === 'object' && !a.meaning) a.meaning = '';
+      });
+      // Ensure all phrases have zh field
+      (enriched.phrases || []).forEach(function(p) {
+        if (typeof p === 'object' && !p.zh) p.zh = '';
+      });
+      // Ensure all inflections have meaning field
+      (enriched.inflections || []).forEach(function(inf) {
+        if (typeof inf === 'object' && !inf.meaning) inf.meaning = '';
+      });
+      // Ensure all sentences have zh field
+      (enriched.sentences || []).forEach(function(s) {
+        if (typeof s === 'object' && !s.zh) s.zh = '';
+      });
+
       return {
         word: word,
         meaning: enriched.meaning || meaning || '',
