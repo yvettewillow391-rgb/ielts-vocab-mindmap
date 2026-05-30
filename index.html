@@ -398,7 +398,7 @@
 
     <!-- ECharts container -->
     <div id="chartContainer" class="flex-1 hidden relative" style="min-height: 0;">
-      <div id="chartHint" class="absolute bottom-3 left-1/2 -translate-x-1/2 text-[10px] text-gray-300 bg-white/80 px-3 py-1 rounded-full pointer-events-none z-10">滚轮缩放 · 拖拽平移 · 点击单词展开/收起</div>
+      <div id="chartHint" class="absolute bottom-3 left-1/2 -translate-x-1/2 text-[10px] text-gray-300 bg-white/80 px-3 py-1 rounded-full pointer-events-none z-10">滚轮缩放 · 拖拽平移 · 点圆圈收起 · 点单词看详情</div>
       <!-- Pan controls -->
       <div id="chartPanCtrls" class="absolute bottom-3 right-3 z-10 grid grid-cols-3 gap-0.5">
         <div></div>
@@ -1920,15 +1920,43 @@
         }]
       }, true);
 
-      // Click handler — toggle collapse on word nodes, select on leaf nodes
+      // Click handler — symbol click = collapse, label click = detail
       chart.off('click');
       chart.on('click', function(params) {
         if (!params.data) return;
         var d = params.data;
-        if (d._type === 'word') {
-          var ck = currentRootIndex + '_' + d._wordIndex;
-          collapsedWords[ck] = !collapsedWords[ck];
-          renderMindMap(allData[currentRootIndex], highlightWordIdx);
+        var evt = params.event;
+
+        if (d._type === 'word' && evt) {
+          // Try to detect if click is on the symbol (left circle) vs the label (right text)
+          // Tree nodes have symbol at node center, label to the right
+          var isSymbolClick = false;
+          try {
+            var sOpt = chart.getOption().series[0];
+            var treeModel = chart.getModel().getSeriesByIndex(0);
+            if (treeModel && treeModel.getData) {
+              var treeData = treeModel.getData();
+              var nodeLayout = treeData.getItemLayout(params.dataIndex);
+              if (nodeLayout) {
+                var px = nodeLayout.x + (typeof sOpt.left === 'string' ? parseFloat(sOpt.left) / 100 * chart.getWidth() : (sOpt.left || 0));
+                var py = nodeLayout.y + (typeof sOpt.top === 'string' ? parseFloat(sOpt.top) / 100 * chart.getHeight() : (sOpt.top || 0));
+                var dx = evt.offsetX - px;
+                var dy = evt.offsetY - py;
+                isSymbolClick = Math.sqrt(dx * dx + dy * dy) < 22;
+              }
+            }
+          } catch(e) {}
+
+          if (isSymbolClick) {
+            var ck = currentRootIndex + '_' + d._wordIndex;
+            collapsedWords[ck] = !collapsedWords[ck];
+            renderMindMap(allData[currentRootIndex], highlightWordIdx);
+          } else {
+            selectWord(d._wordIndex, d._data);
+          }
+        } else if (d._type === 'word') {
+          // Fallback: no event info, open detail
+          selectWord(d._wordIndex, d._data);
         } else if (d._type === 'inflection' || d._type === 'phrase' || d._type === 'synonym' || d._type === 'antonym') {
           selectWord(d._wordIndex, d._data);
         }
