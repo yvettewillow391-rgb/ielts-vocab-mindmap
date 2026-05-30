@@ -5305,6 +5305,7 @@
 
         var totalImportable = Object.values(rootMap).reduce(function(s, a) { return s + a.length; }, 0);
         var html = '<div class="text-xs text-gray-500 mb-2">📋 解析到 <b>' + fullEntries.length + '</b> 个完整单词（含词根拆解、变形态等），智能识别到 <b>' + Object.keys(rootMap).length + '</b> 个词根</div>';
+        html += '<div class="mb-2"><input id="smartRootSearch" type="text" placeholder="🔍 搜索词根 / 单词..." class="w-full text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200" autocomplete="off"></div>';
         html += '<div class="space-y-2 max-h-80 overflow-y-auto" id="smartPreviewArea">';
 
         Object.keys(rootMap).forEach(function(idx) {
@@ -5326,7 +5327,7 @@
         });
 
         if (unknownEntries.length > 0) {
-          html += '<div class="bg-amber-50 rounded-lg p-2 border border-amber-200" id="unknownWordsSection">';
+          html += '<div class="bg-amber-50 rounded-lg p-2 border border-amber-200 paste-root-group" id="unknownWordsSection">';
           html += '<div class="text-[10px] font-semibold text-amber-600 mb-1">⚠ 未识别词根 (' + unknownEntries.length + '个) — 手动选择目标词根</div>';
           unknownEntries.forEach(function(entry) {
             var status = checkWordStatus(entry.word);
@@ -5354,6 +5355,33 @@
         html += '<button id="inlineConfirmBtn" class="px-5 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 transition-colors">✅ 确认导入' + (hasAIKey ? ' (AI)' : '') + '</button>';
         html += '</div></div>';
         pastePreview.innerHTML = html;
+
+        // Root search filter
+        var smartRootSearch = document.getElementById('smartRootSearch');
+        if (smartRootSearch) {
+          smartRootSearch.addEventListener('input', function() {
+            var q = this.value.toLowerCase().trim();
+            var groups = document.querySelectorAll('.paste-root-group');
+            groups.forEach(function(g) {
+              if (!q) { g.style.display = ''; return; }
+              var rootLabel = g.querySelector('.text-indigo-600, .text-amber-600');
+              var rootText = rootLabel ? rootLabel.textContent.toLowerCase() : '';
+              var rootMatch = rootText.indexOf(q) >= 0;
+              var wordRows = g.querySelectorAll('.paste-word-row');
+              var anyWordMatch = false;
+              wordRows.forEach(function(row) {
+                var wordEl = row.querySelector('.font-bold');
+                var wordText = wordEl ? wordEl.textContent.toLowerCase() : '';
+                var meaningEl = row.querySelector('.text-gray-500');
+                var meaningText = meaningEl ? meaningEl.textContent.toLowerCase() : '';
+                var match = wordText.indexOf(q) >= 0 || meaningText.indexOf(q) >= 0;
+                row.style.display = (rootMatch || match) ? '' : 'none';
+                if (match) anyWordMatch = true;
+              });
+              g.style.display = (rootMatch || anyWordMatch) ? '' : 'none';
+            });
+          });
+        }
 
         // Store full entries for import
         pendingParsedData = { mode: 'fullword', fullEntries, rootMap, unknownEntries };
@@ -5471,6 +5499,7 @@
         });
 
         let html = '<div class="text-xs text-gray-500 mb-2">解析到 <b>' + parsed.length + '</b> 个单词，智能识别到 <b>' + Object.keys(rootMap).length + '</b> 个词根</div>';
+        html += '<div class="mb-2"><input id="smartRootSearch" type="text" placeholder="🔍 搜索词根 / 单词..." class="w-full text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200" autocomplete="off"></div>';
         html += '<div class="space-y-2 max-h-64 overflow-y-auto" id="smartPreviewArea">';
 
         Object.keys(rootMap).forEach(function(idx) {
@@ -5492,7 +5521,7 @@
         });
 
         if (unknownWords.length > 0) {
-          html += '<div class="bg-amber-50 rounded-lg p-2 border border-amber-200" id="unknownWordsSection">';
+          html += '<div class="bg-amber-50 rounded-lg p-2 border border-amber-200 paste-root-group" id="unknownWordsSection">';
           html += '<div class="flex items-center justify-between mb-1">';
           html += '<span class="text-[10px] font-semibold text-amber-600">⚠ 未识别词根 (' + unknownWords.length + '个) — ' + (hasAIKey ? '确认后将 AI 自动生成并导入' : '将跳过，可手动选择词根后导入') + '</span>';
           if (hasAIKey) {
@@ -5533,6 +5562,35 @@
         html += '</div></div>';
         html += '</div>';
         pastePreview.innerHTML = html;
+
+        // Root search filter
+        var smartRootSearch = document.getElementById('smartRootSearch');
+        if (smartRootSearch) {
+          smartRootSearch.addEventListener('input', function() {
+            var q = this.value.toLowerCase().trim();
+            var groups = document.querySelectorAll('.paste-root-group');
+            groups.forEach(function(g) {
+              if (!q) { g.style.display = ''; return; }
+              // Check if root name/meaning matches
+              var rootLabel = g.querySelector('.text-indigo-600, .text-amber-600');
+              var rootText = rootLabel ? rootLabel.textContent.toLowerCase() : '';
+              var rootMatch = rootText.indexOf(q) >= 0;
+              // Check if any word in this group matches
+              var wordRows = g.querySelectorAll('.paste-word-row');
+              var anyWordMatch = false;
+              wordRows.forEach(function(row) {
+                var wordEl = row.querySelector('.font-bold');
+                var wordText = wordEl ? wordEl.textContent.toLowerCase() : '';
+                var meaningEl = row.querySelector('.text-gray-500');
+                var meaningText = meaningEl ? meaningEl.textContent.toLowerCase() : '';
+                var match = wordText.indexOf(q) >= 0 || meaningText.indexOf(q) >= 0;
+                row.style.display = (rootMatch || match) ? '' : 'none';
+                if (match) anyWordMatch = true;
+              });
+              g.style.display = (rootMatch || anyWordMatch) ? '' : 'none';
+            });
+          });
+        }
 
         // Attach inline button handlers
         var inlineAIBtn = document.getElementById('inlineAIBtn');
