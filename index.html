@@ -3491,16 +3491,26 @@
     function openManageModal() {
       var html = '<div id="manageOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">';
       html += '<div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col">';
-      html += '<div class="p-4 border-b border-gray-200 flex items-center justify-between">';
+      html += '<div class="p-4 border-b border-gray-200">';
+      html += '<div class="flex items-center justify-between mb-3">';
       html += '<h3 class="text-base font-bold text-gray-800">📋 单词管理 · 词根编辑</h3>';
       html += '<div class="flex gap-2"><button id="manageSelectAll" class="text-xs text-indigo-500 hover:text-indigo-700 font-medium">全选</button>';
       html += '<button id="manageDeselectAll" class="text-xs text-gray-400 hover:text-gray-600 font-medium">取消</button></div>';
       html += '</div>';
+      html += '<input id="manageSearchInput" type="text" placeholder="搜索词根或单词..." class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 transition-colors">';
+      html += '</div>';
       html += '<div class="flex-1 overflow-y-auto p-4 space-y-3" id="manageContent">';
+
+      // Sort roots by first letter alphabetically
+      var sortedData = allData.slice().sort(function(a, b) {
+        return (a.root || '').toLowerCase().localeCompare((b.root || '').toLowerCase());
+      });
+
       var totalWords = 0;
-      allData.forEach(function(root, ri) {
+      sortedData.forEach(function(root) {
+        var ri = allData.indexOf(root);
         if (!root.words || root.words.length === 0) return;
-        html += '<div class="border border-gray-200 rounded-xl overflow-hidden" data-manage-root="' + ri + '">';
+        html += '<div class="border border-gray-200 rounded-xl overflow-hidden manage-root-item" data-manage-root="' + ri + '" data-root-text="' + (root.root || '').toLowerCase() + '" data-root-meaning="' + ((root.root_meaning || '').toLowerCase()) + '">';
         html += '<div class="flex items-center gap-1.5 px-3 py-2 bg-gray-50 cursor-pointer" onclick="var el=this.nextElementSibling;el.classList.toggle(\'hidden\')">';
         html += '<span class="text-[10px] text-gray-300 flex-shrink-0">▼</span>';
         html += '<span class="text-xs font-semibold text-gray-700 root-display-name" id="mrn' + ri + '">' + escapeHTML(root.root) + '</span>';
@@ -3517,9 +3527,9 @@
         html += '<input type="checkbox" class="manage-root-check" data-root="' + ri + '" onchange="var cbs=this.closest(\'.border\').querySelectorAll(\'.manage-word-check\');cbs.forEach(function(cb){cb.checked=this.checked}.bind(this))"> 全选</label>';
         html += '</div>';
         html += '</div>';
-        html += '<div class="divide-y divide-gray-100">';
+        html += '<div class="divide-y divide-gray-100 manage-words-list">';
         root.words.forEach(function(w, wi) {
-          html += '<div class="flex items-center gap-3 px-3 py-2 hover:bg-gray-50">';
+          html += '<div class="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 manage-word-item" data-word-text="' + (w.word || '').toLowerCase() + '" data-word-meaning="' + ((w.meaning || '').toLowerCase()) + '">';
           html += '<input type="checkbox" class="manage-word-check" data-root="' + ri + '" data-word="' + wi + '" data-word-name="' + escapeHTML(w.word) + '">';
           html += '<span class="text-[11px] font-medium text-gray-800 min-w-[90px]">' + escapeHTML(w.word) + '</span>';
           html += '<span class="text-[10px] text-gray-400 flex-1 truncate">' + escapeHTML(w.meaning || '') + '</span>';
@@ -3535,6 +3545,45 @@
       html += '<button id="manageCloseBtn" class="py-2 px-4 rounded-xl text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">关闭</button>';
       html += '</div></div></div>';
       document.body.insertAdjacentHTML('beforeend', html);
+
+      // Search functionality
+      var manageSearchInput = document.getElementById('manageSearchInput');
+      var rootItems = document.querySelectorAll('.manage-root-item');
+
+      function filterManageModal(query) {
+        var q = query.toLowerCase().trim();
+        rootItems.forEach(function(rootItem) {
+          var rootText = rootItem.dataset.rootText || '';
+          var rootMeaning = rootItem.dataset.rootMeaning || '';
+          var wordItems = rootItem.querySelectorAll('.manage-word-item');
+          var hasMatchingWord = false;
+          var hasVisibleWord = false;
+
+          wordItems.forEach(function(wordItem) {
+            var wordText = wordItem.dataset.wordText || '';
+            var wordMeaning = wordItem.dataset.wordMeaning || '';
+            if (q === '' || wordText.includes(q) || wordMeaning.includes(q)) {
+              wordItem.classList.remove('hidden');
+              hasVisibleWord = true;
+            } else {
+              wordItem.classList.add('hidden');
+            }
+          });
+
+          var rootMatches = q === '' || rootText.includes(q) || rootMeaning.includes(q);
+          if (rootMatches || hasVisibleWord) {
+            rootItem.classList.remove('hidden');
+          } else {
+            rootItem.classList.add('hidden');
+          }
+        });
+      }
+
+      manageSearchInput.addEventListener('input', function() {
+        filterManageModal(this.value);
+      });
+
+      manageSearchInput.focus();
 
       // Selection tracking
       function updateManageCount() {
