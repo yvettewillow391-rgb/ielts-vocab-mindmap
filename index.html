@@ -5099,7 +5099,7 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: { temperature: 0.3, maxOutputTokens: 4096 }
+                generationConfig: { temperature: 0.3, maxOutputTokens: 2048 }
               })
             });
 
@@ -5134,7 +5134,7 @@
                   model: 'deepseek-v4-flash',
                   messages: [{ role: 'user', content: prompt }],
                   temperature: 0.3,
-                  max_tokens: 4096
+                  max_tokens: 2048
                 })
               });
 
@@ -5254,25 +5254,30 @@
       progressEl.classList.remove('hidden');
 
       // Add minimize button to progress header
-      var progressHeaderHtml = '<div class="flex items-center justify-between">';
-      progressHeaderHtml += '<div class="text-[10px] text-purple-600 animate-pulse flex-1">🤖 正在并发生成单词模板（3个并发）...</div>';
-      progressHeaderHtml += '<button id="minimizeProgressBtn" class="px-1.5 py-0 rounded text-[10px] font-bold text-purple-600 hover:bg-purple-100 transition-colors" title="最小化进度面板">−</button>';
+      var progressHeaderHtml = '<div class="flex items-center justify-between gap-2">';
+      progressHeaderHtml += '<div class="flex-1"><div id="aiProgressText" class="text-[10px] text-purple-600 animate-pulse">🤖 正在并发生成单词模板（8个并发）...</div></div>';
+      progressHeaderHtml += '<button id="minimizeProgressBtn" class="flex-shrink-0 px-1.5 py-0 rounded text-[10px] font-bold text-purple-600 hover:bg-purple-100 transition-colors" title="最小化进度面板">−</button>';
       progressHeaderHtml += '</div>';
+      progressHeaderHtml += '<div id="aiProgressResults" class="mt-2 space-y-1"></div>';
       progressEl.innerHTML = progressHeaderHtml;
 
+      // Get reference to results container
+      var resultsContainer = document.getElementById('aiProgressResults');
+      resultsEl = resultsContainer;  // Point resultsEl to the new container
+
       // Add minimize button handler
-      setTimeout(function() {
-        var minimizeBtn = document.getElementById('minimizeProgressBtn');
-        if (minimizeBtn) {
-          minimizeBtn.addEventListener('click', function() {
-            var contentDiv = progressEl.querySelector('div:last-child') || progressEl;
-            if (contentDiv && contentDiv !== progressEl) {
-              contentDiv.style.display = contentDiv.style.display === 'none' ? 'block' : 'none';
-              minimizeBtn.textContent = contentDiv.style.display === 'none' ? '+' : '−';
-            }
-          });
-        }
-      }, 10);
+      var minimizeBtn = document.getElementById('minimizeProgressBtn');
+      var isMinimized = false;
+
+      if (minimizeBtn) {
+        minimizeBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          isMinimized = !isMinimized;
+          resultsContainer.style.display = isMinimized ? 'none' : 'block';
+          minimizeBtn.textContent = isMinimized ? '+' : '−';
+        });
+      }
 
       resultsEl.innerHTML = '';
 
@@ -5283,7 +5288,7 @@
       window._aiEnrichState.rootMap = rootMap;
 
       var enrichedList = [];
-      var BATCH_SIZE = 3; // Process 3 words concurrently
+      var BATCH_SIZE = 8; // Process 8 words concurrently (increased from 3)
       var totalWords = unknownWords.length;
 
       // Use non-blocking async to keep UI responsive
@@ -5292,7 +5297,10 @@
         if (i >= unknownWords.length) {
           // All done
           window._aiEnrichState.isRunning = false;
-          progressEl.innerHTML = '<div class="text-[10px] text-green-600 font-medium">✅ AI 生成完成！共处理 ' + enrichedList.length + '/' + unknownWords.length + ' 个单词</div>';
+          var progressText = document.getElementById('aiProgressText');
+          if (progressText) {
+            progressText.innerHTML = '✅ AI 生成完成！共处理 <b>' + enrichedList.length + '</b>/' + unknownWords.length + ' 个单词';
+          }
           if (btn) { btn.disabled = false; btn.textContent = '🤖 AI 生成全部'; }
 
           // Store enriched words for import
@@ -5335,22 +5343,11 @@
           var globalIdx = i + idx;
           return enrichWordWithAI(p.word, p.meaning, p.pos)
             .then(entry => {
-              progressEl.innerHTML = '<div class="flex items-center justify-between"><div class="text-[10px] text-purple-600 flex-1">🤖 已生成 <b>' + escapeHTML(entry.word) + '</b> (' + (globalIdx + 1) + '/' + totalWords + ')... <span class="animate-pulse">⏳</span></div><button id="minimizeProgressBtn" class="px-1.5 py-0 rounded text-[10px] font-bold text-purple-600 hover:bg-purple-100 transition-colors" title="最小化进度面板">−</button></div>';
-
-              // Re-add minimize button handler
-              setTimeout(function() {
-                var minimizeBtn = document.getElementById('minimizeProgressBtn');
-                if (minimizeBtn) {
-                  minimizeBtn.addEventListener('click', function() {
-                    var contentDiv = progressEl.querySelector('div:last-child');
-                    if (contentDiv && contentDiv !== progressEl) {
-                      contentDiv.style.display = contentDiv.style.display === 'none' ? 'block' : 'none';
-                      minimizeBtn.textContent = contentDiv.style.display === 'none' ? '+' : '−';
-                    }
-                  });
-                }
-              }, 0);
-
+              // Only update text, don't replace HTML to preserve button handlers
+              var progressText = document.getElementById('aiProgressText');
+              if (progressText) {
+                progressText.innerHTML = '🤖 已生成 <b>' + escapeHTML(entry.word) + '</b> (' + (globalIdx + 1) + '/' + totalWords + ')... <span class="animate-pulse">⏳</span>';
+              }
               return { success: true, entry: entry, word: p.word };
             })
             .catch(err => {
@@ -5405,7 +5402,7 @@
         // Schedule next batch asynchronously to keep UI responsive
         setTimeout(function() {
           processNextBatch(batchIndex + 1);
-        }, 50);
+        }, 0);  // No delay - process immediately
       };
 
       // Start processing batches
