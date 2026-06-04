@@ -3065,6 +3065,7 @@
     /* ================================================================
        SEARCH
        ================================================================ */
+    let lastSearchTimeout;
     function doSearch(query) {
       const q = query.toLowerCase().trim();
       if (!q) {
@@ -3074,82 +3075,60 @@
         return;
       }
 
-      const results = [];
+      // Debounce search to prevent lag
+      clearTimeout(lastSearchTimeout);
+      lastSearchTimeout = setTimeout(function() {
+        performSearch(q);
+      }, 100);
+    }
 
-      allData.forEach((root, ri) => {
-        // Match root name
+    function performSearch(q) {
+      const results = [];
+      const MAX_RESULTS = 30;  // Limit results to avoid lag
+
+      // Quick exit if we have enough results
+      const canEarlyExit = () => results.length >= MAX_RESULTS;
+
+      // 1. Search root names (most relevant)
+      for (let ri = 0; ri < allData.length && !canEarlyExit(); ri++) {
+        const root = allData[ri];
         if (root.root.toLowerCase().includes(q)) {
           results.push({ type: 'root', rootIndex: ri, wordIndex: -1, text: root.root, sub: root.root_meaning || '', data: root });
         }
-        // Match root meaning
+      }
+
+      // 2. Search root meanings
+      for (let ri = 0; ri < allData.length && !canEarlyExit(); ri++) {
+        const root = allData[ri];
         if ((root.root_meaning || '').toLowerCase().includes(q) && !root.root.toLowerCase().includes(q)) {
           results.push({ type: 'root_meaning', rootIndex: ri, wordIndex: -1, text: root.root, sub: root.root_meaning || '', data: root });
         }
-        // Match words and sub-items
-        (root.words || []).forEach((w, wi) => {
+      }
+
+      // 3. Search words (main vocabulary items)
+      for (let ri = 0; ri < allData.length && !canEarlyExit(); ri++) {
+        const root = allData[ri];
+        for (let wi = 0; wi < (root.words || []).length && !canEarlyExit(); wi++) {
+          const w = root.words[wi];
           if (w.word.toLowerCase().includes(q)) {
             results.push({ type: 'word', rootIndex: ri, wordIndex: wi, text: w.word, sub: w.meaning || '', data: w, root: root });
-          }
-          if ((w.meaning || '').toLowerCase().includes(q) && !w.word.toLowerCase().includes(q)) {
+          } else if ((w.meaning || '').toLowerCase().includes(q)) {
             results.push({ type: 'word_cn', rootIndex: ri, wordIndex: wi, text: w.word, sub: w.meaning || '', data: w, root: root });
           }
-          (w.inflections || []).forEach(inf => {
-            const infWord = typeof inf === 'object' ? inf.word : inf;
-            const infMeaning = typeof inf === 'object' ? (inf.meaning || '') : '';
-            const pos = typeof inf === 'object' ? (inf.pos || '') : '';
-            if (infWord.toLowerCase().includes(q) || infMeaning.toLowerCase().includes(q)) {
-              results.push({ type: 'inflection', rootIndex: ri, wordIndex: wi, text: infWord, sub: (pos ? pos + ' ' : '') + '变形态 · ' + w.word + (infMeaning ? ' ' + infMeaning : ''), data: w, root: root });
-            }
-          });
-          (w.synonyms || []).forEach(syn => {
-            const synWord = typeof syn === 'object' ? syn.word : syn;
-            const synMeaning = typeof syn === 'object' ? (syn.meaning || '') : '';
-            if (synWord.toLowerCase().includes(q) || synMeaning.toLowerCase().includes(q)) {
-              results.push({ type: 'synonym', rootIndex: ri, wordIndex: wi, text: synWord, sub: '近义词 · ' + w.word + (synMeaning ? ' ' + synMeaning : ''), data: w, root: root });
-            }
-          });
-          (w.antonyms || []).forEach(ant => {
-            const antWord = typeof ant === 'object' ? ant.word : ant;
-            const antMeaning = typeof ant === 'object' ? (ant.meaning || '') : '';
-            if (antWord.toLowerCase().includes(q) || antMeaning.toLowerCase().includes(q)) {
-              results.push({ type: 'antonym', rootIndex: ri, wordIndex: wi, text: antWord, sub: '反义词 · ' + w.word + (antMeaning ? ' ' + antMeaning : ''), data: w, root: root });
-            }
-          });
-          (w.ielts_phrases || []).forEach(ph => {
-            const phEn = typeof ph === 'object' ? ph.en : ph;
-            const phZh = typeof ph === 'object' ? (ph.zh || '') : '';
-            if (phEn.toLowerCase().includes(q) || phZh.toLowerCase().includes(q)) {
-              results.push({ type: 'phrase', rootIndex: ri, wordIndex: wi, text: phEn, sub: '词组 · ' + w.word + (phZh ? ' ' + phZh : ''), data: w, root: root });
-            }
-          });
-          (w.ielts_sentences || []).forEach(sen => {
-            const senEn = typeof sen === 'object' ? sen.en : sen;
-            const senZh = typeof sen === 'object' ? (sen.zh || '') : '';
-            if (senEn.toLowerCase().includes(q) || senZh.toLowerCase().includes(q)) {
-              results.push({ type: 'sentence', rootIndex: ri, wordIndex: wi, text: senEn.substring(0, 60) + (senEn.length > 60 ? '...' : ''), sub: '例句 · ' + w.word + (senZh ? ' ' + senZh.substring(0, 40) : ''), data: w, root: root });
-            }
-          });
-        });
-      });
+        }
+      }
 
-      // Deduplicate by root+word+type
-      const seen = new Set();
-      const unique = results.filter(r => {
-        const key = r.type + '|' + r.rootIndex + '|' + r.wordIndex + '|' + r.text;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
+      // Render results without further searching related items if we have enough
+      renderSearchResults(results.slice(0, MAX_RESULTS));
+    }
 
-      // Limit results
-      const limited = unique.slice(0, 25);
-
-      if (limited.length === 0) {
+    function renderSearchResults(results) {
+      if (results.length === 0) {
         searchResults.innerHTML = '<div class="px-4 py-3 text-sm text-gray-400 text-center">无匹配结果</div>';
       } else {
         const typeLabels = { root: '词根', root_meaning: '词根释义', word: '单词', word_cn: '单词释义', inflection: '变形态', synonym: '近义词', antonym: '反义词', phrase: '词组', sentence: '例句' };
         const typeColors = { root: 'bg-indigo-50 text-indigo-600', root_meaning: 'bg-indigo-50 text-indigo-400', word: 'bg-cyan-50 text-cyan-600', word_cn: 'bg-cyan-50 text-cyan-400', inflection: 'bg-emerald-50 text-emerald-600', synonym: 'bg-violet-50 text-violet-600', antonym: 'bg-red-50 text-red-600', phrase: 'bg-amber-50 text-amber-600', sentence: 'bg-blue-50 text-blue-600' };
-        searchResults.innerHTML = limited.map((r, i) =>
+        searchResults.innerHTML = results.map((r, i) =>
           '<div class="search-result-item flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors" data-idx="' + i + '">' +
           '<span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium flex-shrink-0 ' + (typeColors[r.type] || 'bg-gray-50 text-gray-500') + '">' + (typeLabels[r.type] || r.type) + '</span>' +
           '<div class="flex-1 min-w-0">' +
@@ -3161,7 +3140,7 @@
         // Click handlers
         searchResults.querySelectorAll('.search-result-item').forEach(el => {
           el.addEventListener('click', function() {
-            const r = limited[parseInt(this.dataset.idx)];
+            const r = results[parseInt(this.dataset.idx)];
             navigateToSearchResult(r);
           });
         });
