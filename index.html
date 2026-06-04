@@ -730,6 +730,12 @@
           <label class="text-[11px] text-purple-600 font-semibold">Anthropic API Key <span class="text-[9px] text-purple-400 font-normal">付费 · 效果更好</span></label>
           <input id="aiAnthropicKeyInput" type="password" placeholder="sk-ant-..." class="w-full mt-1 px-3 py-2.5 text-xs border border-purple-200 rounded-lg focus:outline-none focus:border-purple-400 bg-purple-50/30">
         </div>
+        <div class="border-t border-gray-100 pt-3">
+          <label class="text-[11px] text-blue-600 font-semibold">Google TTS API Key <span class="text-[9px] text-blue-400 font-normal">可选 · 提升音质</span></label>
+          <input id="aiGoogleTTSKeyInput" type="password" placeholder="AIza..." class="w-full mt-1 px-3 py-2.5 text-xs border border-blue-200 rounded-lg focus:outline-none focus:border-blue-400 bg-blue-50/30">
+          <p class="text-[9px] text-gray-400 mt-0.5">从 <a href="https://console.cloud.google.com/apis/library/texttospeech.googleapis.com" target="_blank" class="text-blue-500 underline font-medium">Google Cloud</a> 启用 Text-to-Speech API 后获取</p>
+          <p class="text-[9px] text-gray-400 mt-0.5">📢 启用此选项可获得更清晰完整的英文发音</p>
+        </div>
         <div class="border-t border-gray-100 pt-3" id="aiPrioritySection">
           <label class="text-[11px] text-gray-600 font-semibold block mb-2">⚡ API 优先级</label>
           <div class="flex gap-2">
@@ -1491,6 +1497,81 @@
         processSpeechQueue();
         return;
       }
+
+      // Try Google TTS first if API key is available
+      var useGoogleTTS = false;
+      var googleTTSKey = localStorage.getItem('google_tts_key');
+
+      if (googleTTSKey) {
+        // Try to use Google TTS API
+        var lang = accent === 'en-US' ? 'en-US' : (accent === 'en-GB' ? 'en-GB' : 'en-US');
+        var googleTTSUrl = 'https://texttospeech.googleapis.com/v1/text:synthesize?key=' + googleTTSKey;
+
+        fetch(googleTTSUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            input: { text: text },
+            voice: { languageCode: lang, name: lang === 'en-GB' ? 'en-GB-Standard-B' : 'en-US-Standard-C' },
+            audioConfig: { audioEncoding: 'MP3', pitch: 0, speakingRate: 1.0 }
+          })
+        })
+        .then(resp => resp.json())
+        .then(data => {
+          if (data.audioContent) {
+            // Play the audio from Google TTS
+            var audio = new Audio('data:audio/mpeg;base64,' + data.audioContent);
+            audio.onended = () => {
+              isSpeaking = false;
+              if (item.callback) item.callback();
+              processSpeechQueue();
+            };
+            audio.onerror = () => {
+              console.log('[TTS] Google TTS failed, falling back to Web Speech');
+              isSpeaking = false;
+              speechQueue.unshift(item); // Re-queue for Web Speech fallback
+              playWithWebSpeech();
+            };
+            audio.play().catch(e => {
+              console.log('[TTS] Audio playback error:', e);
+              isSpeaking = false;
+              speechQueue.unshift(item);
+              playWithWebSpeech();
+            });
+            useGoogleTTS = true;
+          } else {
+            throw new Error('No audio content');
+          }
+        })
+        .catch(err => {
+          console.log('[TTS] Google TTS error:', err);
+          isSpeaking = false;
+          speechQueue.unshift(item); // Re-queue for Web Speech fallback
+          playWithWebSpeech();
+        });
+
+        if (useGoogleTTS) return;
+      }
+
+      playWithWebSpeech();
+    }
+
+    function playWithWebSpeech() {
+      // Fallback to Web Speech API
+      if (speechQueue.length === 0) {
+        isSpeaking = false;
+        stopSpeakBtn.classList.add('hidden');
+        return;
+      }
+
+      const item = speechQueue.shift();
+      const text = getSpeakableText(item.text);
+      if (!text) {
+        isSpeaking = false;
+        processSpeechQueue();
+        return;
+      }
+
       const u = new SpeechSynthesisUtterance(text);
       u.lang = accent;
       // Use more natural parameters for sentences vs single words
@@ -2595,14 +2676,53 @@
       if (!word) return;
       stopAllSpeech();
       var text = getSpeakableText(word);
-      var u = new SpeechSynthesisUtterance(text);
-      u.lang = accent;
-      u.rate = 0.85; // Natural speaking rate
-      u.pitch = 1.0; // Standard pitch for accurate intonation
-      u.volume = 1.0; // Full volume
-      var bestVoice = getBestVoice();
-      if (bestVoice) u.voice = bestVoice;
-      window.speechSynthesis.speak(u);
+      var googleTTSKey = localStorage.getItem('google_tts_key');
+
+      // Try Google TTS first if available
+      if (googleTTSKey) {
+        var lang = accent === 'en-US' ? 'en-US' : (accent === 'en-GB' ? 'en-GB' : 'en-US');
+        var googleTTSUrl = 'https://texttospeech.googleapis.com/v1/text:synthesize?key=' + googleTTSKey;
+
+        fetch(googleTTSUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            input: { text: text },
+            voice: { languageCode: lang, name: lang === 'en-GB' ? 'en-GB-Standard-B' : 'en-US-Standard-C' },
+            audioConfig: { audioEncoding: 'MP3', pitch: 0, speakingRate: 1.0 }
+          })
+        })
+        .then(resp => resp.json())
+        .then(data => {
+          if (data.audioContent) {
+            var audio = new Audio('data:audio/mpeg;base64,' + data.audioContent);
+            audio.play().catch(e => {
+              console.log('[TTS] Google TTS playback failed, using Web Speech:', e);
+              playWebSpeech();
+            });
+          } else {
+            playWebSpeech();
+          }
+        })
+        .catch(err => {
+          console.log('[TTS] Google TTS error:', err, 'using Web Speech');
+          playWebSpeech();
+        });
+        return;
+      }
+
+      playWebSpeech();
+
+      function playWebSpeech() {
+        var u = new SpeechSynthesisUtterance(text);
+        u.lang = accent;
+        u.rate = 0.85; // Natural speaking rate
+        u.pitch = 1.0; // Standard pitch for accurate intonation
+        u.volume = 1.0; // Full volume
+        var bestVoice = getBestVoice();
+        if (bestVoice) u.voice = bestVoice;
+        window.speechSynthesis.speak(u);
+      }
     };
     window.openErrorNotebook = openErrorNotebook;
     window.openManageModal = openManageModal;
@@ -5116,26 +5236,121 @@
     }
 
     // Batch AI enrichment for unknown words in paste preview
+    // Background AI enrichment state
+    window._aiEnrichState = { isRunning: false, isPaused: false, progress: {}, enrichedList: [], unknownWords: [], rootMap: {} };
+
     async function enrichAllUnknownWords(unknownWords, rootMap) {
+      // Prevent multiple concurrent runs
+      if (window._aiEnrichState.isRunning) {
+        alert('🤖 AI 生成已在运行中，请等待完成或重新加载页面');
+        return;
+      }
+
       var progressEl = document.getElementById('aiEnrichProgress');
       var resultsEl = document.getElementById('aiEnrichResults');
       var btn = document.getElementById('aiEnrichAllBtn');
       if (btn) { btn.disabled = true; btn.textContent = '⏳ 生成中...'; }
 
       progressEl.classList.remove('hidden');
-      progressEl.innerHTML = '<div class="text-[10px] text-purple-600 animate-pulse">🤖 正在并发生成单词模板（3个并发）...</div>';
+
+      // Add minimize button to progress header
+      var progressHeaderHtml = '<div class="flex items-center justify-between">';
+      progressHeaderHtml += '<div class="text-[10px] text-purple-600 animate-pulse flex-1">🤖 正在并发生成单词模板（3个并发）...</div>';
+      progressHeaderHtml += '<button id="minimizeProgressBtn" class="px-1.5 py-0 rounded text-[10px] font-bold text-purple-600 hover:bg-purple-100 transition-colors" title="最小化进度面板">−</button>';
+      progressHeaderHtml += '</div>';
+      progressEl.innerHTML = progressHeaderHtml;
+
+      // Add minimize button handler
+      setTimeout(function() {
+        var minimizeBtn = document.getElementById('minimizeProgressBtn');
+        if (minimizeBtn) {
+          minimizeBtn.addEventListener('click', function() {
+            var contentDiv = progressEl.querySelector('div:last-child') || progressEl;
+            if (contentDiv && contentDiv !== progressEl) {
+              contentDiv.style.display = contentDiv.style.display === 'none' ? 'block' : 'none';
+              minimizeBtn.textContent = contentDiv.style.display === 'none' ? '+' : '−';
+            }
+          });
+        }
+      }, 10);
+
       resultsEl.innerHTML = '';
+
+      // Initialize state
+      window._aiEnrichState.isRunning = true;
+      window._aiEnrichState.enrichedList = [];
+      window._aiEnrichState.unknownWords = unknownWords;
+      window._aiEnrichState.rootMap = rootMap;
 
       var enrichedList = [];
       var BATCH_SIZE = 3; // Process 3 words concurrently
+      var totalWords = unknownWords.length;
 
-      for (var i = 0; i < unknownWords.length; i += BATCH_SIZE) {
+      // Use non-blocking async to keep UI responsive
+      var processNextBatch = async function(batchIndex) {
+        var i = batchIndex * BATCH_SIZE;
+        if (i >= unknownWords.length) {
+          // All done
+          window._aiEnrichState.isRunning = false;
+          progressEl.innerHTML = '<div class="text-[10px] text-green-600 font-medium">✅ AI 生成完成！共处理 ' + enrichedList.length + '/' + unknownWords.length + ' 个单词</div>';
+          if (btn) { btn.disabled = false; btn.textContent = '🤖 AI 生成全部'; }
+
+          // Store enriched words for import
+          window._aiEnrichedWords = enrichedList;
+
+          // Add import button for AI-enriched words
+          if (enrichedList.length > 0) {
+            var importHtml = '<div class="mt-2 p-2 bg-green-50 rounded-lg border border-green-200 flex items-center justify-between">';
+            importHtml += '<span class="text-[10px] text-green-700">🤖 AI 生成了 <b>' + enrichedList.length + '</b> 个完整单词模板</span>';
+            importHtml += '<button id="importAIEnrichedBtn" class="px-3 py-1 rounded-lg text-[10px] font-medium bg-green-500 text-white hover:bg-green-600 transition-colors">📥 导入这些单词</button>';
+            importHtml += '</div>';
+            resultsEl.innerHTML += importHtml;
+
+            setTimeout(function() {
+              var importBtn = document.getElementById('importAIEnrichedBtn');
+              if (importBtn) {
+                importBtn.addEventListener('click', function() {
+                  // Build rootMap from enriched words
+                  var enrichedRootMap = {};
+                  var enrichedUnknown = [];
+                  window._aiEnrichedWords.forEach(function(entry) {
+                    var idx = detectRoot(entry.word);
+                    if (idx !== null && idx >= 0) {
+                      if (!enrichedRootMap[idx]) enrichedRootMap[idx] = [];
+                      enrichedRootMap[idx].push(entry);
+                    } else {
+                      enrichedUnknown.push(entry);
+                    }
+                  });
+                  importFullWordEntries(enrichedRootMap, enrichedUnknown);
+                });
+              }
+            }, 100);
+          }
+          return;
+        }
+
         var batch = unknownWords.slice(i, i + BATCH_SIZE);
         var batchPromises = batch.map((p, idx) => {
           var globalIdx = i + idx;
           return enrichWordWithAI(p.word, p.meaning, p.pos)
             .then(entry => {
-              progressEl.innerHTML = '<div class="text-[10px] text-purple-600">🤖 已生成 <b>' + escapeHTML(entry.word) + '</b> (' + (globalIdx + 1) + '/' + unknownWords.length + ')... <span class="animate-pulse">⏳</span></div>';
+              progressEl.innerHTML = '<div class="flex items-center justify-between"><div class="text-[10px] text-purple-600 flex-1">🤖 已生成 <b>' + escapeHTML(entry.word) + '</b> (' + (globalIdx + 1) + '/' + totalWords + ')... <span class="animate-pulse">⏳</span></div><button id="minimizeProgressBtn" class="px-1.5 py-0 rounded text-[10px] font-bold text-purple-600 hover:bg-purple-100 transition-colors" title="最小化进度面板">−</button></div>';
+
+              // Re-add minimize button handler
+              setTimeout(function() {
+                var minimizeBtn = document.getElementById('minimizeProgressBtn');
+                if (minimizeBtn) {
+                  minimizeBtn.addEventListener('click', function() {
+                    var contentDiv = progressEl.querySelector('div:last-child');
+                    if (contentDiv && contentDiv !== progressEl) {
+                      contentDiv.style.display = contentDiv.style.display === 'none' ? 'block' : 'none';
+                      minimizeBtn.textContent = contentDiv.style.display === 'none' ? '+' : '−';
+                    }
+                  });
+                }
+              }, 0);
+
               return { success: true, entry: entry, word: p.word };
             })
             .catch(err => {
@@ -5186,47 +5401,15 @@
             resultsEl.innerHTML += '<div class="text-[10px] text-red-500">❌ ' + escapeHTML(result.word) + ': ' + escapeHTML(result.error) + '</div>';
           }
         }
-      }
 
-      progressEl.innerHTML = '<div class="text-[10px] text-green-600 font-medium">✅ AI 生成完成！共处理 ' + enrichedList.length + '/' + unknownWords.length + ' 个单词</div>';
-      if (btn) { btn.disabled = true; btn.textContent = '✅ 已完成'; }
-
-      // Store enriched words for import
-      window._aiEnrichedWords = enrichedList;
-
-      // Add import button for AI-enriched words
-      if (enrichedList.length > 0) {
-        var importHtml = '<div class="mt-2 p-2 bg-green-50 rounded-lg border border-green-200 flex items-center justify-between">';
-        importHtml += '<span class="text-[10px] text-green-700">🤖 AI 生成了 <b>' + enrichedList.length + '</b> 个完整单词模板</span>';
-        importHtml += '<button id="importAIEnrichedBtn" class="px-3 py-1 rounded-lg text-[10px] font-medium bg-green-500 text-white hover:bg-green-600 transition-colors">📥 导入这些单词</button>';
-        importHtml += '</div>';
-        resultsEl.innerHTML += importHtml;
-
+        // Schedule next batch asynchronously to keep UI responsive
         setTimeout(function() {
-          var importBtn = document.getElementById('importAIEnrichedBtn');
-          if (importBtn) {
-            importBtn.addEventListener('click', function() {
-              // Build rootMap from enriched words
-              var enrichedRootMap = {};
-              var enrichedUnknown = [];
-              window._aiEnrichedWords.forEach(function(entry) {
-                var idx = detectRoot(entry.word);
-                if (idx !== null && idx >= 0) {
-                  if (!enrichedRootMap[idx]) enrichedRootMap[idx] = [];
-                  enrichedRootMap[idx].push(entry);
-                } else {
-                  enrichedUnknown.push(entry);
-                }
-              });
-              if (Object.keys(enrichedRootMap).length > 0) {
-                importFullWordEntries(enrichedRootMap, enrichedUnknown);
-              } else if (enrichedUnknown.length > 0) {
-                alert('请先为这些单词选择目标词根：\n' + enrichedUnknown.map(function(e) { return e.word; }).join(', '));
-              }
-            });
-          }
+          processNextBatch(batchIndex + 1);
         }, 50);
-      }
+      };
+
+      // Start processing batches
+      processNextBatch(0);
     }
 
     // AI enrich the current word in detail panel
@@ -6171,6 +6354,7 @@
     function saveAIKeys() {
       var gKey = $('aiGeminiKeyInput').value.trim();
       var aKey = $('aiAnthropicKeyInput').value.trim();
+      var ttsKey = $('aiGoogleTTSKeyInput').value.trim();
       var err = $('aiKeyError');
       err.classList.add('hidden');
       if (!gKey && !aKey) {
@@ -6185,14 +6369,25 @@
       }
       if (gKey) localStorage.setItem(GEMINI_KEY_KEY, gKey);
       if (aKey) localStorage.setItem(ANTHROPIC_KEY_KEY, aKey);
+      if (ttsKey) localStorage.setItem('google_tts_key', ttsKey);
       var status = $('aiKeyStatus');
       status.classList.remove('hidden');
-      status.textContent = '✅ 已配置 · AI 生成已就绪';
+      var statusText = '✅ 已配置 · AI 生成已就绪';
+      if (ttsKey) statusText += ' + 🎙️ TTS 已启用';
+      status.textContent = statusText;
       setTimeout(function() { closeAIPanel(); }, 800);
     }
 
     // Init AI panel events (called on DOMContentLoaded)
     function initAIPanel() {
+      // Load saved keys
+      var savedGeminiKey = localStorage.getItem(GEMINI_KEY_KEY);
+      var savedAnthropicKey = localStorage.getItem(ANTHROPIC_KEY_KEY);
+      var savedTTSKey = localStorage.getItem('google_tts_key');
+      if (savedGeminiKey) $('aiGeminiKeyInput').value = savedGeminiKey;
+      if (savedAnthropicKey) $('aiAnthropicKeyInput').value = savedAnthropicKey;
+      if (savedTTSKey) $('aiGoogleTTSKeyInput').value = savedTTSKey;
+
       $('closeAIBtn').addEventListener('click', closeAIPanel);
       $('aiOverlay').addEventListener('click', function(e) { if (e.target === $('aiOverlay')) closeAIPanel(); });
       $('saveAIKeysBtn').addEventListener('click', saveAIKeys);
