@@ -1488,108 +1488,40 @@
         }
         return;
       }
+
       isSpeaking = true;
       stopSpeakBtn.classList.remove('hidden');
       const item = speechQueue.shift();
       const text = getSpeakableText(item.text);
+
       if (!text) {
         isSpeaking = false;
-        processSpeechQueue();
+        // Process next item without recursion - use event loop
+        setTimeout(processSpeechQueue, 0);
         return;
       }
 
-      // Try Google TTS first if API key is available
-      var useGoogleTTS = false;
-      var googleTTSKey = localStorage.getItem('google_tts_key');
-
-      if (googleTTSKey) {
-        // Try to use Google TTS API
-        var lang = accent === 'en-US' ? 'en-US' : (accent === 'en-GB' ? 'en-GB' : 'en-US');
-        var googleTTSUrl = 'https://texttospeech.googleapis.com/v1/text:synthesize?key=' + googleTTSKey;
-
-        fetch(googleTTSUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            input: { text: text },
-            voice: { languageCode: lang, name: lang === 'en-GB' ? 'en-GB-Standard-B' : 'en-US-Standard-C' },
-            audioConfig: { audioEncoding: 'MP3', pitch: 0, speakingRate: 1.0 }
-          })
-        })
-        .then(resp => resp.json())
-        .then(data => {
-          if (data.audioContent) {
-            // Play the audio from Google TTS
-            var audio = new Audio('data:audio/mpeg;base64,' + data.audioContent);
-            audio.onended = () => {
-              isSpeaking = false;
-              if (item.callback) item.callback();
-              processSpeechQueue();
-            };
-            audio.onerror = () => {
-              console.log('[TTS] Google TTS failed, falling back to Web Speech');
-              isSpeaking = false;
-              speechQueue.unshift(item); // Re-queue for Web Speech fallback
-              playWithWebSpeech();
-            };
-            audio.play().catch(e => {
-              console.log('[TTS] Audio playback error:', e);
-              isSpeaking = false;
-              speechQueue.unshift(item);
-              playWithWebSpeech();
-            });
-            useGoogleTTS = true;
-          } else {
-            throw new Error('No audio content');
-          }
-        })
-        .catch(err => {
-          console.log('[TTS] Google TTS error:', err);
-          isSpeaking = false;
-          speechQueue.unshift(item); // Re-queue for Web Speech fallback
-          playWithWebSpeech();
-        });
-
-        if (useGoogleTTS) return;
-      }
-
-      playWithWebSpeech();
-    }
-
-    function playWithWebSpeech() {
-      // Fallback to Web Speech API
-      if (speechQueue.length === 0) {
-        isSpeaking = false;
-        stopSpeakBtn.classList.add('hidden');
-        return;
-      }
-
-      const item = speechQueue.shift();
-      const text = getSpeakableText(item.text);
-      if (!text) {
-        isSpeaking = false;
-        processSpeechQueue();
-        return;
-      }
-
+      // Use Web Speech API directly (fast, no API calls)
       const u = new SpeechSynthesisUtterance(text);
       u.lang = accent;
-      // Use more natural parameters for sentences vs single words
       var isSentence = text.length > 25 && text.includes(' ');
-      u.rate = isSentence ? 0.8 : 0.85; // Natural speech rate
-      u.pitch = 1.0; // Standard pitch for accurate intonation
-      u.volume = 1.0; // Full volume for clarity
+      u.rate = isSentence ? 0.8 : 0.85;
+      u.pitch = 1.0;
+      u.volume = 1.0;
       var bestVoice = getBestVoice();
       if (bestVoice) u.voice = bestVoice;
+
       u.onend = () => {
         isSpeaking = false;
         if (item.callback) item.callback();
-        processSpeechQueue();
+        setTimeout(processSpeechQueue, 0);
       };
+
       u.onerror = () => {
         isSpeaking = false;
-        processSpeechQueue();
+        setTimeout(processSpeechQueue, 0);
       };
+
       window.speechSynthesis.speak(u);
     }
 
@@ -2676,53 +2608,14 @@
       if (!word) return;
       stopAllSpeech();
       var text = getSpeakableText(word);
-      var googleTTSKey = localStorage.getItem('google_tts_key');
-
-      // Try Google TTS first if available
-      if (googleTTSKey) {
-        var lang = accent === 'en-US' ? 'en-US' : (accent === 'en-GB' ? 'en-GB' : 'en-US');
-        var googleTTSUrl = 'https://texttospeech.googleapis.com/v1/text:synthesize?key=' + googleTTSKey;
-
-        fetch(googleTTSUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            input: { text: text },
-            voice: { languageCode: lang, name: lang === 'en-GB' ? 'en-GB-Standard-B' : 'en-US-Standard-C' },
-            audioConfig: { audioEncoding: 'MP3', pitch: 0, speakingRate: 1.0 }
-          })
-        })
-        .then(resp => resp.json())
-        .then(data => {
-          if (data.audioContent) {
-            var audio = new Audio('data:audio/mpeg;base64,' + data.audioContent);
-            audio.play().catch(e => {
-              console.log('[TTS] Google TTS playback failed, using Web Speech:', e);
-              playWebSpeech();
-            });
-          } else {
-            playWebSpeech();
-          }
-        })
-        .catch(err => {
-          console.log('[TTS] Google TTS error:', err, 'using Web Speech');
-          playWebSpeech();
-        });
-        return;
-      }
-
-      playWebSpeech();
-
-      function playWebSpeech() {
-        var u = new SpeechSynthesisUtterance(text);
-        u.lang = accent;
-        u.rate = 0.85; // Natural speaking rate
-        u.pitch = 1.0; // Standard pitch for accurate intonation
-        u.volume = 1.0; // Full volume
-        var bestVoice = getBestVoice();
-        if (bestVoice) u.voice = bestVoice;
-        window.speechSynthesis.speak(u);
-      }
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = accent;
+      u.rate = 0.85;
+      u.pitch = 1.0;
+      u.volume = 1.0;
+      var bestVoice = getBestVoice();
+      if (bestVoice) u.voice = bestVoice;
+      window.speechSynthesis.speak(u);
     };
     window.openErrorNotebook = openErrorNotebook;
     window.openManageModal = openManageModal;
@@ -5288,7 +5181,7 @@
       window._aiEnrichState.rootMap = rootMap;
 
       var enrichedList = [];
-      var BATCH_SIZE = 8; // Process 8 words concurrently (increased from 3)
+      var BATCH_SIZE = 3; // Process 3 words concurrently (reduced to avoid lag)
       var totalWords = unknownWords.length;
 
       // Use non-blocking async to keep UI responsive
